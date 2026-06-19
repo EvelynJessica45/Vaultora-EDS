@@ -1,3 +1,113 @@
-body {
-  background-color: hotpink !important;
+/* Container Layout Setup */
+.header-wrapper,
+.vaultora-header {
+  background: #ffffff !important;
+  border-bottom: 1px solid #eeeeee;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  width: 100%;
+  display: block !important;
+}
+
+.vaultora-header > div {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 16px 40px;
+  box-sizing: border-box;
+}
+
+/* 1. Logo Column */
+.header-logo picture,
+.header-logo img {
+  height: 50px !important;
+  width: auto !important;
+  display: block !important;
+}
+
+/* 2. Middle Navigation Column - Horizontal Alignment */
+.header-nav {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 24px !important;
+}
+
+.header-nav p,
+.header-nav p a {
+  margin: 0 !important;
+  padding: 0 !important;
+  text-decoration: none !important;
+  color: #333333 !important;
+  font-weight: 600 !important;
+  font-size: 15px !important;
+  white-space: nowrap;
+}
+
+/* 3. Right Action Buttons Column */
+.header-actions {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 16px !important;
+}
+
+.header-actions p {
+  margin: 0 !important;
+}
+
+/* Auth Buttons & Profile Chips Styling */
+.get-started-btn {
+  background: #46513f !important;
+  color: #ffffff !important;
+  padding: 10px 20px !important;
+  border-radius: 999px !important;
+  font-weight: 600 !important;
+  text-decoration: none !important;
+  white-space: nowrap;
+  display: inline-block !important;
+}
+
+.user-chip {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  padding: 6px 14px 6px 6px !important;
+  background: #f3f3f3 !important;
+  border-radius: 999px !important;
+}
+
+.user-avatar {
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: 50% !important;
+  background: #46513f !important;
+  color: #ffffff !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-weight: 700 !important;
+}
+
+.user-name {
+  font-weight: 600 !important;
+  color: #333333 !important;
+  font-size: 14px !important;
+}
+
+.logout-btn {
+  background: none !important;
+  border: none !important;
+  color: #666666 !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+}
+
+/* Hide trailing template empty elements */
+.header-extra-cell {
+  display: none !important;
 }
