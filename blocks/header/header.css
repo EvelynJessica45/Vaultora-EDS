@@ -1,189 +1,131 @@
-/* Master Header Nav Bar Container */
-.vaultora-header nav {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-  padding: 16px 40px;
-  background: #ffffff;
+/* Master block strip alignment rules */
+.vaultora-header {
+  background: #ffffff !important;
   border-bottom: 1px solid #eeeeee;
   position: sticky;
   top: 0;
   z-index: 1000;
-}
-
-/* 1. Brand Logo Container Adjustments */
-.vaultora-header .header-logo img,
-.vaultora-header .header-logo picture img {
-  height: 60px; /* Reduced so it fits elegantly in a top row header */
-  width: auto;
+  width: 100%;
   display: block;
 }
 
-/* 2. Main Navigation Links Area */
+.vaultora-header nav {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 16px 40px;
+  box-sizing: border-box;
+}
+
+/* 1. Logo sizing overrides */
+.vaultora-header .header-logo,
+.vaultora-header .header-logo div,
+.vaultora-header .header-logo picture,
+.vaultora-header .header-logo img {
+  height: 50px !important;
+  width: auto !important;
+  display: block;
+}
+
+/* 2. Main horizontal link strip */
 .vaultora-header .header-nav ul {
-  display: flex;
-  align-items: center;
-  gap: 32px;
-  list-style: none;
-  margin: 0;
-  padding: 0;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 32px !important;
+  list-style: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.vaultora-header .header-nav ul li {
+  list-style: none !important;
 }
 
 .vaultora-header .header-nav ul li a {
-  text-decoration: none;
-  color: #333333;
-  font-weight: 600;
-  font-size: 15px;
-  position: relative;
-  transition: color 0.3s ease;
+  text-decoration: none !important;
+  color: #333333 !important;
+  font-weight: 600 !important;
+  font-size: 15px !important;
 }
 
-.vaultora-header .header-nav ul li a::after {
-  content: '';
-  position: absolute;
-  bottom: -6px;
-  left: 0;
-  width: 0%;
-  height: 2px;
-  background: #46513f;
-  transition: width 0.3s ease;
-}
-
-.vaultora-header .header-nav ul li a:hover::after {
-  width: 100%;
-}
-
-/* 3. Action and Utility Icons Section */
+/* 3. Action Badges & Dynamic Profiles */
 .vaultora-header .header-actions {
-  display: flex;
-  align-items: center;
-  gap: 24px;
+  display: flex !important;
+  align-items: center !important;
+  gap: 24px !important;
 }
 
 .vaultora-header .header-actions ul {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  list-style: none;
-  margin: 0;
-  padding: 0;
+  display: flex !important;
+  align-items: center !important;
+  gap: 16px !important;
+  list-style: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
-/* Style the dynamic CTA button specifically */
+.vaultora-header .header-actions ul li {
+  list-style: none !important;
+}
+
+/* Dynamic Call-to-action configuration wrapper */
 .vaultora-header .header-actions ul li:first-child a {
-  background: #efe7dc;
-  color: #46513f;
-  padding: 10px 20px;
-  border-radius: 999px;
-  font-weight: 700;
-  font-size: 13px;
-  letter-spacing: 0.5px;
-  text-decoration: none;
-  display: inline-block;
-  transition: transform 0.2s ease;
+  background: #efe7dc !important;
+  color: #46513f !important;
+  padding: 10px 20px !important;
+  border-radius: 999px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase;
+  font-size: 13px !important;
+  text-decoration: none !important;
 }
 
-.vaultora-header .header-actions ul li:first-child a:hover {
-  transform: scale(1.03);
-}
-
-/* 4. Get Started / Authenticated Profile Space Elements */
-.vaultora-header .header-profile {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
+/* Guest Button Elements layout wrapper */
 .vaultora-header .get-started-btn {
-  background: #46513f;
+  background: #46513f !important;
   color: #ffffff !important;
-  padding: 10px 20px;
-  border-radius: 999px;
-  font-weight: 600;
-  text-decoration: none;
-  font-size: 14px;
-  display: inline-block;
+  padding: 10px 20px !important;
+  border-radius: 999px !important;
+  font-weight: 600 !important;
+  text-decoration: none !important;
   white-space: nowrap;
-  transition: background 0.3s ease;
 }
 
-.vaultora-header .get-started-btn:hover {
-  background: #353e30;
-}
-
-/* Logged-In User Profile Details markup matching layout */
+/* Custom User Badges mapping structural elements */
 .vaultora-header .user-chip {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 6px 16px 6px 6px;
-  background: #f3f3f3;
-  border-radius: 999px;
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  padding: 6px 14px 6px 6px !important;
+  background: #f3f3f3 !important;
+  border-radius: 999px !important;
 }
 
 .vaultora-header .user-avatar {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: #46513f;
-  color: #ffffff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-  font-size: 14px;
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: 50% !important;
+  background: #46513f !important;
+  color: #ffffff !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-weight: 700 !important;
 }
 
 .vaultora-header .user-name {
-  font-weight: 600;
-  color: #333333;
-  font-size: 14px;
+  font-weight: 600 !important;
+  color: #333333 !important;
+  font-size: 14px !important;
 }
 
 .vaultora-header .logout-btn {
-  background: none;
-  border: none;
-  color: #666666;
-  font-weight: 600;
-  font-size: 14px;
-  cursor: pointer;
-  padding: 0;
-}
-
-.vaultora-header .logout-btn:hover {
-  color: #333333;
-  text-decoration: underline;
-}
-
-/* Hide Default AEM Content Wrappers that leak bullet point styles */
-.vaultora-header .default-content-wrapper ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-/* Mobile Layout Responsive Adaptations */
-@media (max-width: 900px) {
-  .vaultora-header nav {
-    padding: 16px;
-    flex-wrap: wrap;
-  }
-  
-  .vaultora-header .header-nav {
-    display: none;
-    width: 100%;
-    order: 3;
-    margin-top: 16px;
-  }
-  
-  .vaultora-header .header-nav.open {
-    display: block;
-  }
-  
-  .vaultora-header .header-nav ul {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 16px;
-  }
+  background: none !important;
+  border: none !important;
+  color: #666666 !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
 }
