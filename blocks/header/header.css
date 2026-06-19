@@ -1,6 +1,6 @@
-/* Scope using the explicit block wrapper injected by EDS */
-header .vaultora-header,
-.header-wrapper .vaultora-header {
+/* Target the main outer header tag wrapper */
+header,
+.header-wrapper {
   background: #ffffff !important;
   border-bottom: 1px solid #eeeeee;
   position: sticky;
@@ -10,8 +10,10 @@ header .vaultora-header,
   display: block !important;
 }
 
+/* Make the top-level block row use a clean row structure */
 header .vaultora-header > div {
   display: flex !important;
+  flex-direction: row !important;
   align-items: center !important;
   justify-content: space-between !important;
   max-width: 1400px;
@@ -20,6 +22,7 @@ header .vaultora-header > div {
   box-sizing: border-box;
 }
 
+/* 1. Brand/Logo Column Layout Configuration */
 header .header-logo picture,
 header .header-logo img {
   height: 50px !important;
@@ -27,22 +30,18 @@ header .header-logo img {
   display: block;
 }
 
-header .header-nav ul {
+/* 2. Target the <p> elements inside the navigation row to line them up horizontally */
+header .header-nav {
   display: flex !important;
   flex-direction: row !important;
   align-items: center !important;
   gap: 32px !important;
-  list-style: none !important;
+}
+
+header .header-nav p,
+header .header-nav p a {
   margin: 0 !important;
   padding: 0 !important;
-}
-
-header .header-nav ul li {
-  list-style: none !important;
-  display: inline-block !important;
-}
-
-header .header-nav ul li a {
   text-decoration: none !important;
   color: #333333 !important;
   font-weight: 600 !important;
@@ -50,17 +49,20 @@ header .header-nav ul li a {
   white-space: nowrap;
 }
 
-header .header-actions ul li a[href*="buy"], 
-header .header-actions ul li a[href*="sell"] {
-  background: #efe7dc !important;
-  color: #46513f !important;
-  padding: 10px 20px !important;
-  border-radius: 999px !important;
-  font-weight: 700 !important;
-  text-transform: uppercase;
-  font-size: 13px !important;
+/* 3. Actions / CTA Buttons Column Layout Configuration */
+header .header-actions {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 16px !important;
 }
 
+/* Turn any action paragraphs/links into clean styled elements */
+header .header-actions p {
+  margin: 0 !important;
+}
+
+/* Style the Auth Buttons / Dynamic calls to action */
 header .get-started-btn {
   background: #46513f !important;
   color: #ffffff !important;
@@ -69,6 +71,7 @@ header .get-started-btn {
   font-weight: 600 !important;
   text-decoration: none !important;
   white-space: nowrap;
+  display: inline-block !important;
 }
 
 header .user-chip {
