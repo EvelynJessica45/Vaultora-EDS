@@ -172,3 +172,86 @@
   text-decoration: none;
   color: #333;
 }
+
+/* Container arrangement */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+/* Call to action button styling */
+.header-actions ul li a {
+  background: #efe7dc;
+  color: #46513f;
+  padding: 10px 20px;
+  border-radius: 999px;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 14px;
+  text-decoration: none;
+}
+
+/* Get Started for Free style when logged out */
+.get-started-btn {
+  background: #46513f;
+  color: #ffffff !important;
+  padding: 12px 24px;
+  border-radius: 999px;
+  font-weight: 600;
+  text-decoration: none;
+  font-size: 14px;
+  transition: background 0.3s ease;
+}
+
+.get-started-btn:hover {
+  background: #353e30;
+}
+
+/* Profile elements matching image_1e6780.png */
+.header-profile {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.user-chip {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 18px 6px 6px;
+  background: #f0f2f0;
+  border-radius: 999px;
+}
+
+.user-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #394433;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.user-name {
+  font-weight: 600;
+  color: #333333;
+  font-size: 15px;
+}
+
+.logout-btn {
+  background: none;
+  border: none;
+  color: #333333;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.logout-btn:hover {
+  text-decoration: underline;
+}
