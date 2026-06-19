@@ -1,16 +1,18 @@
 export default function decorate(block) {
   console.log('--- VAULTORA BLOCK DECORATION START ---');
 
-  // Change the block name cell in da.live back to "header" if you changed it to nav,
-  // because loadHeader(doc.querySelector('header')) explicitly looks for a block named 'header'.
   block.classList.add('vaultora-header');
 
-  // 1. Target the columns INSIDE the first row container
+  // 1. Target the columns INSIDE the first row container safely
   const row = block.querySelector(':scope > div');
-  if (!row) return;
+  if (!row) {
+    console.warn('Vaultora Header: No structural row found.');
+    return;
+  }
 
   const cols = row.querySelectorAll(':scope > div');
 
+  // Guard against missing columns so the script doesn't crash if the document only has a logo
   if (cols && cols.length >= 3) {
     const navBrand = cols[0];
     const navSections = cols[1];
@@ -71,11 +73,14 @@ export default function decorate(block) {
         window.location.href = '/login';
       });
     }
+  } else {
+    console.warn(`Vaultora Header: Expected 3 columns, but found ${cols ? cols.length : 0}. Check your authoring document content.`);
   }
 
-  // Hamburger menu interaction toggle hook
+  // 2. Wrap interaction hooks with optional chaining (?.) and explicit null checks to prevent crashes
   const hamburger = block.querySelector('.nav-hamburger');
   const navSectionsElement = block.querySelector('.header-nav');
+  
   if (hamburger && navSectionsElement) {
     hamburger.addEventListener('click', () => {
       navSectionsElement.classList.toggle('open');
