@@ -151,3 +151,24 @@
     margin-left: auto;
   }
 }
+
+/* Add or update this specific block inside your header.css */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.header-actions ul {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.header-actions a {
+  text-decoration: none;
+  color: #333;
+}
