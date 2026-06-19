@@ -1,59 +1,63 @@
 export default function decorate(block) {
-  console.log('VAULTORA HEADER LOADED');
+  console.log('VAULTORA HEADER DECORATION STARTED');
 
+  // Add the master styling hook
   block.classList.add('vaultora-header');
 
-  const rows = [...block.children];
-
-  // Safeguard: Ensure the table has both a header row and a content row
-  if (rows.length < 2) return;
-
-  const contentRow = rows[1];
-  const cols = [...contentRow.children];
-
-  // Safeguard: Ensure the content row contains all 4 functional columns
-  if (cols.length < 4) return;
-
-  // Map elements to their respective styling classes
-  cols[0].classList.add('header-logo');
-  cols[1].classList.add('header-nav');
-  cols[2].classList.add('header-actions');
-  cols[3].classList.add('header-profile');
-
-  // Session Management (Handles showing the user's name if logged in)
-  const session = JSON.parse(localStorage.getItem('Vaultora_session')) || null;
-  const profileCol = cols[3];
-
-  if (session) {
-    const displayName = session.name || session.email || 'User';
-    const initial = displayName.charAt(0).toUpperCase();
-
-    // Render logged-in state matching the design
-    profileCol.innerHTML = `
-      <div class="user-chip">
-        <div class="user-avatar">${initial}</div>
-        <span>${displayName}</span>
-      </div>
-      <button class="logout-btn">Logout</button>
-    `;
-
-    const logoutBtn = profileCol.querySelector('.logout-btn');
-    logoutBtn?.addEventListener('click', () => {
-      localStorage.removeItem('Vaultora_session');
-      window.location.href = '/register';
-    });
-  } else {
-    // Fallback: What to show if the user is not logged in
-    profileCol.innerHTML = `<a href="/register" class="login-link">Login</a>`;
+  // 1. Target the Brand section (This holds your logo img)
+  const navBrand = block.querySelector('.nav-brand');
+  if (navBrand) {
+    navBrand.classList.add('header-logo');
   }
 
-  // Mobile Menu Layout (Hamburger Linkage)
-  const hamburger = document.createElement('button');
-  hamburger.className = 'hamburger';
-  hamburger.innerHTML = '☰';
-  block.appendChild(hamburger);
+  // 2. Target the main navigation sections (This holds your nav links)
+  const navSections = block.querySelector('.nav-sections');
+  if (navSections) {
+    navSections.classList.add('header-nav');
+  }
 
-  hamburger.addEventListener('click', () => {
-    cols[1].classList.toggle('open');
-  });
+  // 3. Target the tools container (This holds your action badges & profile info)
+  const navTools = block.querySelector('.nav-tools');
+  if (navTools) {
+    navTools.classList.add('header-actions');
+    
+    // Create a dedicated container for the profile session matching your design
+    let profileCol = navTools.querySelector('.header-profile');
+    if (!profileCol) {
+      profileCol = document.createElement('div');
+      profileCol.classList.add('header-profile');
+      navTools.appendChild(profileCol);
+    }
+
+    // Session Management Handling
+    const session = JSON.parse(localStorage.getItem('Vaultora_session')) || null;
+    if (session) {
+      const displayName = session.name || session.email || 'User';
+      const initial = displayName.charAt(0).toUpperCase();
+
+      profileCol.innerHTML = `
+        <div class="user-chip">
+          <div class="user-avatar">${initial}</div>
+          <span>${displayName}</span>
+        </div>
+        <button class="logout-btn">Logout</button>
+      `;
+
+      const logoutBtn = profileCol.querySelector('.logout-btn');
+      logoutBtn?.addEventListener('click', () => {
+        localStorage.removeItem('Vaultora_session');
+        window.location.href = '/register';
+      });
+    } else {
+      profileCol.innerHTML = `<a href="/register" class="login-link">Login</a>`;
+    }
+  }
+
+  // 4. Hook up the Hamburger toggle
+  const hamburger = block.querySelector('.nav-hamburger');
+  if (hamburger && navSections) {
+    hamburger.addEventListener('click', () => {
+      navSections.classList.toggle('open');
+    });
+  }
 }
