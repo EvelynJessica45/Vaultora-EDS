@@ -1,4 +1,6 @@
 export default function decorate(block) {
+  console.log('VAULTORA HEADER LOADED');
+
   block.classList.add('vaultora-header');
 
   const rows = [...block.children];
