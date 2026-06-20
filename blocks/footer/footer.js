@@ -23,7 +23,7 @@ export default function decorate(block) {
     const headingsData = [...headersRow.children];
 
     columnsData.forEach((colCell, i) => {
-      if (i === 0) return; // Drop structural text labels line 'Content'
+      if (i === 0) return; // Drop structural text labels like 'Content'
 
       const colWrap = document.createElement('div');
       
@@ -31,33 +31,52 @@ export default function decorate(block) {
         // --- COLUMN 1: Brand Space (Logo Image Graphic & Bio Paragraph Metadata) ---
         colWrap.className = 'footer-brand';
         
-        const pictureElement = colCell.querySelector('picture');
-        if (pictureElement) {
+        // Find the main Vaultora Logo (the first picture element)
+        const mainLogo = colCell.querySelector('p picture, div > picture');
+        if (mainLogo) {
           const logoWrap = document.createElement('div');
           logoWrap.className = 'footer-logo-wrap';
-          logoWrap.appendChild(pictureElement);
+          logoWrap.appendChild(mainLogo.cloneNode(true));
           colWrap.appendChild(logoWrap);
         }
 
+        // Target and cleanly wrap tagline text descriptions
         const textParagraphs = colCell.querySelectorAll('p');
         textParagraphs.forEach((p) => {
-          if (p.textContent.includes('(')) {
-            const socialsWrap = document.createElement('div');
-            socialsWrap.className = 'footer-socials';
-            
-            ['instagram', 'linkedin', 'x'].forEach((network) => {
-              const anchor = document.createElement('a');
-              anchor.href = `#${network}`;
-              anchor.className = `footer-social-link link-${network}`;
-              anchor.innerHTML = `<span class="icon icon-${network}"></span>`;
-              socialsWrap.appendChild(anchor);
-            });
-            colWrap.appendChild(socialsWrap);
-          } else if (!p.querySelector('picture')) {
-            p.className = 'footer-tagline';
-            colWrap.appendChild(p);
+          const hasPicture = p.querySelector('picture');
+          const text = p.textContent.trim();
+          
+          // If it contains only text and isn't empty, it's the tagline description
+          if (!hasPicture && text && !text.startsWith('(') && !text.endsWith(')')) {
+            const tagline = document.createElement('p');
+            tagline.className = 'footer-tagline';
+            tagline.textContent = text;
+            colWrap.appendChild(tagline);
           }
         });
+
+        // --- NEW: Gather social media image pictures ---
+        const allPictures = [...colCell.querySelectorAll('picture')];
+        // The first one is our main brand logo, the remaining ones are the socials
+        const socialPictures = allPictures.slice(1);
+
+        if (socialPictures.length > 0) {
+          const socialsWrap = document.createElement('div');
+          socialsWrap.className = 'footer-socials';
+          
+          const networks = ['instagram', 'linkedin', 'x'];
+          socialPictures.forEach((pic, index) => {
+            const networkName = networks[index] || 'social';
+            const anchor = document.createElement('a');
+            anchor.href = `#${networkName}`;
+            anchor.className = `footer-social-link link-${networkName}`;
+            
+            // Append the actual image from your doc into the circle anchor tag
+            anchor.appendChild(pic.cloneNode(true));
+            socialsWrap.appendChild(anchor);
+          });
+          colWrap.appendChild(socialsWrap);
+        }
 
       } else {
         // --- COLUMNS 2, 3 & 4: Stacking Navigation Target Iterators ---
@@ -100,7 +119,7 @@ export default function decorate(block) {
   }
   block.appendChild(innerContainer);
 
-  // 3. Bottom Strip (Copyright & Legal Elements Grouping)
+  // 3. Build the Bottom Strip (Copyright & Legal Elements Grouping)
   if (copyrightRow) {
     const bottomBar = document.createElement('div');
     bottomBar.className = 'footer-bottom';
