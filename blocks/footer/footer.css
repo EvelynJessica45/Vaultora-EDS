@@ -1,20 +1,187 @@
-footer {
-  background-color: var(--light-color);
-  font-size: var(--body-font-size-xs);
+/* ═══════════════════════════════════════════════════════════════
+   Vaultora — Cleaned EDS Footer Styles
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Target the core pipeline block wrapper */
+.footer-container {
+  background: var(--forest, #46513f);
+  padding: 0 !important;
+  margin: 0 !important;
 }
 
-footer .footer > div {
-  margin: auto;
-  max-width: 1200px;
-  padding: 40px 24px 24px;
+.footer-wrapper .footer {
+  color: rgba(255, 255, 255, .75);
+  font-family: 'DM Sans', sans-serif;
+  margin-top: 80px;
 }
 
-footer .footer p {
+/* ── Top decorative line rule ── */
+.footer-wrapper .footer-rule {
+  height: 3px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(216, 199, 176, .35) 20%,
+    rgba(216, 199, 176, .55) 50%,
+    rgba(216, 199, 176, .35) 80%,
+    transparent
+  );
+}
+
+/* ── Main columns layout grid canvas ── */
+.footer-wrapper .footer-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 56px 48px 40px;
+  display: grid;
+  grid-template-columns: 1.8fr 1fr 1fr 1fr;
+  gap: 40px 48px;
+  align-items: start;
+}
+
+/* ── Brand logo structure setup ── */
+.footer-wrapper .footer-logo-wrap {
+  display: inline-block;
+  margin-bottom: 16px;
+}
+
+.footer-wrapper .footer-logo-wrap picture img {
+  display: block;
+  height: auto;
+  width: 160px;
+  opacity: .88;
+}
+
+.footer-wrapper .footer-tagline {
+  font-size: .85rem;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, .6);
+  max-width: 240px;
+  margin-bottom: 20px;
+}
+
+/* ── Social interface block styling elements ── */
+.footer-wrapper .footer-socials {
+  display: flex;
+  gap: 10px;
+}
+
+.footer-wrapper .footer-social-link {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, .2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, .65);
+  text-decoration: none;
+  position: relative;
+  transition: all .2s;
+}
+
+.footer-wrapper .footer-social-link::before {
+  font-size: 0.85rem;
+  text-transform: capitalize;
+}
+.footer-wrapper .footer-social-link.link-instagram::before { content: 'IG'; }
+.footer-wrapper .footer-social-link.link-linkedin::before { content: 'LN'; }
+.footer-wrapper .footer-social-link.link-x::before { content: 'X'; }
+
+.footer-wrapper .footer-social-link:hover {
+  border-color: rgba(216, 199, 176, .6);
+  color: #d8c7b0;
+  background: rgba(255, 255, 255, .06);
+}
+
+/* ── Navigation Columns Headers ── */
+.footer-wrapper .footer-col-title {
+  font-size: .68rem;
+  font-weight: 600;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+  color: #d8c7b0;
+  margin-bottom: 16px;
+}
+
+.footer-wrapper .footer-links {
+  list-style: none;
+  padding: 0;
   margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
-@media (width >= 900px) {
-  footer .footer > div {
-    padding: 40px 32px 24px;
+.footer-wrapper .footer-links a {
+  font-size: .84rem;
+  color: rgba(255, 255, 255, .58);
+  text-decoration: none;
+  transition: color .18s;
+  position: relative;
+  display: inline-block;
+}
+
+.footer-wrapper .footer-links a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 0;
+  height: 1px;
+  background: #d8c7b0;
+  transition: width .22s;
+}
+
+.footer-wrapper .footer-links a:hover {
+  color: #d8c7b0;
+}
+
+.footer-wrapper .footer-links a:hover::after {
+  width: 100%;
+}
+
+/* ── Bottom Strip Copyright bar area ── */
+.footer-wrapper .footer-bottom {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 20px 48px 28px;
+  border-top: 1px solid rgba(255, 255, 255, .1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.footer-wrapper .footer-copy {
+  font-size: .78rem;
+  color: rgba(255, 255, 255, .38);
+}
+
+/* ── Responsive Viewport Breakpoints ── */
+@media (max-width: 960px) {
+  .footer-wrapper .footer-inner {
+    grid-template-columns: 1fr 1fr;
+    padding: 44px 32px 32px;
+  }
+
+  .footer-wrapper .footer-brand {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 580px) {
+  .footer-wrapper .footer-inner {
+    grid-template-columns: 1fr;
+    padding: 36px 24px 28px;
+    gap: 32px;
+  }
+
+  .footer-wrapper .footer-bottom {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 20px 24px 28px;
+    gap: 10px;
   }
 }
