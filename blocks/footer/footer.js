@@ -32,7 +32,7 @@ export default function decorate(block) {
         colWrap.className = 'footer-brand';
         
         // Find the main Vaultora Logo (the first picture element)
-        const mainLogo = colCell.querySelector('p picture, div > picture');
+        const mainLogo = colCell.querySelector('picture');
         if (mainLogo) {
           const logoWrap = document.createElement('div');
           logoWrap.className = 'footer-logo-wrap';
@@ -44,10 +44,11 @@ export default function decorate(block) {
         const textParagraphs = colCell.querySelectorAll('p');
         textParagraphs.forEach((p) => {
           const hasPicture = p.querySelector('picture');
+          const hasIcons = p.querySelector('span.icon');
           const text = p.textContent.trim();
           
-          // If it contains only text and isn't empty, it's the tagline description
-          if (!hasPicture && text && !text.startsWith('(') && !text.endsWith(')')) {
+          // Ensure it's not a logo picture and not our icon token text stack line
+          if (!hasPicture && !hasIcons && text && !text.includes(':')) {
             const tagline = document.createElement('p');
             tagline.className = 'footer-tagline';
             tagline.textContent = text;
@@ -55,24 +56,22 @@ export default function decorate(block) {
           }
         });
 
-        // --- NEW: Gather social media image pictures ---
-        const allPictures = [...colCell.querySelectorAll('picture')];
-        // The first one is our main brand logo, the remaining ones are the socials
-        const socialPictures = allPictures.slice(1);
-
-        if (socialPictures.length > 0) {
+        // --- NEW: Gather native AEM pipeline generated inline vector icon spans ---
+        const nativeIcons = colCell.querySelectorAll('span.icon');
+        
+        if (nativeIcons.length > 0) {
           const socialsWrap = document.createElement('div');
           socialsWrap.className = 'footer-socials';
           
           const networks = ['instagram', 'linkedin', 'x'];
-          socialPictures.forEach((pic, index) => {
+          nativeIcons.forEach((iconSpan, index) => {
             const networkName = networks[index] || 'social';
             const anchor = document.createElement('a');
             anchor.href = `#${networkName}`;
             anchor.className = `footer-social-link link-${networkName}`;
             
-            // Append the actual image from your doc into the circle anchor tag
-            anchor.appendChild(pic.cloneNode(true));
+            // Move the generated icon span inside our circle anchor shell element
+            anchor.appendChild(iconSpan.cloneNode(true));
             socialsWrap.appendChild(anchor);
           });
           colWrap.appendChild(socialsWrap);
@@ -95,6 +94,7 @@ export default function decorate(block) {
 
         const linkParagraphs = colCell.querySelectorAll('p');
         linkParagraphs.forEach((p) => {
+          if (!p.textContent.trim()) return; // Skip spacing row fragments
           const listItem = document.createElement('li');
           const anchor = document.createElement('a');
           
