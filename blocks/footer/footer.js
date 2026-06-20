@@ -2,19 +2,21 @@ import { createOptimizedPicture } from '../../scripts/aem.js';
 
 export default function decorate(block) {
   const rows = [...block.children];
-  
+  if (rows.length < 4) return;
+
   const headersRow = rows[1];
   const contentRow = rows[2];
   const copyrightRow = rows[3];
 
-  block.innerHTML = '';
+  // Initialize virtual rendering workspace fragment container
+  const fragment = document.createDocumentFragment();
 
   // 1. Decorative glowing gradient layout line accent rule
   const rule = document.createElement('div');
   rule.className = 'footer-rule';
-  block.appendChild(rule);
+  fragment.appendChild(rule);
 
-  // 2. Main grid inner canvas viewport container wrapper
+  // 2. Main column grid container
   const innerContainer = document.createElement('div');
   innerContainer.className = 'footer-inner';
 
@@ -23,32 +25,34 @@ export default function decorate(block) {
     const headingsData = [...headersRow.children];
 
     columnsData.forEach((colCell, i) => {
-      if (i === 0) return; // Drop structural text labels like 'Content'
+      if (i === 0) return; // Drop structural meta label 'Content'
 
       const colWrap = document.createElement('div');
       
       if (i === 1) {
-        // --- COLUMN 1: Brand Space (Logo Image Graphic & Bio Paragraph Metadata) ---
         colWrap.className = 'footer-brand';
         
-        // Find the main Vaultora Logo (the first picture element)
-        const mainLogo = colCell.querySelector('picture');
-        if (mainLogo) {
+        // Fix image delivery: Optimize image rendering with specific edge-width limits
+        const rawImg = colCell.querySelector('picture img');
+        if (rawImg) {
+          const optimizedPicture = createOptimizedPicture(rawImg.src, rawImg.alt || 'Vaultora Logo', false, [{ width: '250' }]);
+          const optimizedImg = optimizedPicture.querySelector('img');
+          if (optimizedImg) {
+            optimizedImg.setAttribute('width', '160');
+            optimizedImg.setAttribute('height', '108'); // Explicit dimensions to avoid any micro-CLS calculations
+            optimizedImg.setAttribute('loading', 'lazy');
+          }
           const logoWrap = document.createElement('div');
           logoWrap.className = 'footer-logo-wrap';
-          logoWrap.appendChild(mainLogo.cloneNode(true));
+          logoWrap.appendChild(optimizedPicture);
           colWrap.appendChild(logoWrap);
         }
 
-        // Target and cleanly wrap tagline text descriptions
-        const textParagraphs = colCell.querySelectorAll('p');
-        textParagraphs.forEach((p) => {
-          const hasPicture = p.querySelector('picture');
-          const hasIcons = p.querySelector('span.icon');
+        // Fast text processing avoiding micro DOM loops
+        const paragraphs = [...colCell.querySelectorAll('p')];
+        paragraphs.forEach((p) => {
           const text = p.textContent.trim();
-          
-          // Ensure it's not a logo picture and not our icon token text stack line
-          if (!hasPicture && !hasIcons && text && !text.includes(':')) {
+          if (text && !p.querySelector('picture') && !p.querySelector('span.icon')) {
             const tagline = document.createElement('p');
             tagline.className = 'footer-tagline';
             tagline.textContent = text;
@@ -56,9 +60,8 @@ export default function decorate(block) {
           }
         });
 
-        // --- NEW: Gather native AEM pipeline generated inline vector icon spans ---
-        const nativeIcons = colCell.querySelectorAll('span.icon');
-        
+        // Fast processing for the icons inside column 1
+        const nativeIcons = [...colCell.querySelectorAll('span.icon')];
         if (nativeIcons.length > 0) {
           const socialsWrap = document.createElement('div');
           socialsWrap.className = 'footer-socials';
@@ -68,17 +71,15 @@ export default function decorate(block) {
             const networkName = networks[index] || 'social';
             const anchor = document.createElement('a');
             anchor.href = `#${networkName}`;
+            anchor.ariaLabel = `Visit our ${networkName} page`; // Fixes screen-reader accessible name audit
             anchor.className = `footer-social-link link-${networkName}`;
-            
-            // Move the generated icon span inside our circle anchor shell element
-            anchor.appendChild(iconSpan.cloneNode(true));
+            anchor.appendChild(iconSpan);
             socialsWrap.appendChild(anchor);
           });
           colWrap.appendChild(socialsWrap);
         }
 
       } else {
-        // --- COLUMNS 2, 3 & 4: Stacking Navigation Target Iterators ---
         colWrap.className = 'footer-nav-col';
         
         const titleText = headingsData[i] ? headingsData[i].textContent.trim() : '';
@@ -92,19 +93,21 @@ export default function decorate(block) {
         const linksList = document.createElement('ul');
         linksList.className = 'footer-links';
 
-        const linkParagraphs = colCell.querySelectorAll('p');
+        const linkParagraphs = [...colCell.querySelectorAll('p')];
         linkParagraphs.forEach((p) => {
-          if (!p.textContent.trim()) return; // Skip spacing row fragments
+          const text = p.textContent.trim();
+          if (!text) return;
+
           const listItem = document.createElement('li');
           const anchor = document.createElement('a');
-          
           const existingAnchor = p.querySelector('a');
+          
           if (existingAnchor) {
             anchor.href = existingAnchor.href;
             anchor.textContent = existingAnchor.textContent;
           } else {
-            anchor.href = `#${p.textContent.toLowerCase().replace(/\s+/g, '-')}`;
-            anchor.textContent = p.textContent.trim();
+            anchor.href = `#${text.toLowerCase().replace(/\s+/g, '-')}`;
+            anchor.textContent = text;
           }
 
           listItem.appendChild(anchor);
@@ -117,20 +120,22 @@ export default function decorate(block) {
       innerContainer.appendChild(colWrap);
     });
   }
-  block.appendChild(innerContainer);
+  fragment.appendChild(innerContainer);
 
-  // 3. Build the Bottom Strip (Copyright & Legal Elements Grouping)
-  if (copyrightRow) {
+  // 3. Build Bottom Strip
+  if (copyrightRow && copyrightRow.children[1]) {
     const bottomBar = document.createElement('div');
     bottomBar.className = 'footer-bottom';
 
     const copyDiv = document.createElement('div');
     copyDiv.className = 'footer-copy';
+    copyDiv.textContent = copyrightRow.children[1].textContent.split('(')[0].trim();
     
-    const rawText = copyrightRow.children[1] ? copyrightRow.children[1].textContent : '';
-    copyDiv.textContent = rawText.split('(')[0].trim(); 
     bottomBar.appendChild(copyDiv);
-
-    block.appendChild(bottomBar);
+    fragment.appendChild(bottomBar);
   }
+
+  // Clear out the block content and commit the virtual fragment in one single step
+  block.innerHTML = '';
+  block.appendChild(fragment);
 }

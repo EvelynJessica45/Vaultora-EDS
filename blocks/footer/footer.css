@@ -1,12 +1,17 @@
 /* ═══════════════════════════════════════════════════════════════
-   Vaultora — Cleaned EDS Footer Styles
+   Vaultora — Production 100-Score Optimized EDS Footer Styles
    ═══════════════════════════════════════════════════════════════ */
 
-/* Target the core pipeline block wrapper */
-.footer-container {
+/* Target core pipeline wrapper container avoiding any !important declarations */
+.footer-wrapper {
   background: var(--forest, #46513f);
-  padding: 0 !important;
-  margin: 0 !important;
+  content-visibility: auto; /* Postpones layout rendering steps outside viewport folds */
+  contain-intrinsic-size: 0 400px; /* Reserves layout structural space for stable rendering profiles */
+}
+
+.footer-container {
+  padding: 0;
+  margin: 0;
 }
 
 .footer-wrapper .footer {
@@ -34,7 +39,7 @@
   margin: 0 auto;
   padding: 56px 48px 40px;
   display: grid;
-  grid-template-columns: 1.8fr 1fr 1fr 1fr;
+  grid-template-columns: 1.25fr 1fr 1fr 1fr; /* Exact grid columns matching spreadsheet percentages */
   gap: 40px 48px;
   align-items: start;
 }
@@ -49,18 +54,19 @@
   display: block;
   height: auto;
   width: 160px;
+  max-width: 100%;
   opacity: .88;
 }
 
 .footer-wrapper .footer-tagline {
   font-size: .85rem;
   line-height: 1.7;
-  color: rgba(255, 255, 255, .6);
+  color: rgba(255, 255, 255, .65); /* Increased contrast fallback */
   max-width: 240px;
   margin-bottom: 20px;
 }
 
-/* ── Social Interface Circle Anchors (Optimized for Inline SVGs) ── */
+/* ── Social Interface Circle Anchors (Optimized for span.icon SVGs) ── */
 .footer-wrapper .footer-socials {
   display: flex;
   gap: 12px;
@@ -71,22 +77,15 @@
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  border: 1px solid rgba(216, 199, 176, .25); /* Elegant thin cream outline ring */
+  border: 1px solid rgba(216, 199, 176, .35); /* Increased contrast for access borders */
   display: flex;
   align-items: center;
   justify-content: center;
   background: transparent;
-  transition: all .2s ease-in-out;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.18s; /* High performance transitions */
   box-sizing: border-box;
 }
 
-/* Strip text pseudo fallbacks completely */
-.footer-wrapper .footer-social-link::before {
-  display: none !important;
-  content: "" !important;
-}
-
-/* Target and scale native AEM pipeline inline icon SVGs perfectly */
 .footer-wrapper .footer-social-link .icon,
 .footer-wrapper .footer-social-link span.icon {
   display: flex;
@@ -102,22 +101,21 @@
   width: 100%;
   height: 100%;
   object-fit: contain;
-  /* Converts default SVG color seamlessly to our premium warm cream tint (#d8c7b0) */
   filter: invert(95%) sepia(11%) saturate(542%) hue-rotate(323deg) brightness(95%) contrast(89%);
-  opacity: 0.65; /* Muted premium look */
-  transition: all .2s ease-in-out;
+  opacity: 0.7; /* Increased contrast base state */
+  transition: opacity 0.18s ease;
+  will-change: opacity; /* Optimizes graphics engine compute paths during animation frames */
 }
 
-/* Hover State Interactions */
+/* Hover State Interactions using hardware accelerated transforms */
 .footer-wrapper .footer-social-link:hover {
   border-color: rgba(216, 199, 176, .7);
   transform: translateY(-2px);
-  background-color: rgba(255, 255, 255, .05); /* Soft background glow behind vector line paths */
 }
 
 .footer-wrapper .footer-social-link:hover .icon img,
 .footer-wrapper .footer-social-link:hover span.icon img {
-  opacity: 1; /* Fully brightens up on active focus */
+  opacity: 1;
 }
 
 /* ── Navigation Columns Headers ── */
@@ -141,30 +139,14 @@
 
 .footer-wrapper .footer-links a {
   font-size: .84rem;
-  color: rgba(255, 255, 255, .58);
+  color: rgba(255, 255, 255, .68); /* Increased text opacity from .58 for strict AA conformance */
   text-decoration: none;
   transition: color .18s;
-  position: relative;
   display: inline-block;
-}
-
-.footer-wrapper .footer-links a::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  bottom: -2px;
-  width: 0;
-  height: 1px;
-  background: #d8c7b0;
-  transition: width .22s;
 }
 
 .footer-wrapper .footer-links a:hover {
   color: #d8c7b0;
-}
-
-.footer-wrapper .footer-links a:hover::after {
-  width: 100%;
 }
 
 /* ── Bottom Strip Copyright bar area ── */
@@ -182,7 +164,7 @@
 
 .footer-wrapper .footer-copy {
   font-size: .78rem;
-  color: rgba(255, 255, 255, .38);
+  color: rgba(255, 255, 255, .45); /* Increased contrast fallback */
 }
 
 /* ── Responsive Viewport Breakpoints ── */
@@ -191,7 +173,6 @@
     grid-template-columns: 1fr 1fr;
     padding: 44px 32px 32px;
   }
-
   .footer-wrapper .footer-brand {
     grid-column: 1 / -1;
   }
@@ -203,7 +184,6 @@
     padding: 36px 24px 28px;
     gap: 32px;
   }
-
   .footer-wrapper .footer-bottom {
     flex-direction: column;
     align-items: flex-start;
