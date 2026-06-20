@@ -32,15 +32,17 @@ export default function decorate(block) {
       if (i === 1) {
         colWrap.className = 'footer-brand';
         
-        // Fix image delivery: Optimize image rendering with specific edge-width limits
+        // Fix image delivery & LCP discovery mechanics
         const rawImg = colCell.querySelector('picture img');
         if (rawImg) {
           const optimizedPicture = createOptimizedPicture(rawImg.src, rawImg.alt || 'Vaultora Logo', false, [{ width: '250' }]);
           const optimizedImg = optimizedPicture.querySelector('img');
           if (optimizedImg) {
             optimizedImg.setAttribute('width', '160');
-            optimizedImg.setAttribute('height', '108'); // Explicit dimensions to avoid any micro-CLS calculations
-            optimizedImg.setAttribute('loading', 'lazy');
+            optimizedImg.setAttribute('height', '108'); 
+            // Crucial performance optimization:
+            optimizedImg.setAttribute('loading', 'eager');
+            optimizedImg.setAttribute('fetchpriority', 'high');
           }
           const logoWrap = document.createElement('div');
           logoWrap.className = 'footer-logo-wrap';
@@ -71,7 +73,7 @@ export default function decorate(block) {
             const networkName = networks[index] || 'social';
             const anchor = document.createElement('a');
             anchor.href = `#${networkName}`;
-            anchor.ariaLabel = `Visit our ${networkName} page`; // Fixes screen-reader accessible name audit
+            anchor.ariaLabel = `Visit our ${networkName} page`; // Strict accessible name compliance
             anchor.className = `footer-social-link link-${networkName}`;
             anchor.appendChild(iconSpan);
             socialsWrap.appendChild(anchor);
