@@ -60,7 +60,7 @@
   margin-bottom: 20px;
 }
 
-/* ── Social interface block styling elements ── */
+/* ── Social Interface Circle Anchors (Matches image_b160a9.png Exact Specs) ── */
 .footer-wrapper .footer-socials {
   display: flex;
   gap: 12px;
@@ -68,10 +68,10 @@
 }
 
 .footer-wrapper .footer-social-link {
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, .25);
+  border: 1px solid rgba(216, 199, 176, .25); /* Subtle brand cream circle border outline */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -80,34 +80,41 @@
   box-sizing: border-box;
 }
 
-/* Completely remove the old text fallback labels (IG, LN, X) */
+/* Clear out the previous text fallback tokens entirely */
 .footer-wrapper .footer-social-link::before {
   display: none !important;
   content: "" !important;
 }
 
-/* Target the inline SVG icon images directly and apply monochrome cream filter styling */
-.footer-wrapper .footer-social-link img,
-.footer-wrapper .footer-social-link .icon img {
+/* Target and center the pipeline picture node elements inside the circles */
+.footer-wrapper .footer-social-link picture {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;          /* Perfectly balanced, centered asset sizing bounds */
+  height: 20px;
+}
+
+/* Style the inner image vectors cleanly to look uniform */
+.footer-wrapper .footer-social-link picture img {
   display: block;
-  width: 18px;           /* Exact structural width for the inner line art path */
-  height: 18px;          /* Exact height matching the mockup perfectly */
-  object-fit: contain;   /* Safeguards vector path aspect-ratio constraints */
-  filter: invert(95%) sepia(11%) saturate(542%) hue-rotate(323deg) brightness(95%) contrast(89%); /* Dynamically applies the brand cream color (#d8c7b0) */
-  opacity: 0.7;          /* Soft, elegant luxury tint */
+  width: 100%;
+  height: 100%;
+  object-fit: contain;  /* Restricts bounds from stretching or distortion */
+  filter: invert(95%) sepia(11%) saturate(542%) hue-rotate(323deg) brightness(95%) contrast(89%); /* Inverts asset art perfectly to brand cream (#d8c7b0) */
+  opacity: 0.65;         /* Elegant luxury muted look */
   transition: all .2s ease-in-out;
 }
 
-/* Hover style to draw focus to active social items */
+/* Hover active interaction states */
 .footer-wrapper .footer-social-link:hover {
-  border-color: rgba(216, 199, 176, .8);
+  border-color: rgba(216, 199, 176, .7);
   transform: translateY(-2px);
   background-color: rgba(255, 255, 255, .05);
 }
 
-.footer-wrapper .footer-social-link:hover img,
-.footer-wrapper .footer-social-link:hover .icon img {
-  opacity: 1;            /* Brings the transparent vector path to full premium brightness on hover */
+.footer-wrapper .footer-social-link:hover picture img {
+  opacity: 1;           /* Fully brightens icon stroke lines on user hover focus */
 }
 
 /* ── Navigation Columns Headers ── */
