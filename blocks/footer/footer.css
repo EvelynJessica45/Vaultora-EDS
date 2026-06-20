@@ -63,35 +63,47 @@
 /* ── Social interface block styling elements ── */
 .footer-wrapper .footer-socials {
   display: flex;
-  gap: 10px;
+  gap: 12px;
+  margin-top: 16px;
 }
 
 .footer-wrapper .footer-social-link {
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, .2);
+  border: 1px solid rgba(255, 255, 255, .25);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: rgba(255, 255, 255, .65);
-  text-decoration: none;
-  position: relative;
-  transition: all .2s;
+  overflow: hidden; /* Clips the image cleanly into a circle */
+  background: transparent;
+  transition: all .2s ease-in-out;
+  box-sizing: border-box;
 }
 
+/* Completely remove the old text fallback labels (IG, LN, X) */
 .footer-wrapper .footer-social-link::before {
-  font-size: 0.85rem;
-  text-transform: capitalize;
+  display: none !important;
+  content: "" !important;
 }
-.footer-wrapper .footer-social-link.link-instagram::before { content: 'IG'; }
-.footer-wrapper .footer-social-link.link-linkedin::before { content: 'LN'; }
-.footer-wrapper .footer-social-link.link-x::before { content: 'X'; }
 
+/* Ensure the document-injected icons scale down beautifully to match the design mockups */
+.footer-wrapper .footer-social-link picture,
+.footer-wrapper .footer-social-link img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* Keeps the full logo visible inside the circle */
+  padding: 6px;        /* Adds safe breathing room around the brand icons */
+  box-sizing: border-box;
+}
+
+/* Hover style to draw focus to active social items */
 .footer-wrapper .footer-social-link:hover {
-  border-color: rgba(216, 199, 176, .6);
-  color: #d8c7b0;
-  background: rgba(255, 255, 255, .06);
+  border-color: rgba(216, 199, 176, .8);
+  transform: translateY(-2px);
+  background-color: rgba(255, 255, 255, .08);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 /* ── Navigation Columns Headers ── */
@@ -184,39 +196,4 @@
     padding: 20px 24px 28px;
     gap: 10px;
   }
-}
-/* Style properties mapping for the new image-based social links */
-.footer-wrapper .footer-socials {
-  display: flex;
-  gap: 12px;
-  margin-top: 16px;
-}
-
-.footer-wrapper .footer-social-link {
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, .2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden; /* Clips the image cleanly into a circle */
-  background: transparent;
-  transition: all .2s ease-in-out;
-}
-
-/* Ensure the document-injected icons scale down beautifully to match the design mockups */
-.footer-wrapper .footer-social-link picture,
-.footer-wrapper .footer-social-link img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover; /* Centers the graphic elements neatly inside */
-}
-
-/* Hover style to draw focus to active social items */
-.footer-wrapper .footer-social-link:hover {
-  border-color: rgba(216, 199, 176, .8);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
