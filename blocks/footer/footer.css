@@ -87,14 +87,14 @@
   content: "" !important;
 }
 
-/* Ensure the document-injected icons scale down beautifully to match the design mockups */
+/* Consolidated: Ensure the document-injected icons fill the circles properly */
 .footer-wrapper .footer-social-link picture,
 .footer-wrapper .footer-social-link img {
   display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: contain; /* Keeps the full logo visible inside the circle */
-  padding: 6px;        /* Adds safe breathing room around the brand icons */
+  width: 115%;           /* Scales the asset slightly up to fill out the circle */
+  height: 115%;
+  object-fit: cover;     /* Colorful background fills up cleanly to the borders */
+  padding: 0;            /* Removes the extra inner shrinking gap */
   box-sizing: border-box;
 }
 
