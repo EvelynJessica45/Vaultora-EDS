@@ -60,7 +60,7 @@
   margin-bottom: 20px;
 }
 
-/* ── Social Interface Circle Anchors ── */
+/* ── Social Interface Circle Anchors (Optimized for Inline SVGs) ── */
 .footer-wrapper .footer-socials {
   display: flex;
   gap: 12px;
@@ -71,7 +71,7 @@
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  border: 1px solid rgba(216, 199, 176, .25); /* Subtle brand cream circle border outline */
+  border: 1px solid rgba(216, 199, 176, .25); /* Elegant thin cream outline ring */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -80,66 +80,44 @@
   box-sizing: border-box;
 }
 
-/* Clear out the previous text fallback tokens entirely */
+/* Strip text pseudo fallbacks completely */
 .footer-wrapper .footer-social-link::before {
   display: none !important;
   content: "" !important;
 }
 
-/* Target the wrapper element */
-.footer-wrapper .footer-social-link picture {
+/* Target and scale native AEM pipeline inline icon SVGs perfectly */
+.footer-wrapper .footer-social-link .icon,
+.footer-wrapper .footer-social-link span.icon {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 22px;          
-  height: 22px;
+  width: 20px;
+  height: 20px;
 }
 
-/* ── THE WEBKIT MASK FIX: Turns any image background transparent and keeps only the icon path ── */
-.footer-wrapper .footer-social-link picture img {
+.footer-wrapper .footer-social-link .icon img,
+.footer-wrapper .footer-social-link span.icon img {
   display: block;
   width: 100%;
   height: 100%;
   object-fit: contain;
-
-  /* Use the image itself as a transparency stencil mask */
-  -webkit-mask-image: var(--url);
-  mask-image: var(--url);
-  -webkit-mask-size: contain;
-  mask-size: contain;
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-
-  /* Force the masked shape to paint purely in the custom cream brand color */
-  background-color: #d8c7b0; 
-  
-  /* Reset the previous filter to let the mask background color work */
-  filter: none !important; 
-  
-  opacity: 0.65; /* Matches the soft cream look in your expected design */
+  /* Converts default SVG color seamlessly to our premium warm cream tint (#d8c7b0) */
+  filter: invert(95%) sepia(11%) saturate(542%) hue-rotate(323deg) brightness(95%) contrast(89%);
+  opacity: 0.65; /* Muted premium look */
   transition: all .2s ease-in-out;
 }
 
-/* Hover active interaction states */
+/* Hover State Interactions */
 .footer-wrapper .footer-social-link:hover {
   border-color: rgba(216, 199, 176, .7);
   transform: translateY(-2px);
-  background-color: rgba(255, 255, 255, .05);
+  background-color: rgba(255, 255, 255, .05); /* Soft background glow behind vector line paths */
 }
 
-.footer-wrapper .footer-social-link:hover picture img {
-  opacity: 1; /* Fully brightens icon stroke lines on user hover focus */
-  background-color: #eae3d2; /* Slightly pops the cream color on hover */
-}
-/* Hover active interaction states */
-.footer-wrapper .footer-social-link:hover {
-  border-color: rgba(216, 199, 176, .7);
-  transform: translateY(-2px);
-  background-color: rgba(255, 255, 255, .05);
-}
-
-.footer-wrapper .footer-social-link:hover picture img {
-  opacity: 1;           /* Fully brightens icon stroke lines on user hover focus */
+.footer-wrapper .footer-social-link:hover .icon img,
+.footer-wrapper .footer-social-link:hover span.icon img {
+  opacity: 1; /* Fully brightens up on active focus */
 }
 
 /* ── Navigation Columns Headers ── */
@@ -232,4 +210,4 @@
     padding: 20px 24px 28px;
     gap: 10px;
   }
-}
+} 
