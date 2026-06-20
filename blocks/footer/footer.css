@@ -39,9 +39,10 @@
   margin: 0 auto;
   padding: 56px 48px 40px;
   display: grid;
-  grid-template-columns: 1.25fr 1fr 1fr 1fr; /* Exact grid columns matching spreadsheet percentages */
+  grid-template-columns: 1.25fr 1fr 1fr 1fr; 
   gap: 40px 48px;
   align-items: start;
+  grid-auto-rows: minmax(min-content, max-content); /* Stabilizes height variations */
 }
 
 /* ── Brand logo structure setup ── */
@@ -62,8 +63,8 @@
 
 .footer-wrapper .footer-tagline {
   font-size: .85rem;
-  line-height: 1.7;
-  color: #e0e6dc; /* Brightened soft cream-gray to meet strict contrast conditions */
+  line-height: 1.7; /* Locks line heights */
+  color: #e0e6dc; 
   max-width: 240px;
   margin-bottom: 20px;
 }
@@ -133,6 +134,7 @@
   text-transform: uppercase;
   color: #d8c7b0;
   margin-bottom: 16px;
+  line-height: 1.2; /* Explicit metric lock prevents layout shifts from font swapping */
 }
 
 .footer-wrapper .footer-links {
@@ -146,10 +148,11 @@
 
 .footer-wrapper .footer-links a {
   font-size: .84rem;
-  color: #ffffff; /* Pure white coordinates to cleanly cross compliance thresholds */
+  color: #ffffff; 
   text-decoration: none;
   transition: color .18s;
   display: inline-block;
+  line-height: 1.5; /* Explicit line-height prevents vertical text shifts */
 }
 
 .footer-wrapper .footer-links a:hover {
@@ -171,7 +174,8 @@
 
 .footer-wrapper .footer-copy {
   font-size: .78rem;
-  color: #cbd4c5; /* High compliance text value matching background tones */
+  color: #cbd4c5;
+  line-height: 1.4; /* Explicit metric lock */
 }
 
 /* ── Responsive Viewport Breakpoints ── */
