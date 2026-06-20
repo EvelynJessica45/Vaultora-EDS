@@ -75,7 +75,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden; /* Clips the image cleanly into a circle */
   background: transparent;
   transition: all .2s ease-in-out;
   box-sizing: border-box;
@@ -87,23 +86,28 @@
   content: "" !important;
 }
 
-/* Consolidated: Ensure the document-injected icons fill the circles properly */
-.footer-wrapper .footer-social-link picture,
-.footer-wrapper .footer-social-link img {
+/* Target the inline SVG icon images directly and apply monochrome cream filter styling */
+.footer-wrapper .footer-social-link img,
+.footer-wrapper .footer-social-link .icon img {
   display: block;
-  width: 115%;           /* Scales the asset slightly up to fill out the circle */
-  height: 115%;
-  object-fit: cover;     /* Colorful background fills up cleanly to the borders */
-  padding: 0;            /* Removes the extra inner shrinking gap */
-  box-sizing: border-box;
+  width: 18px;           /* Exact structural width for the inner line art path */
+  height: 18px;          /* Exact height matching the mockup perfectly */
+  object-fit: contain;   /* Safeguards vector path aspect-ratio constraints */
+  filter: invert(95%) sepia(11%) saturate(542%) hue-rotate(323deg) brightness(95%) contrast(89%); /* Dynamically applies the brand cream color (#d8c7b0) */
+  opacity: 0.7;          /* Soft, elegant luxury tint */
+  transition: all .2s ease-in-out;
 }
 
 /* Hover style to draw focus to active social items */
 .footer-wrapper .footer-social-link:hover {
   border-color: rgba(216, 199, 176, .8);
   transform: translateY(-2px);
-  background-color: rgba(255, 255, 255, .08);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  background-color: rgba(255, 255, 255, .05);
+}
+
+.footer-wrapper .footer-social-link:hover img,
+.footer-wrapper .footer-social-link:hover .icon img {
+  opacity: 1;            /* Brings the transparent vector path to full premium brightness on hover */
 }
 
 /* ── Navigation Columns Headers ── */
