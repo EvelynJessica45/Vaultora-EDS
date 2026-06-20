@@ -1,6 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap');
+/* ═══════════════════════════════════════════════════════════════
+   Vaultora — Production 100-Score Optimized Responsive Header Styles
+   ═══════════════════════════════════════════════════════════════ */
 
-/* Main Wrapper Configuration */
 .header {
   box-sizing: border-box;
   font-family: 'DM Sans', sans-serif;
@@ -18,12 +19,10 @@
   padding: 0 32px;
 }
 
-/* Hide metadata/authoring helper row */
 .header > div:nth-child(1) {
   display: none !important;
 }
 
-/* Row containing actual parsed markup elements */
 .header .header-row-layout {
   width: 100%;
   display: flex;
@@ -31,21 +30,22 @@
   justify-content: space-between;
 }
 
-/* Component Slots styling */
 .header-logo-wrapper {
   display: flex;
   align-items: center;
   flex-shrink: 0;
+  width: 140px;
+  height: 57px;
 }
 
 .header-logo-wrapper picture,
 .header-logo-wrapper img {
-  height: 65px;
-  width: auto;
+  height: 57px;
+  width: 140px;
   display: block;
+  object-fit: contain;
 }
 
-/* Middle Navigation Links Row */
 .header-links-container {
   display: flex;
   align-items: center;
@@ -85,7 +85,6 @@
   width: 100%;
 }
 
-/* Right side action elements container */
 .header-actions-container {
   display: flex;
   align-items: center;
@@ -101,7 +100,6 @@
   flex-shrink: 0;
 }
 
-/* Icon Buttons Setup */
 .header-icon-btn {
   display: inline-flex;
   align-items: center;
@@ -118,7 +116,6 @@
   color: #46513f;
 }
 
-/* Premium Badge Chip for Role Identification */
 .nav-role-pill {
   display: inline-flex;
   align-items: center;
@@ -130,7 +127,6 @@
   padding: 8px 18px;
   border-radius: 50px;
   white-space: nowrap;
-  pointer-events: none;
 }
 
 .nav-role-pill.role-buyer {
@@ -151,7 +147,6 @@
   border: 1px solid rgba(206, 191, 168, 0.6);
 }
 
-/* Profile User Pill */
 .user-chip-premium {
   display: flex;
   align-items: center;
@@ -182,7 +177,6 @@
   font-size: 14px;
 }
 
-/* Functional Authentication Callouts */
 .btn-logout-premium {
   background: transparent;
   border: none;
@@ -191,11 +185,6 @@
   font-size: 0.95rem;
   cursor: pointer;
   padding: 8px 12px;
-  transition: opacity 0.2s ease;
-}
-
-.btn-logout-premium:hover {
-  opacity: 0.7;
 }
 
 .btn-signup-premium {
@@ -207,21 +196,92 @@
   background: #46513f;
   color: #ffffff;
   font-size: 0.88rem;
-  transition: transform 0.2s ease, background 0.2s ease;
+  transition: background 0.2s ease;
   white-space: nowrap;
 }
 
-.btn-signup-premium:hover {
-  transform: translateY(-1px);
-  background: #394234;
+/* 📱 ── RESPONSIVE MOBILE NAVIGATION FLYOUT OVERLAY ENGINE ── */
+
+.header-burger-trigger {
+  display: none;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 24px;
+  height: 18px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  z-index: 1010;
 }
 
-/* Responsive Adjustments for tablets/smaller viewports */
-@media (max-width: 1024px) {
+.header-burger-trigger span {
+  width: 100%;
+  height: 2px;
+  background-color: #333333;
+  transition: transform 0.25s ease, opacity 0.2s ease;
+}
+
+@media (max-width: 920px) {
+  .header-burger-trigger {
+    display: flex;
+  }
+
+  /* Structural Flyout Canvas Hidden State */
+  .header .header-links-container {
+    position: fixed;
+    top: 75px;
+    left: 0;
+    width: 100%;
+    height: calc(100vh - 75px);
+    background: #ffffff;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: 40px 32px;
+    gap: 28px;
+    transform: translateX(100%);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 1005;
+    box-sizing: border-box;
+    box-shadow: inset 0 8px 12px rgba(0,0,0,0.02);
+  }
+
+  .header.menu-expanded .header-links-container {
+    transform: translateX(0);
+  }
+
+  .header-links-container a {
+    font-size: 1.25rem;
+    width: 100%;
+    text-align: center;
+    padding: 8px 0;
+  }
+
+  /* Animate Burger Lines to Cross State */
+  .header-burger-trigger.active span:nth-child(1) {
+    transform: translateY(8px) rotate(45deg);
+  }
+  .header-burger-trigger.active span:nth-child(2) {
+    opacity: 0;
+  }
+  .header-burger-trigger.active span:nth-child(3) {
+    transform: translateY(-8px) rotate(-45deg);
+  }
+
+  .header-profile-container {
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 540px) {
   .header {
     padding: 0 16px;
   }
-  .header-links-container {
-    gap: 18px;
+  .nav-role-pill {
+    display: none; /* Hide the internal text-heavy state on small screens to conserve spatial boundaries */
+  }
+  .btn-signup-premium {
+    padding: 10px 18px;
+    font-size: 0.8rem;
   }
 }
