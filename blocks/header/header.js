@@ -1,79 +1,206 @@
-export default function decorate(block) {
-  console.log('--- VAULTORA BLOCK DECORATION START ---');
-  block.classList.add('vaultora-header');
+(function () {
+  const SESSION_KEY = 'Vaultora_session';
 
-  // Find the row that actually has content (the one containing the logo/picture element)
-  const rows = Array.from(block.querySelectorAll(':scope > div'));
-  const contentRow = rows.find(row => row.querySelector('picture, p'));
+  // Safely grab local session state
+  const getSession = () => {
+    try {
+      const raw = localStorage.getItem(SESSION_KEY);
+      if (!raw) return null;
+      const s = JSON.parse(raw);
+      return s && (s.email || s.name) ? s : null;
+    } catch {
+      return null;
+    }
+  };
 
-  if (!contentRow) {
-    console.warn('Vaultora Header: Content row not found yet.');
-    return;
+  // Safely clear local session state
+  const clearSession = () => {
+    try {
+      localStorage.removeItem(SESSION_KEY);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  // SVG Icon Templates
+  const heartIconSVG = `
+    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+    </svg>`;
+
+  const bagIconSVG = `
+    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/>
+      <path d="M3 6h18"/>
+      <path d="M16 10a4 4 0 0 1-8 0"/>
+    </svg>`;
+
+  function wireStaticNav() {
+    const links = document.querySelectorAll('.header-links-container a[data-nav], .header-icon-btn[data-nav]');
+    const requireAuth = (e, targetPage) => {
+      e.preventDefault();
+      const s = getSession();
+      if (s) {
+        window.location.href = targetPage;
+      } else {
+        window.location.href = 'register.html';
+      }
+    };
+
+    links.forEach(link => {
+      const navTarget = link.getAttribute('data-nav').toLowerCase().replace(/\s+/g, '');
+      if (navTarget === 'products') {
+        link.onclick = null;
+      } else if (navTarget === 'home') {
+        link.onclick = (e) => {
+          e.preventDefault();
+          window.location.href = 'index.html';
+        };
+      } else if (navTarget === 'about') {
+        link.onclick = (e) => {
+          e.preventDefault();
+          window.location.href = 'about.html';
+        };
+      } else if (navTarget === 'mybids') {
+        link.onclick = (e) => requireAuth(e, 'mybids.html');
+      } else if (navTarget === 'favourites') {
+        link.onclick = (e) => requireAuth(e, 'myfavourites.html');
+      } else if (navTarget === 'mylisting' || navTarget === 'mylistings') {
+        link.onclick = (e) => requireAuth(e, 'mylisted.html');
+      }
+    });
   }
 
-  // Extract columns from the correct row
-  const cols = Array.from(contentRow.querySelectorAll(':scope > div'));
-  if (!cols || cols.length === 0) return;
-
-  // Map structural styling classes based on layout positions safely
-  if (cols[0]) cols[0].classList.add('header-logo');
-  if (cols[1]) cols[1].classList.add('header-nav');
-  if (cols[2]) cols[2].classList.add('header-actions');
-  if (cols[3]) cols[3].classList.add('header-extra-cell');
-
-  // Hide the initial empty block label row from view if present
-  rows.forEach(row => {
-    if (row !== contentRow) {
-      row.style.display = 'none';
+  function buildRoleBadgeHTML(roleString) {
+    const role = roleString ? roleString.toLowerCase() : 'buyer';
+    if (role === 'buyer') {
+      return `<span class="nav-role-pill role-buyer">Buy Now</span>`;
+    } else if (role === 'seller') {
+      return `<span class="nav-role-pill role-seller">Sell Now</span>`;
+    } else if (role === 'both') {
+      return `<span class="nav-role-pill role-both">Buy & Sell Now</span>`;
     }
-  });
+    return '';
+  }
 
-  const navTools = cols[2];
-  if (navTools) {
-    let session = null;
-    try {
-      session = JSON.parse(localStorage.getItem('Vaultora_session'));
-    } catch (e) {
-      console.error('Session retrieval fault', e);
+  function initHeaderBlock() {
+    const headerBlock = document.querySelector('.header');
+    if (!headerBlock) return;
+
+    // Find the secondary layout row containing the actual layout content
+    const rows = headerBlock.querySelectorAll(':scope > div');
+    if (rows.length < 2) return;
+    const contentRow = rows[1];
+    contentRow.classList.add('header-row-layout');
+
+    const cells = contentRow.querySelectorAll(':scope > div');
+    if (cells.length < 4) return;
+
+    const logoCell = cells[0];
+    const linksCell = cells[1];
+    const actionsCell = cells[2];
+    const profileCell = cells[3];
+
+    logoCell.classList.add('header-logo-wrapper');
+    linksCell.classList.add('header-links-container');
+    actionsCell.classList.add('header-actions-container');
+    profileCell.classList.add('header-profile-container');
+
+    // 1. Transform raw paragraphs from AEM table to standard links
+    const linkParagraphs = linksCell.querySelectorAll('p');
+    let linksHTML = '';
+    linkParagraphs.forEach(p => {
+      const cleanText = p.textContent.replace('•', '').trim();
+      linksHTML += `<a href="#" data-nav="${cleanText}">${cleanText}</a>`;
+    });
+    linksCell.innerHTML = linksHTML;
+
+    // Active Tab Logic
+    const currentPath = window.location.pathname.split('/').pop();
+    const mapPathToNav = {
+      'index.html': 'Home',
+      '': 'Home',
+      'about.html': 'About',
+      'dashboard.html': 'Products',
+      'mybids.html': 'My Bids',
+      'mylisted.html': 'My Listing'
+    };
+    const activeNavKey = mapPathToNav[currentPath] || '';
+    if (activeNavKey) {
+      linksCell.querySelector(`a[data-nav="${activeNavKey}"]`)?.classList.add('active');
     }
 
-    const ctaItem = navTools.querySelector('p');
-    let profileCol = navTools.querySelector('.header-profile');
-    if (!profileCol) {
-      profileCol = document.createElement('div');
-      profileCol.classList.add('header-profile');
-      navTools.appendChild(profileCol);
-    }
+    // 2. Handle Session logic & Render Actions/Profile Slots
+    const session = getSession();
+
+    // Context-aware Visibility Filters
+    const userRole = session && session.role ? session.role.toLowerCase() : 'buyer';
+    const bidLink = linksCell.querySelector('a[data-nav="My Bids"]');
+    const listingLink = linksCell.querySelector('a[data-nav="My Listing"]');
 
     if (!session) {
-      if (ctaItem) ctaItem.style.display = 'none';
-      profileCol.innerHTML = `<a href="/register" class="get-started-btn">Get Started for Free</a>`;
+      if (bidLink) bidLink.style.display = 'none';
+      if (listingLink) listingLink.style.display = 'none';
     } else {
-      if (ctaItem) ctaItem.style.display = 'block';
-      const ctaAnchor = ctaItem.querySelector('a') || ctaItem;
-
-      if (session.role && ctaAnchor) {
-        const userRole = String(session.role).toLowerCase();
-        if (userRole === 'buyer') ctaAnchor.textContent = 'BUY NOW';
-        else if (userRole === 'seller') ctaAnchor.textContent = 'SELL NOW';
-        else if (userRole === 'both') ctaAnchor.textContent = 'BUY & SELL NOW';
+      if (userRole === 'buyer') {
+        if (bidLink) bidLink.style.display = '';
+        if (listingLink) listingLink.style.display = 'none';
+      } else if (userRole === 'seller') {
+        if (bidLink) bidLink.style.display = 'none';
+        if (listingLink) listingLink.style.display = '';
+      } else {
+        if (bidLink) bidLink.style.display = '';
+        if (listingLink) listingLink.style.display = '';
       }
+    }
 
-      const displayName = session.name || 'User';
-      const initial = displayName.charAt(0).toUpperCase();
+    // Build functional UI elements replacing placeholders
+    const heartLink = `<a href="myfavourites.html" class="header-icon-btn" data-nav="favourites" title="Favourites">${heartIconSVG}</a>`;
+    const bagLink = `<a href="orders.html" class="header-icon-btn" data-nav="orders" title="Orders">${bagIconSVG}</a>`;
 
-      profileCol.innerHTML = `
-        <div class="user-chip">
-          <div class="user-avatar">${initial}</div>
-          <span class="user-name">${displayName}</span>
-        </div>
-        <button class="logout-btn">Logout</button>
+    if (session) {
+      const displayName = session.name || session.email;
+      const initial = String(displayName).charAt(0).toUpperCase();
+      const roleBadge = buildRoleBadgeHTML(session.role);
+
+      // Render items matching Mock-up design order
+      actionsCell.innerHTML = `${roleBadge} ${heartLink} ${bagLink}`;
+      profileCell.innerHTML = `
+        <a href="profile.html" class="user-chip-premium" title="Go to profile">
+          <div class="user-avatar-premium">${initial}</div>
+          <span>${displayName}</span>
+        </a>
+        <button class="btn-logout-premium" id="headerLogoutBtn">Logout</button>
       `;
 
-      profileCol.querySelector('.logout-btn')?.addEventListener('click', () => {
-        localStorage.removeItem('Vaultora_session');
-        window.location.href = '/login';
-      });
+      const logoutBtn = document.getElementById('headerLogoutBtn');
+      if (logoutBtn) {
+        logoutBtn.onclick = () => {
+          clearSession();
+          setTimeout(() => (window.location.href = 'register.html'), 200);
+        };
+      }
+    } else {
+      actionsCell.innerHTML = `
+        <button class="btn-signup-premium" id="headerSignupBtn">Get Started For Free</button>
+        ${heartLink}
+        ${bagLink}
+      `;
+      profileCell.innerHTML = ''; // Kept clean and empty
+
+      const signupBtn = document.getElementById('headerSignupBtn');
+      if (signupBtn) {
+        signupBtn.onclick = () => (window.location.href = 'register.html');
+      }
     }
+
+    wireStaticNav();
   }
-}
+
+  // Hook directly into DOM lifecycle
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initHeaderBlock);
+  } else {
+    initHeaderBlock();
+  }
+})();

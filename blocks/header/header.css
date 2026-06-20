@@ -1,113 +1,227 @@
-/* Container Layout Setup */
-.header-wrapper,
-.vaultora-header {
-  background: #ffffff !important;
-  border-bottom: 1px solid #eeeeee;
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-  width: 100%;
-  display: block !important;
-}
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap');
 
-.vaultora-header > div {
-  display: flex !important;
-  flex-direction: row !important;
-  align-items: center !important;
-  justify-content: space-between !important;
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 16px 40px;
+/* Main Wrapper Configuration */
+.header {
   box-sizing: border-box;
+  font-family: 'DM Sans', sans-serif;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 75px;
+  background: #ffffff;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  padding: 0 32px;
 }
 
-/* 1. Logo Column */
-.header-logo picture,
-.header-logo img {
-  height: 50px !important;
-  width: auto !important;
-  display: block !important;
-}
-
-/* 2. Middle Navigation Column - Horizontal Alignment */
-.header-nav {
-  display: flex !important;
-  flex-direction: row !important;
-  align-items: center !important;
-  gap: 24px !important;
-}
-
-.header-nav p,
-.header-nav p a {
-  margin: 0 !important;
-  padding: 0 !important;
-  text-decoration: none !important;
-  color: #333333 !important;
-  font-weight: 600 !important;
-  font-size: 15px !important;
-  white-space: nowrap;
-}
-
-/* 3. Right Action Buttons Column */
-.header-actions {
-  display: flex !important;
-  flex-direction: row !important;
-  align-items: center !important;
-  gap: 16px !important;
-}
-
-.header-actions p {
-  margin: 0 !important;
-}
-
-/* Auth Buttons & Profile Chips Styling */
-.get-started-btn {
-  background: #46513f !important;
-  color: #ffffff !important;
-  padding: 10px 20px !important;
-  border-radius: 999px !important;
-  font-weight: 600 !important;
-  text-decoration: none !important;
-  white-space: nowrap;
-  display: inline-block !important;
-}
-
-.user-chip {
-  display: flex !important;
-  align-items: center !important;
-  gap: 10px !important;
-  padding: 6px 14px 6px 6px !important;
-  background: #f3f3f3 !important;
-  border-radius: 999px !important;
-}
-
-.user-avatar {
-  width: 32px !important;
-  height: 32px !important;
-  border-radius: 50% !important;
-  background: #46513f !important;
-  color: #ffffff !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  font-weight: 700 !important;
-}
-
-.user-name {
-  font-weight: 600 !important;
-  color: #333333 !important;
-  font-size: 14px !important;
-}
-
-.logout-btn {
-  background: none !important;
-  border: none !important;
-  color: #666666 !important;
-  font-weight: 600 !important;
-  cursor: pointer !important;
-}
-
-/* Hide trailing template empty elements */
-.header-extra-cell {
+/* Hide metadata/authoring helper row */
+.header > div:nth-child(1) {
   display: none !important;
+}
+
+/* Row containing actual parsed markup elements */
+.header .header-row-layout {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Component Slots styling */
+.header-logo-wrapper {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.header-logo-wrapper picture,
+.header-logo-wrapper img {
+  height: 52px;
+  width: auto;
+  display: block;
+}
+
+/* Middle Navigation Links Row */
+.header-links-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+  flex: 1;
+}
+
+.header-links-container a {
+  text-decoration: none;
+  color: #555555;
+  font-weight: 600;
+  font-size: 0.95rem;
+  position: relative;
+  white-space: nowrap;
+  transition: color 0.2s ease;
+}
+
+.header-links-container a:hover,
+.header-links-container a.active {
+  color: #46513f;
+}
+
+.header-links-container a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -6px;
+  width: 0%;
+  height: 2px;
+  background: #46513f;
+  transition: width 0.3s ease;
+}
+
+.header-links-container a:hover::after,
+.header-links-container a.active::after {
+  width: 100%;
+}
+
+/* Right side action elements container */
+.header-actions-container {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-shrink: 0;
+}
+
+.header-profile-container {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-left: 16px;
+  flex-shrink: 0;
+}
+
+/* Icon Buttons Setup */
+.header-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #333333;
+  padding: 8px;
+  border-radius: 50%;
+  transition: background 0.2s ease, color 0.2s ease;
+  text-decoration: none;
+}
+
+.header-icon-btn:hover {
+  background: rgba(0, 0, 0, 0.05);
+  color: #46513f;
+}
+
+/* Premium Badge Chip for Role Identification */
+.nav-role-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 8px 18px;
+  border-radius: 50px;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.nav-role-pill.role-buyer {
+  background: rgba(107, 117, 82, 0.12);
+  color: #6b7552;
+  border: 1px solid rgba(107, 117, 82, 0.25);
+}
+
+.nav-role-pill.role-seller {
+  background: rgba(56, 66, 51, 0.08);
+  color: #384233;
+  border: 1px solid rgba(56, 66, 51, 0.18);
+}
+
+.nav-role-pill.role-both {
+  background: linear-gradient(135deg, #faf5ef, #f0e6d6);
+  color: #8c785c;
+  border: 1px solid rgba(206, 191, 168, 0.6);
+}
+
+/* Profile User Pill */
+.user-chip-premium {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 18px 6px 6px;
+  border-radius: 999px;
+  text-decoration: none;
+  background: #f4f5f3;
+  transition: background 0.2s ease;
+}
+
+.user-chip-premium span {
+  color: #111111;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.user-avatar-premium {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #3c4537;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+/* Functional Authentication Callouts */
+.btn-logout-premium {
+  background: transparent;
+  border: none;
+  color: #222222;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  padding: 8px 12px;
+  transition: opacity 0.2s ease;
+}
+
+.btn-logout-premium:hover {
+  opacity: 0.7;
+}
+
+.btn-signup-premium {
+  border: none;
+  padding: 12px 24px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-weight: 700;
+  background: #46513f;
+  color: #ffffff;
+  font-size: 0.88rem;
+  transition: transform 0.2s ease, background 0.2s ease;
+  white-space: nowrap;
+}
+
+.btn-signup-premium:hover {
+  transform: translateY(-1px);
+  background: #394234;
+}
+
+/* Responsive Adjustments for tablets/smaller viewports */
+@media (max-width: 1024px) {
+  .header {
+    padding: 0 16px;
+  }
+  .header-links-container {
+    gap: 18px;
+  }
 }
