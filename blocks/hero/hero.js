@@ -25,7 +25,7 @@ export default function decorate(block) {
   const cardTimer = cardParas.find(p => p.querySelector('code') && p.innerText.includes(':'))?.innerText.trim() || '02:14:09';
 
   // FIX: Force description text capture explicitly under the card
-  let descriptionText = 'From vintage collectibles and luxury fashion to electronics and home décor — discover unique products, list your own items, or compete in live auctions.';
+  let descriptionText = 'From vintage collectibles and luxury fashion to electronics and home décor; discover unique products, list your own items, or compete in live auctions.';
   if (row2Col1) {
     const customDesc = row2Col1.querySelector('p')?.innerText.trim();
     if (customDesc && !customDesc.includes('Column 1') && customDesc.length > 20) {
