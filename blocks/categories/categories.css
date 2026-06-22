@@ -1,0 +1,173 @@
+.section:has(.categories-wrapper) {
+  background-color: #fbf9f4 !important; /* Premium cream layout canvas canvas */
+  padding: 5rem 0 !important; /* Elegant vertical spacing down from your fold components */
+}
+
+.categories.block {
+  max-width: 1240px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+/* ── HIGH-END EDITORIAL HEADER FLEX ROW ── */
+.categories-header-flex {
+  display: flex;
+  flex-direction: column; 
+  align-items: center;    
+  justify-content: center;
+  text-align: center;     
+  margin-bottom: 3.5rem;
+  width: 100%;
+  border-bottom: 1px solid #eae7df; 
+  padding-bottom: 1.5rem; 
+}
+
+.categories-header-flex h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.8rem, 3vw, 2.4rem);
+  font-weight: 400; 
+  color: #2e362a !important; /* Premium Forest Green Title */
+  margin: 0 0 0.5rem 0;
+  letter-spacing: -0.01em;
+}
+
+/* Luxury accent italicization style */
+.categories-header-flex h2 span {
+  font-style: italic;
+  font-family: 'Playfair Display', serif;
+  color: #b9925a; /* Premium Luxury Gold */
+}
+
+.categories-browse-all {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #b9925a; 
+  text-transform: uppercase; 
+  letter-spacing: 0.15em;    
+  text-decoration: none !important;
+  transition: all 0.3s ease;
+  margin-top: 0.25rem;
+  cursor: pointer;
+}
+
+.categories-browse-all:hover {
+  color: #2e362a; /* Shifts smoothly to deep forest green on user focus */
+}
+
+.categories-browse-all span {
+  display: inline-block;
+  margin-left: 6px;
+  transition: transform 0.3s ease;
+}
+
+.categories-browse-all:hover span {
+  transform: translateX(4px); 
+}
+
+/* ── EXACT 6-COLUMN GRID TRACK ENGINE ── */
+.categories-circle-track {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr); /* Strict 6 columns horizontally balanced across desktop viewports */
+  justify-items: center;
+  align-items: flex-start;
+  gap: 2.5rem 1.5rem; 
+  width: 100%;
+}
+
+@media (max-width: 1024px) {
+  .categories-circle-track {
+    grid-template-columns: repeat(4, 1fr); /* 4 columns on small laptop displays */
+  }
+}
+
+@media (max-width: 768px) {
+  .categories-circle-track {
+    grid-template-columns: repeat(3, 1fr); /* Balanced 3x3 layout pattern matrices across tablet screens */
+    gap: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .categories-circle-track {
+    grid-template-columns: repeat(2, 1fr); /* 2 items across on space-constrained mobile views */
+  }
+}
+
+/* ── MODULAR CARD ARCHITECTURES ── */
+.category-lumora-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 150px;
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity 0.4s cubic-bezier(0.25, 1, 0.5, 1), 
+              transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* ── INTERACTIVE VISIBILITY MASK UTILITY ── */
+.category-lumora-node.is-hidden {
+  display: none !important; 
+  opacity: 0;
+  transform: scale(0.95);
+}
+
+/* Perfect Circle Crop Frame with thin high-end border ring */
+.category-circle-avatar {
+  width: 130px; /* Optimized sizing profile map rules to match strict 6 column tracking layout limits cleanly */
+  height: 130px;
+  border-radius: 50%;
+  overflow: hidden;
+  background-color: #f6f5f0;
+  margin-bottom: 1.25rem;
+  position: relative;
+  border: 1px solid rgba(42, 41, 38, 0.05);
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s ease;
+}
+
+.category-circle-avatar img,
+.category-circle-avatar picture {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* ── LUXURY LABELS TYPOGRAPHY STACK ── */
+.category-node-labels {
+  text-align: center;
+}
+
+.category-node-labels h3 {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.92rem;
+  font-weight: 500; 
+  color: #2e362a !important; /* Forest Green label string style maps */
+  margin: 0 0 0.35rem 0;
+  letter-spacing: 0.02em;
+  transition: color 0.3s ease;
+}
+
+.category-node-labels p {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 500;
+  text-transform: uppercase;  
+  letter-spacing: 0.08em;
+  color: #b9925a; /* Luxury gold label count accents */
+  margin: 0;
+}
+
+/* ── INTERACTIVE HOVER EFFECTS ── */
+.category-lumora-node:hover .category-circle-avatar {
+  transform: scale(1.04);
+  box-shadow: 0 15px 30px rgba(46, 54, 42, 0.08); /* Sophisticated forest green depth tint shadow element maps */
+}
+
+.category-lumora-node:hover .category-node-labels h3 {
+  color: #b9925a !important; /* Swaps title strings cleanly to luxury gold on hover status */
+}

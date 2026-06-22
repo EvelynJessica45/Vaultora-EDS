@@ -1,0 +1,85 @@
+.marquee-wrapper {
+  background-color: #2e362a !important; /* Premium dark forest green backdrop layer */
+  width: 100%;
+  max-width: 100% !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.marquee.block {
+  padding: 0.2rem 0 !important; /* Your ultra-thin adjustment */
+  display: flex;
+  overflow: hidden;
+  width: 100%;
+  align-items: center;
+  min-height: auto !important; /* Prevents hidden boilerplate constraints from locking height */
+}
+
+.marquee-item {
+  display: inline-flex;
+  align-items: center;
+  line-height: 1 !important;  /* Forces text bounding box to wrap tightly to character lines */
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 0.82rem;
+  color: #fffdf9;
+  letter-spacing: 0.02em;
+}
+
+.marquee-track {
+  display: flex;
+  white-space: nowrap;
+  gap: 2rem;
+  width: max-content;
+  /* INCREASED FROM 25s TO 100s FOR A SMOOTHER, SLOWER CRAWL */
+  animation: scroll-marquee 120s linear infinite; 
+  align-items: center;
+}
+
+/* Pause animation track movement on hover states for accessibility readability */
+.marquee.block:hover .marquee-track {
+  animation-play-state: paused;
+}
+
+/* .marquee-item {
+  display: inline-flex;
+  align-items: center;
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 0.85rem; 
+  color: #fffdf9; 
+  letter-spacing: 0.02em;
+} */
+
+/* Gold Circle Accent Icon */
+.marquee-dot {
+  width: 6px; /* REDUCED: Proportional dot sizing */
+  height: 6px; /* REDUCED */
+  background-color: #ebd0b4; /* Light Gold tint */
+  border-radius: 50%;
+  margin-right: 0.65rem;
+  display: inline-block;
+}
+
+/* Gold Star Accent Icon */
+.marquee-star {
+  color: #ebd0b4;
+  margin-left: 2rem;
+  font-size: 0.75rem; /* REDUCED: Scaled down to prevent clipping height limits */
+}
+
+/* Clean, hardware-accelerated looping scrolling transform keyframes */
+@keyframes scroll-marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-33.3333%);
+  }
+}
+
+.section:has(.marquee-wrapper) {
+  background-color: transparent !important; /* Removes full screen background coloring */
+}
