@@ -1,260 +1,314 @@
-/* ═══════════════════════════════════════════════════════════════
-   Vaultora — Production Premium Cream Header Theme (image_749880)
-   ═══════════════════════════════════════════════════════════════ */
-
-:root {
-  --nav-bg-cream: #f6f5f0;
-  --nav-text-dark: #2a2926;
-  --nav-text-gold: #b9925a;
-  --nav-forest-dark: #2e362a;
-  --nav-btn-hover: #46513f;
-  --nav-circle-bg: #eae7df;
-}
-
-.header {
-  box-sizing: border-box;
-  font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 80px;
-  background: var(--nav-bg-cream);
-  z-index: 1000;
-  display: flex;
-  align-items: center;
-  padding: 0 40px;
-}
-
-.header > div:nth-child(1) {
-  display: none !important;
-}
-
-.header .header-row-layout {
-  width: 100%;
-  max-width: 1340px;
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-/* ── LOGO BRANDING ── */
-.header-logo-wrapper {
-  display: flex;
-  align-items: center;
-  flex-shrink: 0;
-  font-family: 'Playfair Display', serif;
-  font-size: 26px;
-  font-weight: 700;
-  color: var(--nav-text-dark);
-  text-decoration: none;
-  cursor: pointer;
-}
-
-.header-logo-wrapper span {
-  color: var(--nav-text-gold);
-}
-
-/* ── CENTERED LINK ENGINE + SEQUENTIAL DRAW HOVER ANIMATION ── */
-.header-links-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 36px;
-  flex: 1;
-}
-
-.header-links-container a {
-  text-decoration: none;
-  color: var(--nav-text-dark);
-  font-weight: 500;
-  font-size: 0.95rem;
-  white-space: nowrap;
+/* Container section context overrides */
+.section:has(.hero-wrapper) {
   position: relative;
-  padding: 6px 12px; /* Internal cushion space for the drawing box boundaries */
-  display: inline-block;
-  transition: color 0.3s ease;
+  background-color: #12151c !important; 
+  padding: 0 !important; 
+  margin: 0 !important;
+  max-width: 100% !important; 
+  width: 100% !important;
+  overflow: hidden;
 }
 
-/* Base structural setups for sequential pseudo drawing lines */
-.header-links-container a::before,
-.header-links-container a::after {
-  box-sizing: inherit;
+/* Master canvas context constraints config */
+.hero.block {
+  position: relative;
+  width: 100%;
+  min-height: 100vh; 
+  display: flex;
+  flex-direction: column;
+}
+
+/* Background image containment tracker */
+.hero .hero-bg-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.hero .hero-bg-canvas picture,
+.hero .hero-bg-canvas img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+}
+
+/* MAINTAINED: Injected linear gradient overlay overlay */
+.hero .hero-bg-canvas::after {
   content: '';
   position: absolute;
-  width: 0;
-  height: 0;
-  border: 2px solid transparent;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(29,36,51,0.25) 0%, rgba(29,36,51,0.55) 55%, rgba(29,36,51,0.92) 100%);
 }
 
-/* Top Left alignment tracing path */
-.header-links-container a::before {
-  top: 0;
-  left: 0;
-}
-
-/* Bottom Right alignment tracing path */
-.header-links-container a::after {
-  bottom: 0;
-  right: 0;
-}
-
-/* Core dynamic trigger states mapped directly from your request */
-.header-links-container a:hover {
-  color: #ffffff; /* Text color swap on complete selection view context */
-}
-
-.header-links-container a:hover::before,
-.header-links-container a:hover::after {
-  border-color: #A6A6A6;
-  transition: border-color 0s, width 0.3s, height 0.3s;
+/* Inner structural container spacing */
+.hero-inner-container {
+  position: relative;
+  z-index: 5;
   width: 100%;
-  height: 100%;
-}
-
-.header-links-container a:hover::before {
-  border-bottom: none;
-  border-right: none;
-  transition-delay: 0s, 0s, 0.3s;
-}
-
-.header-links-container a:hover::after {
-  border-top: none;
-  border-left: none;
-  transition-delay: 0s, 0.3s, 0s;
-}
-
-/* ── RIGHT ACTION HUB ── */
-.header-actions-container {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 3rem 2rem;
+  box-sizing: border-box;
   display: flex;
-  align-items: center;
-  gap: 16px;
-  flex-shrink: 0;
-}
-
-.header-icon-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--nav-text-dark);
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  background: var(--nav-circle-bg);
-  transition: transform 0.2s ease, background 0.2s ease;
-  text-decoration: none;
-}
-
-.header-icon-btn:hover {
-  background: #dfdacd;
-  transform: scale(1.04);
-}
-
-.header-profile-container {
-  display: flex;
-  align-items: center;
-  flex-shrink: 0;
-}
-
-.user-chip-premium {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  background: var(--nav-circle-bg);
-  text-decoration: none;
-  transition: transform 0.2s ease;
-}
-
-.user-chip-premium:hover {
-  transform: scale(1.04);
-}
-
-.user-avatar-premium {
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #3c4537;
-  color: #ffffff;
-  font-weight: 700;
-  font-size: 14px;
-}
-
-/* ── MAIN CTA INTERACTIONS ── */
-.btn-signup-premium {
-  border: none;
-  padding: 14px 32px;
-  border-radius: 40px;
-  cursor: pointer;
-  font-weight: 700;
-  font-family: 'DM Sans', sans-serif;
-  background: var(--nav-forest-dark);
-  color: #ffffff !important;
-  font-size: 0.95rem;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  white-space: nowrap;
-  order: 4;
-}
-
-.btn-signup-premium:hover {
-  background: var(--nav-btn-hover);
-  box-shadow: 0 6px 20px rgba(46, 54, 42, 0.15);
-  transform: translateY(-1px);
-}
-
-.btn-logout-premium {
-  background: transparent;
-  border: none;
-  color: #c0532e;
-  font-weight: 600;
-  font-size: 0.9rem;
-  cursor: pointer;
-  padding: 0 0 0 12px;
-}
-
-/* ── BURGER ENGINE MOBILE RESPONSIVENESS ── */
-.header-burger-trigger {
-  display: none;
   flex-direction: column;
-  justify-content: space-between;
-  width: 22px;
-  height: 16px;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  z-index: 1010;
+  min-height: 100vh;
 }
 
-.header-burger-trigger span {
-  width: 100%;
-  height: 2px;
-  background-color: var(--nav-text-dark);
+/* Top Ribbon typography pairing updates */
+/* Core Top Navigation Bar Typography Style */
+.hero-top-ribbon {
+  font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+  font-size: 0.65rem; 
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 2rem;
 }
 
-@media (max-width: 920px) {
-  .header { padding: 0 24px; }
-  .header-burger-trigger { display: flex; }
-  .header .header-links-container {
-    position: fixed;
-    top: 80px;
-    left: 0;
-    width: 100%;
-    height: calc(100vh - 80px);
-    background: var(--nav-bg-cream);
-    flex-direction: column;
-    justify-content: flex-start;
-    padding: 40px 24px;
-    gap: 28px;
-    transform: translateX(100%);
-    transition: transform 0.3s ease;
-    z-index: 1005;
+/* Main Split Core Layouts */
+.hero-split-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 3.5rem;
+  align-items: flex-start; /* Aligns left headline with top of the right card */
+  flex-grow: 1;
+}
+
+@media (min-width: 960px) {
+  .hero-split-grid {
+    grid-template-columns: 1.25fr 0.75fr;
+    gap: 4.5rem;
   }
-  .header.menu-expanded .header-links-container { transform: translateX(0); }
+}
+
+/* Badge Layout controls */
+.hero-badge-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  margin-bottom: 2rem;
+}
+
+.hero-badge-pill {
+  background-color: #c0532e; 
+  font-family: system-ui, sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 0.45rem 1rem;
+  border-radius: 20px; 
+  color: #ffffff;
+  letter-spacing: 0.05em;
+}
+
+.hero-badge-info {
+  font-family: system-ui, sans-serif;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+/* FIX: Typography matching with Line-by-Line line breaks */
+.hero-main-title {
+  font-family: 'Playfair Display', 'Georgia', 'Times New Roman', serif;
+  font-weight: 700;
+  color: #ffffff;
+  font-size: clamp(3.2rem, 6.5vw, 5.2rem); 
+  line-height: 1.1;
+  margin: 0;
+  letter-spacing: -0.01em;
+  display: flex;
+  flex-direction: column;
+}
+
+.hero-main-title .title-line {
+  display: block;
+}
+
+.hero-main-title .gold-font {
+  font-style: italic;
+  font-weight: 400;
+  color: #ebd0b4; 
+}
+
+/* Right alignment parameters flow structural settings */
+.hero-right-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+  align-items: flex-start;
+}
+
+@media (min-width: 960px) {
+  .hero-right-panel {
+    align-items: flex-end;
+  }
+}
+
+/* MAINTAINED & PADDED: Downscaled Floating Live Card layout settings */
+.hero-auction-card {
+  background: #ffffff;
+  color: #0d1118 !important;
+  border-radius: 20px; 
+  padding: 1.25rem; /* Added custom padding padding optimization */
+  width: 100%;
+    height: 100%;
+max-height:185px;
+  max-width: 200px; /* Compacted layout sizing map fields bounds */
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.35);
+  margin-top:-70px;
+  margin-right:60px;
+
+}
+
+.card-status-pill {
+  background-color: #111622;
+  color: #ffffff;
+  font-family: system-ui, sans-serif;
+  font-size: 0.6rem;
+  font-weight: 800;
+  padding: 0.3rem 0.65rem;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.card-image-box {
+  margin: 0.85rem 0;
+  border-radius: 8px;
+  overflow: hidden;
+  height: 100px; 
+}
+
+.card-image-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.card-item-title {
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin: 0 0 0.1rem 0;
+  color: #111622 !important;
+}
+
+.card-meta-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-meta-price {
+  font-size: 0.9rem;
+  font-weight: 300;
+  font-family: 'Georgia', serif;
+  color: #111622 !important;
+}
+
+.card-meta-timer {
+  background-color: #fef3eb;
+  color: #d2532f;
+  font-family: system-ui, sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.25rem 0.55rem;
+  border-radius: 6px;
+}
+
+/* Underlying Text Zone description flow styles options settings fields */
+.hero-text-zone {
+  max-width: 440px;
+}
+
+.hero-main-desc {
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.9);
+  margin: 0 0 2rem 0;
+}
+
+/* Link Actions button group layout elements styles */
+.hero-actions-wrapper {
+  display: flex;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+  margin-bottom: 2.5rem;
+}
+
+.hero-actions-wrapper .hero-btn {
+  font-family: system-ui, -apple-system, sans-serif;
+  padding: 0.9rem 2.25rem;
+  border-radius: 30px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  display: inline-block;
+  box-sizing: border-box;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); /* Elegant motion easing */
+}
+
+.hero-actions-wrapper .hero-btn.primary {
+  background-color: #c0532e; /* Custom Rust */
+  color: #ffffff !important;
+  border: 1px solid transparent;
+}
+
+.hero-actions-wrapper .hero-btn.secondary {
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  color: #ffffff !important;
+  background-color: transparent;
+}
+/* FIX: Micro-interaction Hover Animations matching premium UI specifications fields */
+.hero-actions-wrapper .hero-btn.primary:hover {
+  background-color: #e3c592; /* var(--gold-light) */
+  color: #1d2433 !important; /* var(--navy) */
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(227, 197, 146, 0.35);
+}
+
+.hero-actions-wrapper .hero-btn.secondary:hover {
+  background-color: #fffdf9; /* var(--white) */
+  color: #2a2926 !important; /* var(--charcoal) */
+  border-color: #fffdf9;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(255, 255, 249, 0.15);
+}
+
+/* FIX: Quantified Stats Grid nested neatly below buttons array rows flow block */
+.hero-right-stats-row {
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  padding-top: 2rem;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* Single row layout configuration option fields */
+  gap: 1.5rem;
+  width: 100%;
+}
+
+.stat-metric-box {
+  display: flex;
+  flex-direction: column;
+    margin-top:-50px;
+
+}
+
+.stat-metric-box h3 {
+  font-family: 'Playfair Display', 'Georgia', serif;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 0.25rem 0;
+  letter-spacing: -0.01em;
+}
+
+.stat-metric-box p {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.55);
+  margin: 0;
 }
