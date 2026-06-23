@@ -1,31 +1,42 @@
 /**
- * Decorates the promo-banner block with a high-end luxury countdown interface
+ * Decorates the promo block with a luxury countdown interface
  * @param {Element} block The block element
  */
 export default async function decorate(block) {
-  const rows = [...block.children];
-  if (rows.length < 4) return;
+  // Add wrapper class required by CSS selectors
+  block.classList.add('promo-banner');
 
-  // 1. Extract Config Content
+  const rows = [...block.children];
+
+  // Requires:
+  // 0 = badge
+  // 1 = heading
+  // 2 = description
+  // 3 = CTA
+  // 4 = image
+  if (rows.length < 5) {
+    console.error('Promo block requires 5 rows');
+    return;
+  }
+
   const accentText = rows[0]?.innerText?.trim();
   const headingText = rows[1]?.innerText?.trim();
   const descText = rows[2]?.innerText?.trim();
   const ctaLinkElement = rows[3]?.querySelector('a');
-  const imageElement = rows[4]?.querySelector('picture') || rows[4]?.querySelector('img');
+  const imageElement =
+    rows[4]?.querySelector('picture') ||
+    rows[4]?.querySelector('img');
 
-  // Create clean internal presentation structures
   const bannerContent = document.createElement('div');
   bannerContent.className = 'promo-banner-content';
 
   const bannerVisual = document.createElement('div');
   bannerVisual.className = 'promo-banner-visual';
 
-  // Append editorial image layout frame
   if (imageElement) {
     bannerVisual.append(imageElement);
   }
 
-  // 2. Build Text Copy Nodes
   if (accentText) {
     const accentNode = document.createElement('span');
     accentNode.className = 'promo-banner-accent-badge';
@@ -47,14 +58,14 @@ export default async function decorate(block) {
     bannerContent.append(descNode);
   }
 
-  // 3. Inject High-End Editorial Countdown Timer Component
+  // Countdown
   const countdownContainer = document.createElement('div');
   countdownContainer.className = 'promo-banner-countdown';
 
   const timeUnits = [
     { label: 'Hrs', value: '11', id: 'promo-hrs' },
     { label: 'Min', value: '42', id: 'promo-min' },
-    { label: 'Sec', value: '07', id: 'promo-sec' }
+    { label: 'Sec', value: '07', id: 'promo-sec' },
   ];
 
   timeUnits.forEach((unit) => {
@@ -76,24 +87,23 @@ export default async function decorate(block) {
 
   bannerContent.append(countdownContainer);
 
-  // 4. Style CTA Control Actions
+  // CTA
   if (ctaLinkElement) {
     const ctaWrap = document.createElement('div');
     ctaWrap.className = 'promo-banner-action-row';
-    
-    ctaLinkElement.className = 'promo-banner-cta-btn';
+
+    ctaLinkElement.classList.add('promo-banner-cta-btn');
     ctaLinkElement.innerHTML = `${ctaLinkElement.textContent} <span>&rarr;</span>`;
-    
+
     ctaWrap.append(ctaLinkElement);
     bannerContent.append(ctaWrap);
   }
 
-  // Clear existing CMS tabular raw markup nodes safely
+  // Replace authoring markup
   block.textContent = '';
   block.append(bannerContent, bannerVisual);
 
-  // ── DYNAMIC 24-HOUR COUNTDOWN REALTIME ENGINE ──
-  // Target precise end timestamp exactly 24 hours out to create real-time urgency mechanics
+  // Live countdown
   const targetEndTime = Date.now() + 24 * 60 * 60 * 1000;
 
   function updateRealTimeClock() {
@@ -104,19 +114,31 @@ export default async function decorate(block) {
       return;
     }
 
-    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+    const hours = Math.floor(
+      (distance % (1000 * 60 * 60 * 24)) /
+      (1000 * 60 * 60)
+    );
 
-    const hrsNode = block.querySelector('#promo-hrs');
-    const minNode = block.querySelector('#promo-min');
-    const secNode = block.querySelector('#promo-sec');
+    const minutes = Math.floor(
+      (distance % (1000 * 60 * 60)) /
+      (1000 * 60)
+    );
 
-    if (hrsNode) hrsNode.textContent = String(hours).padStart(2, '0');
-    if (minNode) minNode.textContent = String(minutes).padStart(2, '0');
-    if (secNode) secNode.textContent = String(seconds).padStart(2, '0');
+    const seconds = Math.floor(
+      (distance % (1000 * 60)) /
+      1000
+    );
+
+    block.querySelector('#promo-hrs').textContent =
+      String(hours).padStart(2, '0');
+
+    block.querySelector('#promo-min').textContent =
+      String(minutes).padStart(2, '0');
+
+    block.querySelector('#promo-sec').textContent =
+      String(seconds).padStart(2, '0');
   }
 
   const clockIntervalId = setInterval(updateRealTimeClock, 1000);
-  updateRealTimeClock(); // Instant setup pass execution avoiding delays
+  updateRealTimeClock();
 }
