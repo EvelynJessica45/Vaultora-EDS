@@ -1,0 +1,158 @@
+/* ── PROMO BANNER HIGH-END LUXURY DESIGN EXTENSION ── */
+
+.promo-banner-container {
+  background-color: #fbf9f4 !important; /* Premium luxury cream background canvas mapping */
+  padding: 1rem 1rem !important; /* Reduced from 4rem to tighten page flow */
+  width: 100%;
+}
+
+.promo-banner {
+  max-width: 1240px;
+  margin: 0 auto;
+  background-color: #ffffff; /* Contrast canvas breakout */
+  border-radius: 20px; /* Slimmed down from 32px to fit shorter height */
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(46, 54, 42, 0.02);
+  border: 1px solid rgba(42, 41, 38, 0.04);
+  display: flex;
+  flex-direction: column-reverse; /* Stack cleanly on space-constrained mobile configurations first */
+}
+
+/* ── LAYOUT BALANCE REGIME ── */
+.promo-banner .promo-banner-content {
+  flex: 1.3;
+  padding: 2rem 2.5rem; /* Reduced padding from 3rem / 2rem */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.promo-banner .promo-banner-visual {
+  flex: 0.9;
+  width: 100%;
+  min-height: 200px; /* Reduced from 280px for a more compact mobile footprint */
+  position: relative;
+  background-color: #f6f5f0;
+}
+
+.promo-banner .promo-banner-visual img,
+.promo-banner .promo-banner-visual picture {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+/* ── EDITORIAL CONTENT DESIGN ARCHITECTURE ── */
+.promo-banner .promo-banner-accent-badge {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.7rem; /* Reduced from 0.75rem */
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #b9925a; /* Premium Gold Signature Badge Track */
+  margin-bottom: 0.5rem; /* Reduced from 1rem */
+  display: inline-block;
+}
+
+.promo-banner .promo-banner-heading {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.35rem, 2vw, 1.75rem); /* Scaled down header proportions significantly */
+  font-weight: 400;
+  color: #2e362a !important; /* Premium Forest Green Branding */
+  line-height: 1.2;
+  margin: 0 0 0.4rem 0;
+  letter-spacing: -0.01em;
+}
+
+.promo-banner .promo-banner-description {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.85rem; /* Reduced from 0.95rem */
+  color: #666666;
+  margin: 0 0 1.25rem 0; /* Reduced from 2rem */
+  line-height: 1.4;
+}
+
+/* ── HIGH INDUSTRIAL COUNTDOWN DESIGN CLOCK ── */
+.promo-banner .promo-banner-countdown {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem; /* Reduced from 2.5rem */
+  border-top: 1px solid #eae7df;
+  border-bottom: 1px solid #eae7df;
+  padding: 0.6rem 0; /* Reduced from 1.25rem */
+  max-width: 300px; /* Slimmed down width bounds */
+}
+
+.promo-banner .countdown-time-unit {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.promo-banner .countdown-number {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.85rem; /* Reduced down from a massive 2.5rem */
+  font-weight: 400;
+  color: #2e362a;
+  line-height: 1;
+}
+
+.promo-banner .countdown-label {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.65rem; /* Reduced from 0.72rem */
+  text-transform: uppercase;
+  color: #b9925a; /* Luxury gold layout subtext markers */
+  letter-spacing: 0.08em;
+  margin-top: 0.15rem;
+}
+
+/* ── BUTTON STYLING DYNAMICS ── */
+.promo-banner .promo-banner-cta-btn {
+  display: inline-block;
+  background-color: #2e362a; /* Deep forest green control baseline */
+  color: #fbf9f4 !important;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.8rem; /* Reduced from 0.85rem */
+  font-weight: 500;
+  text-decoration: none !important;
+  padding: 0.65rem 1.75rem; /* Tighter button padding */
+  border-radius: 50px;
+  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  box-shadow: 0 4px 10px rgba(46, 54, 42, 0.08);
+}
+
+.promo-banner .promo-banner-cta-btn span {
+  display: inline-block;
+  margin-left: 4px;
+  transition: transform 0.3s ease;
+}
+
+.promo-banner .promo-banner-cta-btn:hover {
+  background-color: #b9925a; /* Premium Gold transformation on interaction */
+  box-shadow: 0 6px 15px rgba(185, 146, 90, 0.15);
+}
+
+.promo-banner .promo-banner-cta-btn:hover span {
+  transform: translateX(3px);
+}
+
+/* ── MEDIUM TO LARGE RESPONSIVE MATRICES ── */
+@media (min-width: 768px) {
+  .promo-banner {
+    flex-direction: row; /* Converts flawlessly to a flat inline premium editorial banner layout on desktop */
+    min-height: 310px; /* Reduced desktop min-height from 480px to be sleek */
+    max-height: 330px; /* Added cap logic to keep it uniform */
+  }
+
+  .promo-banner .promo-banner-content {
+    padding: 2.5rem 3.5rem; /* Reduced from 4rem */
+  }
+
+  .promo-banner .promo-banner-visual {
+    min-height: 100%;
+    clip-path: polygon(6% 0, 100% 0, 100% 100%, 0 100%); /* Slanted angle adjusted for the shorter frame */
+  }
+}
