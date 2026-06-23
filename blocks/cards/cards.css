@@ -1,27 +1,99 @@
-.cards > ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(257px, 1fr));
-  gap: 24px;
+/* blocks/cards/cards.css */
+
+/* ── SHOP BY CATEGORY VARIANT ── */
+.cards.categories .cards-categories-grid {
+  display: flex;
+  justify-content: center;
+  align-items: start;
+  gap: 40px;
+  flex-wrap: wrap;
+  padding: 40px 0;
 }
 
-.cards > ul > li {
-  border: 1px solid #dadada;
-  background-color: var(--background-color);
+.cards.categories .category-circle-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 140px;
 }
 
-.cards .cards-card-body {
-  margin: 16px;
+.cards.categories .category-img-frame {
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  overflow: hidden;
+  background-color: #eeeae3;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  margin-bottom: 12px;
+  transition: transform 0.2s ease;
 }
 
-.cards .cards-card-image {
-  line-height: 0;
-}
-
-.cards > ul > li img {
+.cards.categories .category-img-frame img {
   width: 100%;
-  aspect-ratio: 4 / 3;
+  height: 100%;
   object-fit: cover;
+}
+
+.cards.categories .category-circle-node:hover .category-img-frame {
+  transform: translateY(-4px);
+}
+
+.cards.categories .category-label {
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin: 0 0 2px;
+  color: var(--text-color);
+}
+
+.cards.categories .category-count {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* ── NEW ARRIVALS VARIANT ── */
+.cards.new-arrivals .lots-grid-canvas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 24px;
+  padding: 32px 0;
+}
+
+.cards.new-arrivals .lot-item-card {
+  background: #ffffff;
+  border-radius: 20px;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.cards.new-arrivals .lot-card-window {
+  width: 100%;
+  height: 220px;
+  background-color: #f5f4f0;
+}
+
+.cards.new-arrivals .lot-card-window img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cards.new-arrivals .lot-card-meta-details {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cards.new-arrivals .title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.cards.new-arrivals .price-row {
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--text-muted);
 }

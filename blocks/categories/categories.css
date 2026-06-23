@@ -1,6 +1,6 @@
 .section:has(.categories-wrapper) {
   background-color: #fbf9f4 !important; /* Premium cream layout canvas canvas */
-  padding: 5rem 0 !important; /* Elegant vertical spacing down from your fold components */
+  padding: 2rem 0 !important; /* Elegant vertical spacing down from your fold components */
 }
 
 .categories.block {

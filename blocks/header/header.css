@@ -12,71 +12,57 @@
 }
 
 .header {
-  box-sizing: border-box;
-  font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
-  height: 80px;
+  height: 64px;
   background: var(--nav-bg-cream);
   z-index: 1000;
-  display: flex;
-  align-items: center;
-  padding: 0 40px;
+  border-bottom: 1px solid rgba(0,0,0,.06);
 }
 
-.header > div:nth-child(1) {
-  display: none !important;
-}
 
-.header .header-row-layout {
-  width: 100%;
-  max-width: 1340px;
+.header-row-layout {
+  max-width: 1320px;
+  height: 100%;
   margin: 0 auto;
+  padding: 0 32px;
+
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 32px;
 }
 
-/* ── LOGO BRANDING (FIXED IMAGE STRETCH BUG) ── */
+.header-logo-container {
+  flex-shrink: 0;
+}
+
 .header-logo-wrapper {
   display: flex;
   align-items: center;
   justify-content: flex-start;
   flex-shrink: 0;
-  width: 140px;          /* Hard matches your authored layout blueprint width */
-  height: 100%;          /* Uses the parent header height window safely */
+  width: 140px;
   text-decoration: none;
-  cursor: pointer;
-  margin: 0;
-  padding: 0;
 }
 
-/* Target the underlying image elements to stop spatial distortion */
 .header-logo-wrapper picture,
 .header-logo-wrapper img {
-  width: 140px;          /* Hard explicit lock to match your native logo dimensions */
-  height: auto;          /* Let height scale proportionally based on width */
-  max-height: 55px;      /* Prevents the logo asset from clipping the header baseline */
+  width: 120px;
+  height: auto;
+  max-height: 42px;
   display: block;
-  object-fit: contain;   /* Core magic rule: Preserves aspect ratio completely */
+  object-fit: contain;
   object-position: left center;
 }
-
-.header-logo-wrapper span {
-  color: var(--nav-text-gold);
-  display: inline-block;
-  margin: 0;
-}
-
-/* ── CENTERED LINK ENGINE + HORIZONTAL SLIDE DRAW ANIMATION ── */
 .header-links-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 36px;
   flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 36px;
 }
 
 .header-links-container a {
@@ -86,9 +72,9 @@
   font-size: 0.95rem;
   white-space: nowrap;
   position: relative;
-  overflow: hidden;    
+  overflow: hidden;
   z-index: 1;
-  padding: 6px 4px;    
+  padding: 6px 4px;
   transition: opacity 0.2s ease;
 }
 
@@ -98,7 +84,7 @@
   position: absolute;
   background-color: #A6A6A6;
   width: 100%;
-  height: 2px;         
+  height: 2px;
   transform: scaleX(0);
   transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
 }
@@ -121,39 +107,31 @@
 }
 
 .header-links-container a:hover {
-  opacity: 0.85;       
+  opacity: 0.85;
 }
 
-/* ── RIGHT ACTION HUB ── */
-.header-actions-container {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  flex-shrink: 0;
-}
-
-.header-icon-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--nav-text-dark);
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  background: var(--nav-circle-bg);
-  transition: transform 0.2s ease, background 0.2s ease;
+.btn-signup-premium {
+  background: var(--nav-forest-dark);
+  color: #fff;
   text-decoration: none;
+  padding: 12px 24px;
+  border-radius: 999px;
+  font-weight: 600;
 }
 
-.header-icon-btn:hover {
-  background: #dfdacd;
-  transform: scale(1.04);
+.btn-secondary-premium {
+  background: transparent;
+  color: var(--nav-text-dark);
+  text-decoration: none;
+  padding: 12px 20px;
+  border: 1px solid #ddd;
+  border-radius: 999px;
 }
 
 .header-profile-container {
   display: flex;
   align-items: center;
-  flex-shrink: 0;
+  gap: 12px;
 }
 
 .user-chip-premium {
@@ -184,12 +162,39 @@
   font-weight: 700;
   font-size: 14px;
 }
+.header-icon-btn img {
+  width: 24px;
+  height: 24px;
+  display: block;
+  object-fit: contain;
+}
+.header-icon-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #f1eee7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all .25s ease;
+  text-decoration: none;
+}
 
+.header-icon-btn img {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+}
+
+.header-icon-btn:hover {
+  transform: translateY(-2px);
+  background: #e8e2d6;
+}
 /* ── RE-ENGINEERED GET STARTED / SELL AN ITEM CTA (ORANGE FILL SLIDE) ── */
 .btn-signup-premium {
   border: 1px solid var(--nav-forest-dark);
-  padding: 14px 32px;
-  border-radius: 40px;
+padding: 10px 22px;
+  font-size: 0.9rem;  border-radius: 40px;
   cursor: pointer;
   font-weight: 700;
   font-family: 'DM Sans', sans-serif;
@@ -278,4 +283,34 @@
     z-index: 1005;
   }
   .header.menu-expanded .header-links-container { transform: translateX(0); }
+}
+.header-profile-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.user-chip-premium {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 18px;
+  border-radius: 999px;
+  background: #f3f3f1;
+  color: var(--nav-text-dark);
+  font-weight: 600;
+  text-decoration: none;
+  transition: transform .2s ease;
+}
+
+.user-chip-premium:hover {
+  transform: scale(1.03);
+}
+.header-actions-container {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-shrink: 0;
+  min-width: fit-content;
 }

@@ -1,74 +1,93 @@
-/* Container section context overrides */
+/* HERO SECTION RESET */
 .section:has(.hero-wrapper) {
   position: relative;
-  background-color: #12151c !important; 
-  padding: 0 !important; 
+  background: #12151c;
+  padding: 0 !important;
   margin: 0 !important;
-  max-width: 100% !important; 
-  width: 100% !important;
+  max-width: 100% !important;
+  width: 100%;
   overflow: hidden;
 }
 
-/* Master canvas context constraints config */
+/* HERO BLOCK */
 .hero.block {
   position: relative;
   width: 100%;
-  min-height: 100vh; 
+  min-height: calc(100vh - 64px);
   display: flex;
   flex-direction: column;
+  margin: 0;
+  padding: 0;
 }
 
-/* Background image containment tracker */
+/* HERO BACKGROUND */
 .hero .hero-bg-canvas {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   z-index: 1;
-  pointer-events: none;
 }
 
+.hero .hero-bg-canvas img {
+  object-fit: cover;
+  object-position: center 25%;
+}
 .hero .hero-bg-canvas picture,
 .hero .hero-bg-canvas img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center center;
+  object-position: center;
 }
 
-/* MAINTAINED: Injected linear gradient overlay overlay */
 .hero .hero-bg-canvas::after {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(29,36,51,0.25) 0%, rgba(29,36,51,0.55) 55%, rgba(29,36,51,0.92) 100%);
+  background: linear-gradient(
+    180deg,
+    rgba(29, 36, 51, 0.25) 0%,
+    rgba(29, 36, 51, 0.55) 55%,
+    rgba(29, 36, 51, 0.92) 100%
+  );
 }
 
-/* Inner structural container spacing */
+/* HERO CONTENT */
 .hero-inner-container {
   position: relative;
   z-index: 5;
   width: 100%;
   max-width: 1240px;
   margin: 0 auto;
-  padding: 3rem 2rem;
+  padding: 0 2rem 3rem;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  min-height: calc(100vh - 64px);
 }
 
-/* Top Ribbon typography pairing updates */
-/* Core Top Navigation Bar Typography Style */
+/* REMOVE ANY TOP SPACING */
+.hero-wrapper,
+.hero.block,
+.hero-inner-container,
 .hero-top-ribbon {
-  font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
-  font-size: 0.65rem; 
+  margin-top: 0 !important;
+}
+
+/* FIRST CONTENT SHOULD START IMMEDIATELY */
+.hero-top-ribbon {
+  padding-top: 35px;
+  margin-bottom: 2rem;
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 0.65rem;
   font-weight: 500;
   letter-spacing: 0.2em;
-  color: rgba(255, 255, 255, 0.8);
-  margin-bottom: 2rem;
+  color: rgba(255,255,255,.8);
 }
-
+.header {
+  border-bottom: none;
+}
 /* Main Split Core Layouts */
 .hero-split-grid {
   display: grid;

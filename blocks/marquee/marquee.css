@@ -38,10 +38,6 @@
   align-items: center;
 }
 
-/* Pause animation track movement on hover states for accessibility readability */
-.marquee.block:hover .marquee-track {
-  animation-play-state: paused;
-}
 
 /* .marquee-item {
   display: inline-flex;

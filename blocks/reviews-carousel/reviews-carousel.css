@@ -1,0 +1,168 @@
+/* ── AUTOMATICALLY SCOPED AUTO-REVIEWS CAROUSEL DESIGN ── */
+
+.reviews-carousel-container {
+  background-color: #fbf9f4 !important; /* Premium luxury cream background */
+  /* padding: 5rem 1rem !important; */
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.reviews-carousel {
+  max-width: 1240px;
+  margin: 0 auto;
+  position: relative;
+}
+
+/* ── HIGH-END HEADER STYLE COHESION ── */
+.reviews-carousel .reviews-carousel-header {
+  text-align: center;
+  margin-bottom: 3rem;
+  border-bottom: 1px solid #eae7df;
+  padding-bottom: 1.5rem;
+}
+
+.reviews-carousel .reviews-carousel-header h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.8rem, 3vw, 2.4rem);
+  font-weight: 400;
+  color: #2e362a;
+  margin: 0 0 0.5rem 0;
+  letter-spacing: -0.01em;
+}
+
+.reviews-carousel .reviews-carousel-header h2 span {
+  font-style: italic;
+  font-family: 'Playfair Display', serif;
+  color: #b9925a; /* Luxury gold focus phrase string */
+}
+
+.reviews-carousel .reviews-carousel-header p {
+  font-family: 'DM Sans', sans-serif;
+  color: #666666;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+/* ── TRACK VIEWPORT CAROUSEL CONSTRUCT ── */
+.reviews-carousel .reviews-carousel-track-wrapper {
+  width: 100%;
+  overflow: hidden;
+  padding: 1rem 0;
+}
+
+.reviews-carousel .reviews-carousel-track {
+  display: flex;
+  gap: 20px;
+  transition: transform 0.7s cubic-bezier(0.25, 1, 0.5, 1); /* Ultra-smooth physics transition curve */
+  will-change: transform;
+}
+
+/* ── SLIDE COMPONENT CARD HOVER EXPERIENCES ── */
+.reviews-carousel .reviews-carousel-slide {
+  flex: 0 0 100%;
+  background-color: #ffffff;
+  border-radius: 20px;
+  padding: 1.75rem;
+  box-shadow: 0 4px 20px rgba(46, 54, 42, 0.01);
+  border: 1px solid rgba(42, 41, 38, 0.04);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease, border-color 0.4s ease;
+}
+
+/* Luxury Card Hover Micro-Animations */
+.reviews-carousel .reviews-carousel-slide:hover {
+  transform: translateY(-5px) scale(1.01);
+  border-color: rgba(185, 146, 90, 0.25); /* Subtle glowing gold border overlay hint */
+  box-shadow: 0 15px 35px rgba(46, 54, 42, 0.06); /* Sophisticated forest dark tinted depth drop shadow */
+}
+
+/* Profile Identity Row Elements */
+.reviews-carousel .review-profile-header-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.reviews-carousel .review-avatar-frame {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  overflow: hidden;
+  background-color: #f6f5f0;
+  border: 1px solid rgba(42, 41, 38, 0.08);
+  flex-shrink: 0;
+  transition: transform 0.4s ease;
+}
+
+.reviews-carousel .reviews-carousel-slide:hover .review-avatar-frame {
+  transform: rotate(6deg) scale(1.05); /* Playful micro rotation layout on user target focus */
+}
+
+.reviews-carousel .review-avatar-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.reviews-carousel .avatar-placeholder {
+  background-color: #eae7df;
+}
+
+.reviews-carousel .review-identity-box {
+  display: flex;
+  flex-direction: column;
+}
+
+.reviews-carousel .review-user-name {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #2e362a;
+  margin: 0;
+}
+
+.reviews-carousel .review-user-role {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.75rem;
+  color: #b9925a;
+  font-weight: 500;
+  margin-top: 0.1rem;
+}
+
+/* Stars & Content Styling */
+.reviews-carousel .review-stars-row {
+  color: #b9925a;
+  font-size: 0.85rem;
+  letter-spacing: 2px;
+  margin-bottom: 0.75rem;
+}
+
+.reviews-carousel .review-comment-text {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.88rem;
+  color: #666666;
+  line-height: 1.5;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── DESKTOP & TABLET CARD DISTRIBUTION CONFIGURATION MATRICES ── */
+@media (min-width: 600px) {
+  .reviews-carousel .reviews-carousel-slide {
+    flex: 0 0 calc((100% - 20px) / 2); /* Splits 2 cards beautifully across medium channels */
+  }
+}
+
+@media (min-width: 900px) {
+  .reviews-carousel .reviews-carousel-slide {
+    flex: 0 0 calc((100% - 40px) / 3); /* Distributes 3 cards inline dynamically across wide displays */
+  }
+}

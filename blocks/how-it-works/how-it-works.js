@@ -3,35 +3,37 @@ export default function decorate(block) {
   block.innerHTML = '';
   block.classList.add('how-it-works-container');
 
-  // 1. Build the Top Centered Header
-  const sectionHeader = document.createElement('div');
-  sectionHeader.className = 'how-main-header';
-  sectionHeader.innerHTML = `
+  // ── Overall two-column layout shell ──
+  const layout = document.createElement('div');
+  layout.className = 'how-layout';
+
+  // ── LEFT: intro copy + role toggle ──
+  const intro = document.createElement('div');
+  intro.className = 'how-intro';
+  intro.innerHTML = `
     <h2>How Vaultora <span>Works</span></h2>
     <p>Your transparent gateway to elite luxury asset acquisitions.</p>
+    <div class="how-toggle-wrapper">
+      <span class="how-toggle-label label-bidders active">Buyers</span>
+      <button class="how-custom-switch" id="how-role-toggle" aria-label="Toggle role perspective">
+        <div class="how-switch-thumb">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M7 11v8a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-8"></path>
+            <path d="M9 12h6"></path>
+            <path d="M12 2v9"></path>
+            <path d="m19 8-7-6-7 6"></path>
+          </svg>
+        </div>
+      </button>
+      <span class="how-toggle-label label-auctioneers">Sellers</span>
+    </div>
   `;
-  block.appendChild(sectionHeader);
+  layout.appendChild(intro);
 
-  // 2. Build the Premium SVG Toggle Control Switch
-  const toggleWrapper = document.createElement('div');
-  toggleWrapper.className = 'how-toggle-wrapper';
-  toggleWrapper.innerHTML = `
-    <span class="how-toggle-label label-bidders active">Buyers & Bidders</span>
-    <button class="how-custom-switch" id="how-role-toggle" aria-label="Toggle role perspective">
-      <div class="how-switch-thumb">
-        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M7 11v 8A2 2 0 0 0 9 21h6a2 2 0 0 0 2-2v-8"></path>
-          <path d="M9 12h6"></path>
-          <path d="M12 2v9"></path>
-          <path d="m19 8-7-6-7 6"></path>
-        </svg>
-      </div>
-    </button>
-    <span class="how-toggle-label label-auctioneers">Sellers & Auctioneers</span>
-  `;
-  block.appendChild(toggleWrapper);
+  // ── RIGHT: compact single-line roadmap ──
+  const timelinePanel = document.createElement('div');
+  timelinePanel.className = 'how-timeline-panel';
 
-  // 3. Structural Central Timeline Track
   const timelineTrack = document.createElement('div');
   timelineTrack.className = 'how-central-timeline-track';
 
@@ -45,9 +47,10 @@ export default function decorate(block) {
     const roleTag = cells[0].textContent.trim().toLowerCase();
     const contentBox = cells[1];
 
-    // Cleanly isolate heading and descriptions
     const fullHeading = contentBox.querySelector('h3, p strong, strong')?.textContent || 'Step';
-    const cleanedTitle = fullHeading.includes('/') ? fullHeading.split('/')[1].trim() : fullHeading.replace(/[0-9]/g, '').replace(/[^\w\s]/g, '').trim();
+    const cleanedTitle = fullHeading.includes('/')
+      ? fullHeading.split('/')[1].trim()
+      : fullHeading.replace(/[0-9]/g, '').replace(/[^\w\s&]/g, '').trim();
 
     const tempDiv = document.createElement('div');
     tempDiv.innerHTML = contentBox.innerHTML;
@@ -56,30 +59,15 @@ export default function decorate(block) {
     const stepDescription = tempDiv.textContent.replace(/\//g, '').trim();
 
     const isBidder = roleTag.includes('bidder') || roleTag.includes('buy');
-    
-    // Assign index based on role, then choose its side
-    let currentNumStr = '';
-    let sideClass = '';
-    
-    if (isBidder) {
-      currentNumStr = String(bidderIndex++).padStart(2, '0');
-      // Alternate left/right for bidders: 01 Left, 02 Right, etc.
-      sideClass = (parseInt(currentNumStr) % 2 !== 0) ? 'pos-left' : 'pos-right';
-    } else {
-      currentNumStr = String(auctioneerIndex++).padStart(2, '0');
-      // Alternate left/right for auctioneers mirror match
-      sideClass = (parseInt(currentNumStr) % 2 !== 0) ? 'pos-left' : 'pos-right';
-    }
+    const currentNumStr = isBidder
+      ? String(bidderIndex++).padStart(2, '0')
+      : String(auctioneerIndex++).padStart(2, '0');
 
-    // Build the node row
     const nodeRow = document.createElement('div');
-    nodeRow.className = `how-timeline-node-row ${sideClass}`;
+    nodeRow.className = 'how-timeline-node-row';
     nodeRow.setAttribute('data-role', isBidder ? 'bidders' : 'auctioneers');
-    
-    // Default hidden logic
-    if (!isBidder) {
-      nodeRow.classList.add('is-hidden');
-    }
+
+    if (!isBidder) nodeRow.classList.add('is-hidden');
 
     nodeRow.innerHTML = `
       <div class="how-central-axis-badge">
@@ -95,12 +83,14 @@ export default function decorate(block) {
     timelineTrack.appendChild(nodeRow);
   });
 
-  block.appendChild(timelineTrack);
+  timelinePanel.appendChild(timelineTrack);
+  layout.appendChild(timelinePanel);
+  block.appendChild(layout);
 
-  // --- INTERACTIVE SWITCH EVENT LISTENER ---
-  const toggleBtn = toggleWrapper.querySelector('#how-role-toggle');
-  const labelBidders = toggleWrapper.querySelector('.label-bidders');
-  const labelAuctioneers = toggleWrapper.querySelector('.label-auctioneers');
+  // ── Toggle behavior ──
+  const toggleBtn = intro.querySelector('#how-role-toggle');
+  const labelBidders = intro.querySelector('.label-bidders');
+  const labelAuctioneers = intro.querySelector('.label-auctioneers');
 
   if (toggleBtn) {
     toggleBtn.addEventListener('click', (e) => {
@@ -108,19 +98,11 @@ export default function decorate(block) {
       const isActive = toggleBtn.classList.toggle('switched-active');
       const activeRole = isActive ? 'auctioneers' : 'bidders';
 
-      // Toggle text labels opacity highlights
       labelBidders.classList.toggle('active', !isActive);
       labelAuctioneers.classList.toggle('active', isActive);
 
-      // Filter roadmap timeline records
-      const items = timelineTrack.querySelectorAll('.how-timeline-node-row');
-      items.forEach((item) => {
-        const itemRole = item.getAttribute('data-role');
-        if (itemRole === activeRole) {
-          item.classList.remove('is-hidden');
-        } else {
-          item.classList.add('is-hidden');
-        }
+      timelineTrack.querySelectorAll('.how-timeline-node-row').forEach((item) => {
+        item.classList.toggle('is-hidden', item.getAttribute('data-role') !== activeRole);
       });
     });
   }
