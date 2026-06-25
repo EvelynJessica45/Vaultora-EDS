@@ -2,14 +2,6 @@
    Vaultora — Production Premium Cream Header Theme (image_749880)
    ═══════════════════════════════════════════════════════════════ */
 
-:root {
-  --nav-bg-cream: #f6f5f0;
-  --nav-text-dark: #2a2926;
-  --nav-text-gold: #b9925a;
-  --nav-forest-dark: #2e362a;
-  --nav-circle-bg: #eae7df;
-  --theme-rust: #c0532e;        /* The explicit orange color tone matching your hero section buttons */
-}
 
 .header {
   position: fixed;

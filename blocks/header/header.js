@@ -103,13 +103,13 @@ export default async function decorate(block) {
 
       if (role === 'buyer' || role === 'both') {
         navWrapper.append(
-          createLink('My Bids', '/my-bids'),
+          createLink('My Bids', '/mybids'),
         );
       }
 
       if (role === 'seller' || role === 'both') {
         navWrapper.append(
-          createLink('My Listings', '/my-listings'),
+          createLink('My Listings', '/mylistings'),
         );
       }
     }

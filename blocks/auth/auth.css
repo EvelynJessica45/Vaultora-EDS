@@ -1,0 +1,425 @@
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;700&display=swap");
+
+/* .auth-wrapper {
+  background-color: var(--cream, #f5f0e6);
+} */
+
+.auth .container {
+  position: relative;
+  width: 860px;
+  height: 450px;
+  background: #fdfcf9;
+  margin: 40px auto;
+  border-radius: 28px;
+  box-shadow: 0 20px 60px rgba(42, 41, 38, 0.12);
+  overflow: hidden;
+  border: 1px solid rgba(181, 157, 132, 0.25);
+  display: flex;
+}
+
+/* ── HOLDS FORMS SIDE-BY-SIDE FIXED POSITION ── */
+.auth .auth-forms-holder {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  display: flex;
+}
+
+.auth .form-box {
+  position: absolute;
+  top: 0;
+  width: 50%;
+  height: 100%;
+  background: #fdfcf9;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 25px 40px;
+  box-sizing: border-box;
+  z-index: 1;
+  transition: transform 1.8s cubic-bezier(0.76, 0, 0.24, 1), opacity 1.4s ease;
+}
+
+.auth .form-box.login {
+  left: 0;
+  transform: translateX(0);
+  opacity: 1;
+  z-index: 5;
+}
+
+.auth .form-box.register {
+  left: 0;
+  transform: translateX(0);
+  opacity: 0;
+  z-index: 1;
+}
+
+.auth .container.active .form-box.login {
+  transform: translateX(100%);
+  opacity: 0;
+  z-index: 1;
+}
+
+.auth .container.active .form-box.register {
+  transform: translateX(100%);
+  opacity: 1;
+  z-index: 5;
+}
+
+.auth form {
+  width: 100%;
+}
+
+.auth p {
+  font-size: 13.5px;
+  color: #4e4b46;
+  margin-bottom: 20px;
+  font-weight: 300;
+}
+
+/* ── THE SLIDING CANVAS PANEL ENGINE ── */
+.auth .toggle-box {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 50%;
+  height: 100%;
+  z-index: 10;
+  overflow: hidden;
+  border-radius: 120px 28px 28px 120px;
+  transition: transform 1.5s cubic-bezier(0.76, 0, 0.24, 1), border-radius 1.2s cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+.auth .container.active .toggle-box {
+  transform: translateX(-100%);
+  border-radius: 28px 120px 120px 28px;
+}
+
+.auth .toggle-box::before {
+  content: "";
+  position: absolute;
+  left: -100%;
+  top: 0;
+  width: 200%;
+  height: 100%;
+  background: #46513f;
+  background-image:
+    radial-gradient(ellipse at 30% 40%, rgba(141, 151, 115, 0.35) 0%, transparent 55%),
+    radial-gradient(ellipse at 70% 70%, rgba(181, 157, 132, 0.2) 0%, transparent 45%);
+  transition: transform 1.8s cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+.auth .container.active .toggle-box::before {
+  transform: translateX(50%);
+}
+
+/* ── PANEL CONTENTS INDIVIDUAL CONTROLS ── */
+.auth .toggle-panel {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 0 36px;
+  box-sizing: border-box;
+  color: #f5f0e6;
+  text-align: center;
+  transition: transform 2s cubic-bezier(0.76, 0, 0.24, 1), opacity 0.8s ease;
+}
+
+.auth .toggle-left {
+  transform: translateX(-120%);
+  opacity: 0;
+}
+
+.auth .container.active .toggle-left {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.auth .toggle-right {
+  right: 0;
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.auth .container.active .toggle-right {
+  transform: translateX(120%);
+  opacity: 0;
+}
+
+/* Text Element Fonts Definitions */
+.auth h1, .auth .toggle-panel h1 {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 32px;
+  font-weight: 600;
+  color: #2a2926;
+  margin-bottom: 4px;
+}
+
+.auth .toggle-panel h1 {
+  color: #f5f0e6;
+  font-style: italic;
+  font-weight: 300;
+  font-size: 34px;
+}
+
+.auth .toggle-panel p {
+  color: rgba(245, 240, 230, 0.75);
+  margin-bottom: 24px;
+}
+
+/* ── INPUT SYSTEM MAPPING ── */
+.auth .input-box,
+.auth .role-select-group {
+  position: relative;
+  margin: 8px 0;
+  width: 100%;
+}
+
+.auth .input-box input, .auth .role-select-menu {
+  width: 100%;
+  padding: 10px 48px 10px 16px;
+  background: #f5f0e6;
+  border-radius: 10px;
+  border: 1px solid rgba(156, 135, 114, 0.3);
+  font-size: 14px;
+  color: #2a2926;
+  outline: none;
+  box-sizing: border-box;
+  font-family: "DM Sans", sans-serif;
+  transition: all 0.25s ease;
+}
+
+.auth .input-box input:focus,
+.auth .role-select-menu:focus {
+  border-color: #737b5c;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(115, 123, 92, 0.1);
+}
+
+.auth .input-box i {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 18px;
+  color: #b59d84;
+  pointer-events: none;
+}
+
+.auth .btn {
+  width: 100%;
+  height: 42px;
+  background: #46513f;
+  border-radius: 10px;
+  border: none;
+  color: #f5f0e6;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  margin-top: 6px;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 12px rgba(70, 81, 63, 0.2);
+  transition: all 0.25s ease;
+}
+
+.auth .btn:hover {
+  background: #2a2926;
+  box-shadow: 0 6px 20px rgba(42, 41, 38, 0.25);
+  transform: translateY(-1px);
+}
+
+.auth .toggle-panel .btn {
+  width: 150px;
+  height: 44px;
+  background: transparent;
+  border: 1.5px solid rgba(248, 245, 239, 0.65);
+  box-shadow: none;
+}
+
+.auth .toggle-panel .btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: #f5f0e6;
+}
+
+/* ── COMPONENT REQUIREMENT DRAWER MODULES ── */
+.auth .password-requirements {
+  max-height: 0;
+  overflow: hidden;
+  background: rgba(70, 81, 63, 0.04);
+  border-radius: 8px;
+  padding: 0 12px;
+  transition: max-height 0.3s ease, border-color 0.3s ease;
+  text-align: left;
+}
+
+.auth .password-requirements.has-content {
+  max-height: 150px;
+  padding: 10px 12px;
+  margin-top: 6px;
+  border: 1px solid rgba(156, 135, 114, 0.15);
+}
+
+.auth .req-title {
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  text-transform: uppercase;
+  margin-bottom: 4px !important;
+  letter-spacing: 0.5px;
+}
+
+.auth .password-requirements ul {
+  padding: 0; margin: 0; list-style: none;
+}
+
+.auth .password-requirements li {
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 2px 0;
+}
+
+.auth .password-requirements li.invalid { color: #a85c3a; }
+.auth .password-requirements li.valid { color: #46513f; font-weight: 500; }
+
+.auth .password-toggle-btn {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  z-index: 5;
+}
+
+.auth .confirm-error-message {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  background: rgba(214, 69, 69, 0.04);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  text-align: left;
+}
+
+.auth .confirm-error-message.is-visible {
+  max-height: 40px;
+  opacity: 1;
+  padding: 6px 12px;
+  margin-top: 6px;
+  border: 1px solid rgba(214, 69, 69, 0.15);
+}
+
+.auth .confirm-error-message span {
+  font-size: 12px; color: #d64545; font-weight: 500; margin-left: 6px;
+}
+
+/* ── MODAL INTERACTION POPUPS ── */
+.auth .custom-popup-overlay {
+  position: fixed; inset: 0;
+  background: rgba(42, 41, 38, 0.4);
+  backdrop-filter: blur(4px);
+  z-index: 10000;
+  display: flex; justify-content: center; align-items: center;
+  opacity: 0; visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.auth .custom-popup-overlay.show { opacity: 1; visibility: visible; }
+
+.auth .custom-popup-box {
+  background: #fdfcf9;
+  border: 1px solid rgba(181, 157, 132, 0.3);
+  border-radius: 20px; padding: 2rem;
+  width: 100%; max-width: 360px; text-align: center;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+  transform: scale(0.9) translateY(10px);
+  transition: transform 0.3s ease;
+}
+
+.auth .custom-popup-overlay.show .custom-popup-box { transform: scale(1) translateY(0); }
+
+.auth .popup-icon-wrap {
+  width: 50px; height: 50px; border-radius: 50%; background: rgba(70, 81, 63, 0.08);
+  color: #46513f; display: inline-flex; justify-content: center; align-items: center; font-size: 28px; margin-bottom: 1rem;
+}
+
+.auth .popup-icon-wrap.error-state { background: rgba(214, 69, 69, 0.08); color: #d64545; }
+.auth .popup-title { font-family: "Cormorant Garamond", serif; font-size: 24px; color: #2a2926; margin-bottom: 0.5rem; }
+.auth .popup-msg { font-size: 13.5px; color: #4e4b46; margin-bottom: 1.5rem; }
+.auth .popup-confirm-btn {
+  width: 100%; height: 42px; background: #46513f; color: #f5f0e6; border: none; border-radius: 8px; cursor: pointer;
+}
+
+.auth .mobile-switch-text { display: none; }
+
+/* ── RESPONSIVE VIEWPORT BREAKPOINTS ── */
+@media screen and (max-width: 960px) {
+  .auth .container { width: 95%; height: auto; min-height: 540px; }
+}
+
+@media screen and (max-width: 768px) {
+  .auth .container { flex-direction: column; height: auto; background: transparent; box-shadow: none; border: none; }
+  .auth .toggle-box { display: none !important; }
+  .auth .form-box { position: relative; width: 100%; height: auto; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); opacity: 1 !important; transform: none !important; }
+  .auth .mobile-switch-text { display: block; margin-top: 14px; text-align: center; }
+  .auth .switch-link-btn { background: none; border: none; color: #46513f; font-weight: 700; cursor: pointer; text-decoration: underline; }
+
+  .auth .container:not(.active) .form-box.login { display: flex; z-index: 1; }
+  .auth .container:not(.active) .form-box.register { display: none; }
+  .auth .container.active .form-box.login { display: none; }
+  .auth .container.active .form-box.register { display: flex; z-index: 1; }
+}
+
+.auth .form-box h1,
+.auth .form-box p,
+.auth .form-box .input-box,
+.auth .form-box .role-select-group,
+.auth .form-box .form-options-row,
+.auth .form-box .btn,
+.auth .form-box .mobile-switch-text {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.auth .form-box.login h1 { transition-delay: 0.5s; }
+.auth .form-box.login .input-box:nth-of-type(1) { transition-delay: 0.9s; }
+.auth .form-box.login .input-box:nth-of-type(2) { transition-delay: 0.7s; }
+.auth .form-box.login .form-options-row { transition-delay: 0.8s; }
+.auth .form-box.login .btn { transition-delay: 0.9s; }
+.auth .form-box.login .mobile-switch-text { transition-delay: 1s; }
+
+.auth .form-box.register h1 { transition-delay: 0.9s; }
+.auth .form-box.register .input-box:nth-of-type(1) { transition-delay: 0.9s; }
+.auth .form-box.register .input-box:nth-of-type(2) { transition-delay: 0.7s; }
+.auth .form-box.register .role-select-group { transition-delay: 0.8s; }
+.auth .form-box.register .password-group { transition-delay: 0.9s; }
+.auth .form-box.register .confirm-password-group { transition-delay: 1s; }
+.auth .form-box.register .btn { transition-delay: 1.1s; }
+.auth .form-box.register .mobile-switch-text { transition-delay: 1.2s; }
+
+.auth .container:not(.active) .form-box.login h1,
+.auth .container:not(.active) .form-box.login p,
+.auth .container:not(.active) .form-box.login .input-box,
+.auth .container:not(.active) .form-box.login .form-options-row,
+.auth .container:not(.active) .form-box.login .btn,
+.auth .container:not(.active) .form-box.login .mobile-switch-text,
+.auth .container.active .form-box.register h1,
+.auth .container.active .form-box.register p,
+.auth .container.active .form-box.register .input-box,
+.auth .container.active .form-box.register .role-select-group,
+.auth .container.active .form-box.register .btn,
+.auth .container.active .form-box.register .mobile-switch-text {
+  opacity: 1;
+  transform: translateY(0);
+}

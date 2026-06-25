@@ -310,7 +310,14 @@ main .section.highlight {
   --text-muted: #666666;             /* Secondary descriptive copy gray */
   --forest-green: #2d3b32;           /* Core dark green accent */
   --accent-blush: #e5b3af;           /* Reference signature soft pink badge background */
-  --accent-blush-light: #f5eae6;     /* Tint panel accent fill background */
+  --accent-blush-light: #f5eae6;   
+  
+   --nav-bg-cream: #f6f5f0;
+  --nav-text-dark: #2a2926;
+  --nav-text-gold: #b9925a;
+  --nav-forest-dark: #2e362a;
+  --nav-circle-bg: #eae7df;
+  --theme-rust: #c0532e;   /* Tint panel accent fill background */
   
   --body-font-family: 'DM Sans', system-ui, sans-serif;
   --heading-font-family: 'DM Sans', system-ui, sans-serif;

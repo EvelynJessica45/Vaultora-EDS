@@ -31,7 +31,7 @@ export async function initializeEmailJS() {
 export async function sendOutbidNotification(previousBidderEmail, productName, newAmount, productId) {
   if (!window.emailjs) return console.warn("⚠️ EmailJS SDK unavailable.");
   
-  const rebidUrl = `${window.location.origin}/my-bid-details.html?id=${encodeURIComponent(productId)}`;
+  const rebidUrl = `${window.location.origin}/my-bid-details?id=${encodeURIComponent(productId)}`;
   const templateParams = {
     to_email: previousBidderEmail,
     product_name: productName,
@@ -45,7 +45,7 @@ export async function sendOutbidNotification(previousBidderEmail, productName, n
 export async function sendVerificationEmail(name, email, token) {
   if (!window.emailjs) return console.warn("⚠️ EmailJS SDK offline.");
   
-  const verifyLink = `${window.location.origin}/verify.html?token=${token}`;
+  const verifyLink = `${window.location.origin}/verify?token=${token}`;
   const templateParams = {
     name: name,
     email: email,

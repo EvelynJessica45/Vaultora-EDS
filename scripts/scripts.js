@@ -241,6 +241,9 @@ import {
   buildBlock,
 } from './aem.js';
  
+import { initializeStore } from './storage.js';
+import { initializeEmailJS } from './notification-service.js';
+import { initializeAWS } from './aws-service.js';
 /**
  * load fonts.css and set a session storage flag
  */
@@ -429,6 +432,10 @@ function loadDelayed() {
 }
  
 async function loadPage() {
+   await initializeAWS();
+  await initializeEmailJS();
+  await initializeStore();
+    
   await loadEager(document);
   await loadLazy(document);
   loadDelayed();

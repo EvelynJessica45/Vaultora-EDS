@@ -65,8 +65,8 @@ export function getProducts() {
       product.auctionStatus = "inactive";
       
       const allBids = lsGet(LS_BIDS) || [];
-      const productBids = allBids.filter(b => b.productId === product.id);
-
+// Change this line inside getProducts() for complete data safety:
+const productBids = allBids.filter(b => String(b.productId) === String(product.id));
       if (productBids.length > 0) {
         const initialPrice = Number(product.startingBid || product.price || 0);
         const validOverBids = productBids.filter(b => Number(b.amount) >= initialPrice);
@@ -105,8 +105,14 @@ export function getBids() { return lsGet(LS_BIDS) || []; }
 export async function saveBids(newBidsArray) {
   const currentBidsInStorage = lsGet(LS_BIDS) || [];
   
-  if (newBidsArray.length > currentBidsInStorage.length) {
-    const freshNewBid = newBidsArray[newBidsArray.length - 1];
+  // SANITIZATION LAYER: Ensure every single bid amount is a true mathematical number
+  const sanitizedBidsArray = newBidsArray.map(bid => ({
+    ...bid,
+    amount: parseFloat(bid.amount) || 0 // Converts string representations like "1200" directly into numbers
+  }));
+  
+  if (sanitizedBidsArray.length > currentBidsInStorage.length) {
+    const freshNewBid = sanitizedBidsArray[sanitizedBidsArray.length - 1];
     const pastProductBids = currentBidsInStorage
       .filter(b => b.productId === freshNewBid.productId)
       .sort((a, b) => Number(b.amount) - Number(a.amount));
@@ -123,7 +129,9 @@ export async function saveBids(newBidsArray) {
       }
     }
   }
-  lsSet(LS_BIDS, newBidsArray);
+  
+  // Save the numbers instead of string text blocks
+  lsSet(LS_BIDS, sanitizedBidsArray);
   await syncCloudPayload();
 }
 
