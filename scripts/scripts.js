@@ -392,7 +392,8 @@ async function loadEager(doc) {
  */
 async function loadLazy(doc) {
   loadHeader(doc.querySelector('header'));
- 
+       //test
+
   const main = doc.querySelector('main');
   await loadSections(main);
  

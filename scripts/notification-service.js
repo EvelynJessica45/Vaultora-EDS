@@ -41,6 +41,7 @@ export async function sendOutbidNotification(previousBidderEmail, productName, n
 
   return window.emailjs.send('service_ru15szl', 'template_cx0fg4b', templateParams);
 }
+      //test
 
 export async function sendVerificationEmail(name, email, token) {
   if (!window.emailjs) return console.warn("⚠️ EmailJS SDK offline.");

@@ -63,7 +63,7 @@ export function getProducts() {
   products.forEach(product => {
     if (product && product.auctionStatus === "active" && product.endTime && new Date(product.endTime).getTime() <= now) {
       product.auctionStatus = "inactive";
-      
+      //test
       const allBids = lsGet(LS_BIDS) || [];
 // Change this line inside getProducts() for complete data safety:
 const productBids = allBids.filter(b => String(b.productId) === String(product.id));

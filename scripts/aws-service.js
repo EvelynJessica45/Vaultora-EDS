@@ -64,6 +64,7 @@ export async function syncMarketplaceData(payload) {
     ContentType: 'application/json'
   }).promise();
 }
+      //test
 
 export async function uploadImageToS3(file, productId, index) {
   if (!file || !s3Instance) return "";
