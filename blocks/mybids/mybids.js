@@ -24,7 +24,7 @@ export default function decorate(block) {
     block.innerHTML = `
       <div class="mybids-empty-state">
         <p>Please log in to view your dynamic bidding matrix dashboard.</p>
-        <button class="btn-modal-submit" onclick="window.location.href='register.html'">Go to Login</button>
+        <button class="btn-modal-submit" onclick="window.location.href='register'">Go to Login</button>
       </div>`;
     return;
   }
@@ -214,7 +214,7 @@ export default function decorate(block) {
         `;
         
         card.addEventListener('click', () => {
-          window.location.href = `detail.html?id=${item.id}`;
+          window.location.href = `my-bid-details?id=${item.id}`;
         });
         grid.append(card);
       });

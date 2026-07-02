@@ -1,0 +1,206 @@
+/* ==========================================================================
+   AEM EDGE DELIVERY SERVICES AUTHORING METADATA SAFE INTERCEPT
+   ========================================================================== */
+.orders > div {
+  border-bottom: 1px solid rgba(74, 87, 69, 0.12);
+  padding: 0.75rem 0.5rem;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 0.9rem;
+  display: block;
+}
+
+.orders.orders-pdp-rendered > div { display: none !important; }
+.orders.orders-pdp-rendered .main-content { display: block !important; }
+
+/* ==========================================================================
+   VAULTORA CONSOLIDATED SLIM MASTER-DETAIL CHANNELS (THEME SYNCED)
+   ========================================================================== */
+.main-content {
+  max-width: 680px; 
+  margin: 2.5rem auto;
+  padding: 0 1.25rem;
+  box-sizing: border-box;
+}
+
+.orders-title-row {
+  margin-bottom: 2rem;
+  border-bottom: 1px solid rgba(74, 87, 69, 0.08);
+  padding-bottom: 1rem;
+}
+
+.page-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  color: #2c3529;
+  font-size: 2rem; 
+  font-weight: 400;
+  margin: 0 0 0.35rem 0;
+}
+
+/* Accented dynamic italics for page title layer blocks */
+.page-title em {
+  font-style: italic;
+  color: #b9925a; /* Smooth luxury gold signature token */
+}
+
+.page-sub {
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  color: #a19f9a;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+/* Accented italics for tracking totals summary text lines */
+.page-sub em {
+  font-style: italic;
+  color: #b9925a;
+  text-transform: none;
+  font-family: 'Playfair Display', serif;
+  font-size: 0.8rem;
+  letter-spacing: 0;
+  font-weight: 600;
+}
+
+.orders-master-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+/* Minimal Scannable Rows Architecture */
+.minimal-order-row-card {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  background-color: #ffffff;
+  border: 1px solid #edece9;
+  border-radius: 6px; 
+  padding: 1.15rem;
+  cursor: pointer;
+  box-shadow: 0 3px 12px rgba(44, 53, 41, 0.01);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.minimal-order-row-card:hover {
+  border-color: #b9925a;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(185, 146, 90, 0.06);
+}
+
+.minimal-thumb-frame {
+  width: 64px;
+  height: 64px;
+  border-radius: 4px;
+  overflow: hidden;
+  background-color: #fbfbfa;
+  border: 1px solid #edece9;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.minimal-thumb-frame img { max-width: 100%; max-height: 100%; object-fit: contain; }
+
+.minimal-details-frame { flex: 1; display: flex; flex-direction: column; gap: 0.2rem; }
+.minimal-title-line { display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+.minimal-item-title { font-family: 'Playfair Display', serif; font-size: 1.05rem; font-weight: 500; margin: 0; color: #111111; }
+
+.minimal-status-badge { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; background-color: #ecfdf5; color: #067a53; padding: 0.2rem 0.5rem; border-radius: 2px; }
+.minimal-item-desc { margin: 0; font-size: 0.8rem; color: #767676; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
+
+.minimal-price-line { display: flex; justify-content: space-between; align-items: center; margin-top: 0.15rem; }
+.minimal-price-val { font-family: 'Playfair Display', serif; font-weight: 600; color: #46513f; font-size: 1.05rem; }
+
+.btn-invoice-expand-trigger {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: none;
+  background-color: #f5f4f0;
+  color: #46513f;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s ease;
+}
+.minimal-order-row-card:hover .btn-invoice-expand-trigger { background-color: #46513f; color: #ffffff; }
+
+/* ==========================================================================
+   HIGH-FIDELITY SLIM SERIF ACCENTED DIALOG OVERLAYS
+   ========================================================================== */
+.pdp-modal-overlay-shroud {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background-color: rgba(26, 26, 26, 0.15);
+  backdrop-filter: blur(10px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.pdp-modal-overlay-shroud.active { opacity: 1; }
+
+.pdp-modal-content-card {
+  background-color: #ffffff;
+  border: 1px solid #edece9;
+  border-radius: 6px; 
+  width: 90%;
+  max-width: 480px; 
+  padding: 2rem;
+  box-shadow: 0 20px 50px rgba(44,53,41,0.06);
+  position: relative;
+  max-height: 85vh; 
+  overflow-y: auto; 
+  transform: translateY(15px);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-sizing: border-box;
+}
+.pdp-modal-overlay-shroud.active .pdp-modal-content-card { transform: translateY(0); }
+
+.btn-close-modal-canvas { position: absolute; top: 1.25rem; right: 1.25rem; background: none; border: none; color: #a19f9a; cursor: pointer; transition: color 0.2s; padding: 4px; display: flex; align-items: center; justify-content: center; }
+.btn-close-modal-canvas:hover { color: #ff4d6d; }
+
+.receipt-header-row { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f1f0ec; padding-bottom: 0.85rem; margin-bottom: 1rem; }
+.receipt-meta-block { display: flex; flex-direction: column; gap: 2px; }
+.receipt-id-lbl { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.05em; color: #767676; text-transform: uppercase; }
+.receipt-id-lbl .hash-id { font-family: 'Playfair Display', serif; font-style: italic; font-size: 0.8rem; color: #b9925a; font-weight: 600; }
+.receipt-date-val { font-size: 0.78rem; color: #a19f9a; }
+.luxury-status-badge.success { background-color: #ecfdf5; color: #067a53; font-size: 0.65rem; font-weight: 700; padding: 0.25rem 0.65rem; border-radius: 2px; text-transform: uppercase; }
+
+.receipt-manifest-body { display: flex; gap: 1rem; align-items: center; margin-bottom: 1.25rem; }
+.image-arch-frame { width: 56px; height: 56px; border-radius: 4px; border: 1px solid #edece9; display: flex; align-items: center; justify-content: center; flex-shrink: 0; background-color: #fbfbfa; }
+.image-arch-frame img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.manifest-item-title { font-family: 'Playfair Display', serif; font-size: 1.25rem; font-weight: 400; margin: 0; color: #111111; }
+.fulfillment-tier-label { font-size: 0.78rem; color: #767676; }
+.fulfillment-tier-label strong { color: #46513f; text-transform: uppercase; font-size: 0.7rem; letter-spacing: 0.02em; }
+
+.receipt-summary-split { display: flex; flex-direction: column; gap: 1.25rem; border-top: 1px solid #f1f0ec; padding-top: 1.25rem; }
+
+.summary-block-heading { font-family: 'Playfair Display', serif; font-style: italic; color: #46513f; font-size: 0.95rem; font-weight: 600; margin: 0 0 0.65rem 0; letter-spacing: 0.02em; border-bottom: 1px solid #f1f0ec; padding-bottom: 2px; }
+.address-grid-matrix { display: grid; grid-template-columns: 85px 1fr; row-gap: 0.35rem; column-gap: 0.5rem; font-size: 0.8rem; line-height: 1.4; color: #555555; }
+
+.grid-label { font-weight: 700; color: rgba(44, 53, 41, 0.4); text-transform: uppercase; font-size: 0.62rem; letter-spacing: 0.04em; }
+.grid-value.core-name { font-weight: 600; color: #111111; }
+
+.financial-ledger-table { display: flex; flex-direction: column; gap: 0.4rem; }
+.ledger-line-row { display: flex; justify-content: space-between; font-size: 0.82rem; color: #555555; }
+.ledger-detail-note { font-size: 0.7rem; color: #067a53; margin-top: -0.15rem; margin-bottom: 0.1rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.02em; }
+.font-numeric { font-variant-numeric: tabular-nums; font-weight: 500; color: #111111; }
+
+.ledger-line-row.total-bold {
+  border-top: 1px dashed #edece9;
+  padding-top: 0.55rem;
+  margin-top: 0.25rem;
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #46513f;
+  font-family: 'Playfair Display', Georgia, serif;
+}
+
+@media (max-width: 600px) {
+  .pdp-modal-content-card { padding: 1.5rem; max-width: 95%; }
+  .receipt-header-row { flex-direction: column; align-items: flex-start; gap: 8px; }
+}

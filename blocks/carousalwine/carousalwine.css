@@ -1,0 +1,273 @@
+/* ==========================================================================
+   BLOCK PARENT LAYER CORRECTIONS: FORCE STANDALONE CONTAINER FLOW
+   ========================================================================== */
+.section.expand-carousel-section {
+  height: auto !important;
+  min-height: 100vh !important;
+  display: block !important;
+  overflow: visible !important;
+}
+
+.carousalwine-wrapper {
+  position: relative !important;
+  width: 100% !important;
+  height: auto !important;
+  min-height: 90vh;
+  margin-top: 5rem;
+  z-index: 99 !important;
+  pointer-events: auto !important;
+}
+
+/* Core inner block wrapper — premium light luxury cream backdrop */
+.carousalwine {
+  width: 100%;
+  height: 580px; 
+  display: flex !important;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center; 
+  padding: 0 2rem;     
+  box-sizing: border-box;
+  opacity: 0;
+  transform: translate3d(0, 40px, 0);
+  background-color: #fdfbf7; /* Premium light cream canvas */
+  position: relative;
+  box-shadow: inset 0 1px 0 rgba(45, 59, 50, 0.06);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+/* Subtle organic paper-grain texture */
+.carousalwine::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  width: 100%; height: 100%;
+  opacity: 0.02;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  z-index: 1;
+}
+
+.carousalwine.stage-active-flow {
+  opacity: 1 !important;
+  transform: translate3d(0, 0, 0) !important;
+}
+
+/* ==========================================================================
+   TYPOGRAPHY — Perfect Centered Balance
+   ========================================================================== */
+/* ==========================================================================
+   TYPOGRAPHY — Perfect Centered 3-Line Balance
+   ========================================================================== */
+.carousalwine .carousel-luxury-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center; 
+  text-align: center;   
+  margin-bottom: 2.5rem;
+  z-index: 15;
+}
+
+/* Line 1: Monospace Gold Tracked Label */
+.carousalwine .carousel-pre-title {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 4px;
+  color: #b9925a; /* Luxury Metallic Gold Accent */
+  text-transform: uppercase;
+  margin-bottom: 0.4rem;
+}
+
+/* Line 2: Large Forest Green Main Accent */
+.carousalwine .carousel-main-title {
+  font-family: 'Playfair Display', serif;
+  font-weight: 400;
+  font-size: 3.5rem;
+  letter-spacing: 0.04em;
+  color: #1a3020; /* Deep Estate Forest Green */
+  text-transform: uppercase;
+  margin: 0;
+  line-height: 1;
+}
+
+/* Line 3: Muted, Intimate Serif Sub-title */
+.carousalwine .carousel-sub-title {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 1.6rem;
+  color: #594433; /* Soft earthy clay anchor */
+  margin-top: 0.3rem;
+}
+
+.carousalwine .carousel-title-divider {
+  width: 100px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, #b9925a 50%, transparent 100%);
+  margin-top: 1.2rem;
+}
+
+/* ==========================================================================
+   CARDS — Cathedral Vault Arches (7-Card Display)
+   ========================================================================== */
+.carousalwine .perspective-slider-container {
+  width: 100%;
+  max-width: 1500px; 
+  height: 350px;     
+  display: flex;
+  align-items: center;
+  position: relative;
+  perspective: 2000px;
+  z-index: 2;
+  margin: 0 auto;
+}
+.carousalwine .slider-track {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transform-style: preserve-3d;
+}
+
+/* Premium Cathedral Vault Arch Silhouette */
+.carousalwine .perspective-card {
+  position: absolute;
+  width: 200px;  
+  height: 290px; 
+  background: #ffffff;
+  border: 1px solid rgba(185, 146, 90, 0.15) !important;
+  /* Signature wine cellar arch profile */
+  border-radius: 100px 100px 4px 4px;
+  overflow: hidden;
+  cursor: pointer;
+  transform-style: preserve-3d;
+  pointer-events: auto;
+  box-shadow: 0 12px 35px rgba(26, 48, 32, 0.05);
+  transition: transform 0.75s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.4s ease,
+              box-shadow 0.4s ease;
+}
+
+.carousalwine .card-bg-image-layer {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center top; /* Keeps wine labels & necks perfectly scaled */
+  opacity: 0.95; 
+  z-index: 1;
+  transition: transform 0.7s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.carousalwine .perspective-card.center-focus:hover .card-bg-image-layer {
+  transform: scale(1.05);
+}
+
+/* Clear Middle/Top Profile: Shading moved entirely to the baseline for bottle clarity */
+.carousalwine .card-content-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  padding: 2.2rem 1.2rem 1.5rem 1.2rem;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center; 
+  text-align: center;   
+  z-index: 2;
+  /* Crystal clear top half, strong high-contrast gradient anchor text base */
+  background: linear-gradient(180deg, rgba(26, 48, 32, 0) 0%, rgba(26, 48, 32, 0.1) 60%, rgba(26, 48, 32, 0.85) 100%);
+}
+
+.carousalwine .card-index-num {
+  font-family: 'DM Sans', monospace;
+  font-size: 11px;
+  color: #b9925a; /* Gold Accent */
+  letter-spacing: 2px;
+  font-weight: 600;
+}
+
+.carousalwine .perspective-card h3 {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: 1.35rem;
+  font-weight: 500;
+  color: #ffffff; 
+  margin: auto 0 0.3rem 0;
+  line-height: 1.2;
+  text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+.carousalwine .card-lot-counter {
+  font-family: var(--body-font-family);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  color: #1a3020; /* Estate Forest Green text info */
+  background: rgba(255, 255, 255, 0.9); /* Premium white badge backing */
+  padding: 2px 8px;
+  border-radius: 1px;
+  text-transform: uppercase;
+  margin-bottom: 0.6rem;
+  display: inline-block;
+}
+
+.carousalwine .card-action-link {
+  font-family: var(--body-font-family);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #b9925a; /* Gold Accent link */
+  text-decoration: none;
+  border-bottom: 1px solid rgba(185, 146, 90, 0.4);
+  padding-bottom: 1px;
+  opacity: 0;
+  transform: translate3d(0, 10px, 0);
+  transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* ==========================================================================
+   ACTIVE CENTER HALO & 3D POSITIONS (7 simultaneous cards)
+   ========================================================================== */
+.carousalwine .perspective-card.center-focus {
+  transform: translate3d(0, -10px, 160px) scale(1.08);
+  z-index: 25;
+  opacity: 1;
+  border-color: #b9925a !important;
+  box-shadow: 0 25px 50px rgba(26, 48, 32, 0.15);
+}
+.carousalwine .perspective-card.center-focus .card-action-link { opacity: 1; transform: translate3d(0, 0, 0); }
+
+/* Spatial Wing Matrices */
+.carousalwine .perspective-card.left-inner { transform: translate3d(-150px, 0, 95px) rotateY(16deg); z-index: 15; opacity: 0.85; }
+.carousalwine .perspective-card.right-inner { transform: translate3d(150px, 0, 95px) rotateY(-16deg); z-index: 15; opacity: 0.85; }
+
+.carousalwine .perspective-card.left-mid { transform: translate3d(-290px, 5px, 15px) rotateY(26deg) scale(0.92); z-index: 9; opacity: 0.65; }
+.carousalwine .perspective-card.right-mid { transform: translate3d(290px, 5px, 15px) rotateY(-26deg) scale(0.92); z-index: 9; opacity: 0.65; }
+
+.carousalwine .perspective-card.left-outer { transform: translate3d(-415px, 10px, -55px) rotateY(36deg) scale(0.84); z-index: 4; opacity: 0.35; }
+.carousalwine .perspective-card.right-outer { transform: translate3d(415px, 10px, -55px) rotateY(-36deg) scale(0.84); z-index: 4; opacity: 0.35; }
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+  .carousalwine .perspective-slider-container { height: 310px; }
+  .carousalwine .perspective-card.left-outer, .carousalwine .perspective-card.right-outer { display: none; }
+  .carousalwine .perspective-card.left-mid { transform: translate3d(-210px, 0, 20px) scale(0.9); }
+  .carousalwine .perspective-card.right-mid { transform: translate3d(210px, 0, 20px) scale(0.9); }
+}
+
+@media (max-width: 768px) {
+  .carousalwine { height: 500px; }
+  .carousalwine .carousel-main-title { font-size: 2.4rem; }
+  .carousalwine .perspective-card { width: 160px; height: 230px; border-radius: 80px 80px 4px 4px; }
+  .carousalwine .perspective-card.left-inner { transform: translate3d(-100px, 0, 30px) scale(0.85); }
+  .carousalwine .perspective-card.right-inner { transform: translate3d(100px, 0, 30px) scale(0.85); }
+  .carousalwine .perspective-card.left-mid, .carousalwine .perspective-card.right-mid { display: none; }
+}

@@ -1,0 +1,518 @@
+/* ==========================================================================
+   MY LISTINGS LUXURY DASHBOARD FLUSH STRUCTURES
+   ========================================================================== */
+
+.mylistings-dashboard {
+  width: 100%;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+/* Header Section Formatting */
+.mylistings-header {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.mylistings-title {
+  margin: 0;
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.6rem, 2.8vw, 2.25rem);
+  color: var(--nav-forest-dark);
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  line-height: 1.1;
+}
+
+.mylistings-title em {
+  font-style: italic;
+  font-family: 'Playfair Display', serif;
+  color: var(--nav-text-gold);
+}
+
+.mylistings-subtitle {
+  font-family: var(--body-font-family);
+  font-size: var(--body-font-size-s);
+  color: var(--text-muted);
+  line-height: 1.4;
+  margin: 0;
+}
+
+/* ==========================================================================
+   METRICS HIGHLIGHT CONSOLE PANEL
+   ========================================================================== */
+.mylistings-stats-bar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1.25rem;
+  margin-top: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.mylistings-stat-card {
+  background: #ffffff;
+  border: 1px solid var(--nav-circle-bg);
+  border-radius: 14px;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(42, 41, 38, 0.04);
+  cursor: pointer;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.mylistings-stat-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--nav-text-gold);
+}
+
+.mylistings-stat-card h3 {
+  font-size: 1.85rem;
+  font-weight: 600;
+  color: var(--nav-forest-dark);
+  margin: 0 0 0.25rem 0;
+  line-height: 1.2;
+}
+
+.mylistings-stat-card p {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  font-weight: 500;
+  margin: 0;
+}
+
+/* ==========================================================================
+   SEARCH & FILTER BAR ALIGNMENTS
+   ========================================================================== */
+.mylistings-filter-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border-top: 1px solid #eae7df;
+  padding-top: 0.65rem;
+  padding-bottom: 0.75rem;
+  margin-bottom: 2rem;
+}
+
+@media (max-width: 760px) {
+  .mylistings-filter-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+.mylistings-search-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #fff;
+  border: 1px solid var(--nav-circle-bg);
+  border-radius: 999px;
+  padding: 0.5rem 1rem;
+  width: 100%;
+  max-width: 360px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+  position: relative;
+  box-sizing: border-box;
+}
+
+@media (min-width: 760px) {
+  .mylistings-search-wrap { width: 260px; }
+}
+
+.mylistings-search-wrap input {
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: var(--body-font-family);
+  font-size: var(--body-font-size-s);
+  color: var(--text-color);
+  width: 100%;
+  padding: 0;
+}
+
+.mylistings-search-wrap:focus-within {
+  border-color: var(--nav-text-gold);
+  box-shadow: 0 0 0 2px rgba(185, 146, 90, 0.15);
+}
+
+.mylistings-select-wrap select {
+  font-family: var(--body-font-family);
+  font-size: var(--body-font-size-s);
+  color: var(--text-color);
+  background: var(--nav-bg-cream);
+  border: 1px solid var(--nav-circle-bg);
+  border-radius: 6px;
+  padding: 0.35rem 1.8rem 0.35rem 0.65rem;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23b9925a' stroke-width='1.5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.6rem center;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.mylistings-select-wrap select:hover,
+.mylistings-select-wrap select:focus-visible {
+  border-color: var(--nav-text-gold);
+}
+
+/* ==========================================================================
+   DYNAMIC CATEGORIES SECTIONS & CARDS GRID
+   ========================================================================== */
+.mylistings-sections-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+.mylistings-section {
+  width: 100%;
+  border-bottom: 1px solid #eae7df;
+  padding-bottom: 2rem;
+}
+
+.mylistings-section:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.mylistings-section-title {
+  font-family: var(--body-font-family);
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--nav-forest-dark);
+  margin: 0 0 1.25rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.mylistings-section-title svg {
+  color: var(--nav-text-gold);
+  flex-shrink: 0;
+}
+
+/* Unique Theme color overwrites for specific section titles */
+#listing-group-pending .mylistings-section-title svg { color: #d98e04; }
+#listing-group-completed .mylistings-section-title svg { color: #0f9d58; }
+#listing-group-no_bids .mylistings-section-title svg { color: #5c677d; }
+
+.mylistings-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 1.25rem;
+}
+
+@media (max-width: 768px) {
+  .mylistings-grid { grid-template-columns: 1fr; }
+}
+
+/* ==========================================================================
+   INDIVIDUAL DASHBOARD BID ITEM CARDS INTERIORS
+   ========================================================================== */
+.mylistings-item-card {
+  background: #ffffff;
+  border: 1px solid var(--nav-circle-bg);
+  border-radius: 14px;
+  padding: 1.25rem;
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  box-shadow: 0 4px 20px rgba(42, 41, 38, 0.04);
+  cursor: pointer;
+  position: relative;
+  box-sizing: border-box;
+  overflow: hidden;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.mylistings-item-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--nav-text-gold);
+  box-shadow: 0 6px 24px rgba(42, 41, 38, 0.08);
+}
+
+/* Vertical Side Indicator Borders */
+.border-indicator--leading { border-left: 4px solid #ff9d00 !important; }
+.border-indicator--won     { border-left: 4px solid #0f9d58 !important; }
+.border-indicator--outbid  { border-left: 4px solid #d9c80f !important; }
+.border-indicator--lost    { border-left: 4px solid #5c677d !important; }
+
+.mylistings-item-thumb {
+  flex-shrink: 0;
+}
+
+.mylistings-item-thumb img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid rgba(115,123,92,.12);
+}
+
+.mylistings-item-details {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.mylistings-item-name {
+  font-family: var(--body-font-family);
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: var(--nav-forest-dark);
+  line-height: 1.35;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mylistings-item-time {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* Badge System Status Pills */
+.mylistings-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 14px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  width: fit-content;
+}
+
+.mylistings-status-pill svg { flex-shrink: 0; }
+
+.status-leading { background: #eaf8ef; color: #1f8f4d; }
+.status-lost    { background: #f3f4f6; color: #5c677d; }
+.status-won-pending { background: #fff7e5; color: #d98e04; }
+.status-won-purchased { background: #e8fff1; color: #0f9d58; }
+
+/* Financial Values Context Side */
+.mylistings-item-financials {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.35rem;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.financial-value {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--nav-forest-dark);
+}
+
+/* ==========================================================================
+   EARLY TERMINATION CONTROLS BUTTON UI
+   ========================================================================== */
+.btn-end-auction-early {
+  margin-top: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--body-font-family);
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: #ffffff;
+  background: #e53935;
+  border: none;
+  border-radius: 6px;
+  padding: 0.4rem 0.75rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.btn-end-auction-early:hover {
+  background: #c62828;
+}
+
+/* Empty State / Fallbacks Containers */
+.mylistings-no-results {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: #ffffff;
+  border: 1px dashed var(--nav-circle-bg);
+  border-radius: 14px;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+/* ==========================================================================
+   ANIMATION ENHANCEMENTS — staggered entry, pulse, tilt, skeleton, count-up
+   ========================================================================== */
+
+/* Respect reduced motion globally for this block */
+@media (prefers-reduced-motion: reduce) {
+  .mylistings-item-card,
+  .mylistings-stat-card,
+  .mylistings-skeleton-card,
+  .mylistings-status-pill.status-leading {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* Page-load entrance for header + stats */
+.mylistings-header,
+.mylistings-stats-bar,
+.mylistings-filter-row {
+  animation: mlFadeUp 0.5s ease both;
+}
+.mylistings-stats-bar { animation-delay: 0.08s; }
+.mylistings-filter-row { animation-delay: 0.14s; }
+
+@keyframes mlFadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Gold underline reveal beneath title */
+.mylistings-title {
+  position: relative;
+  padding-bottom: 0.4rem;
+}
+.mylistings-title::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 2px;
+  width: 56px;
+  background: var(--nav-text-gold);
+  border-radius: 2px;
+  animation: mlUnderline 0.6s ease 0.3s both;
+}
+@keyframes mlUnderline {
+  from { width: 0; opacity: 0; }
+  to   { width: 56px; opacity: 1; }
+}
+
+/* Staggered card entrance — driven by --i custom property set in JS */
+.mylistings-item-card {
+  opacity: 0;
+  animation: mlCardIn 0.45s ease forwards;
+  animation-delay: calc(var(--i, 0) * 45ms);
+}
+@keyframes mlCardIn {
+  from { opacity: 0; transform: translateY(14px) scale(0.985); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Subtle 3D tilt on hover (mouse-position driven via JS custom props) */
+.mylistings-item-card {
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+.mylistings-item-card:hover {
+  transform: translateY(-4px) rotateX(var(--ry, 0deg)) rotateY(var(--rx, 0deg));
+}
+
+/* Image zoom-on-hover */
+.mylistings-item-thumb img {
+  transition: transform 0.35s ease, filter 0.35s ease;
+}
+.mylistings-item-card:hover .mylistings-item-thumb img {
+  transform: scale(1.06);
+}
+
+/* Live status pill gentle pulse */
+.status-leading .mylistings-status-pill,
+.mylistings-status-pill.status-leading {
+  position: relative;
+}
+.status-leading svg {
+  animation: mlPulseDot 1.8s ease-in-out infinite;
+}
+@keyframes mlPulseDot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%      { opacity: 0.4; transform: scale(0.8); }
+}
+
+/* Stat card count-up uses plain text, but add a soft glow flash on update */
+.mylistings-stat-card h3 {
+  transition: color 0.3s ease;
+}
+.mylistings-stat-card.is-updated h3 {
+  color: var(--nav-text-gold);
+}
+
+/* ── Skeleton loading shimmer (shown while first render is pending) ── */
+.mylistings-skeleton-card {
+  background: #ffffff;
+  border: 1px solid var(--nav-circle-bg);
+  border-radius: 14px;
+  padding: 1.25rem;
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+.mylistings-skeleton-thumb {
+  width: 80px;
+  height: 80px;
+  border-radius: 10px;
+  flex-shrink: 0;
+}
+.mylistings-skeleton-lines {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding-top: 0.25rem;
+}
+.mylistings-skeleton-line {
+  height: 12px;
+  border-radius: 6px;
+}
+.mylistings-skeleton-line.short { width: 60%; }
+
+.mylistings-skeleton-thumb,
+.mylistings-skeleton-line {
+  background: linear-gradient(90deg, #f0ede4 25%, #f8f6f0 37%, #f0ede4 63%);
+  background-size: 400% 100%;
+  animation: mlShimmer 1.4s ease infinite;
+}
+@keyframes mlShimmer {
+  0%   { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Empty state polish */
+.mylistings-no-results {
+  animation: mlFadeUp 0.4s ease both;
+}
+.mylistings-no-results svg {
+  color: var(--nav-text-gold);
+  opacity: 0.6;
+  margin-bottom: 0.75rem;
+}
+
+/* Section title entrance (subtle, runs once per render) */
+.mylistings-section {
+  animation: mlFadeUp 0.4s ease both;
+}
+

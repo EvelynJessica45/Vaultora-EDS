@@ -1,86 +1,86 @@
 /* ═══════════════════════════════════════════════════════════════
-   Vaultora — Production 100-Score Optimized EDS Footer Styles
+   Vaultora — Premium Cream Footer Theme (Universal System)
    ═══════════════════════════════════════════════════════════════ */
 
-/* Target core pipeline wrapper container avoiding any !important declarations */
+/* Target global footer wrapper classes across home page and subpages interchangeable */
+footer,
+.footer-container,
 .footer-wrapper {
-  background: var(--forest, #46513f);
-  content-visibility: auto; /* Postpones layout rendering steps outside viewport folds */
-  contain-intrinsic-size: 0 400px; /* Reserves layout structural space for stable rendering profiles */
+  background-color: var(--nav-forest-dark, #2e362a) !important;
+  display: block !important;
+  width: 100% !important;
+  clear: both;
 }
 
-.footer-container {
-  padding: 0;
-  margin: 0;
-}
-
-.footer-wrapper .footer {
-  color: #ffffff; /* Forced full brightness to comfortably pass text contrast audits */
+.footer {
+  color: #ffffff; 
   font-family: 'DM Sans', sans-serif;
-  margin-top: 80px;
+  background-color: var(--nav-forest-dark, #2e362a) !important;
+  display: block !important;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 /* ── Top decorative line rule ── */
-.footer-wrapper .footer-rule {
+.footer .footer-rule {
   height: 3px;
   background: linear-gradient(
     to right,
     transparent,
-    rgba(216, 199, 176, .35) 20%,
-    rgba(216, 199, 176, .55) 50%,
-    rgba(216, 199, 176, .35) 80%,
+    rgba(185, 146, 90, 0.2) 20%,
+    rgba(185, 146, 90, 0.5) 50%,
+    rgba(185, 146, 90, 0.2) 80%,
     transparent
   );
 }
 
 /* ── Main columns layout grid canvas ── */
-.footer-wrapper .footer-inner {
-  max-width: 1280px;
+.footer .footer-inner {
+  max-width: 1240px;
   margin: 0 auto;
-  padding: 56px 48px 40px;
+  padding: 4rem 2rem 2.5rem;
   display: grid;
-  grid-template-columns: 1.25fr 1fr 1fr 1fr; 
-  gap: 40px 48px;
+  grid-template-columns: 1.3fr 1fr 1fr 1fr; 
+  gap: 2.5rem 2rem;
   align-items: start;
-  grid-auto-rows: minmax(min-content, max-content); /* Stabilizes height variations */
 }
 
 /* ── Brand logo structure setup ── */
-.footer-wrapper .footer-logo-wrap {
+.footer .footer-logo-wrap {
   display: inline-block;
   margin-bottom: 16px;
-  width: 160px;  /* Aspect ratio containment fields */
-  height: 108px;
+  width: 140px;
+  height: auto;
 }
 
-.footer-wrapper .footer-logo-wrap picture img {
+.footer .footer-logo-wrap picture img {
   display: block;
   height: auto;
-  width: 160px;
+  width: 120px;
   max-width: 100%;
   opacity: .95;
 }
 
-.footer-wrapper .footer-tagline {
+.footer .footer-tagline {
   font-size: .85rem;
-  line-height: 1.7; /* Locks line heights */
+  line-height: 1.7; 
   color: #e0e6dc; 
   max-width: 240px;
   margin-bottom: 20px;
 }
 
-/* ── Social Interface Circle Anchors (Optimized for span.icon SVGs) ── */
-.footer-wrapper .footer-socials {
+/* ── Social Interface Circle Anchors ── */
+.footer .footer-socials {
   display: flex;
   gap: 12px;
   margin-top: 16px;
 }
 
-.footer-wrapper .footer-social-link {
-  width: 44px;
-  height: 44px;
+.footer .footer-social-link {
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
-  border: 1px solid #d8c7b0; /* Increased contrast border outlines */
+  border: 1px solid var(--nav-text-gold, #b9925a); 
   display: flex;
   align-items: center;
   justify-content: center;
@@ -89,81 +89,65 @@
   box-sizing: border-box;
 }
 
-.footer-wrapper .footer-social-link::before {
-  display: none !important;
-  content: "" !important;
-}
-
-.footer-wrapper .footer-social-link .icon,
-.footer-wrapper .footer-social-link span.icon {
+.footer .footer-social-link span.icon {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
 }
 
-.footer-wrapper .footer-social-link .icon img,
-.footer-wrapper .footer-social-link span.icon img {
+.footer .footer-social-link span.icon img {
   display: block;
   width: 100%;
   height: 100%;
   object-fit: contain;
   filter: invert(95%) sepia(11%) saturate(542%) hue-rotate(323deg) brightness(95%) contrast(89%);
-  opacity: 0.85; /* Brightened up icons */
-  transition: opacity 0.18s ease;
-  will-change: opacity;
+  opacity: 0.85;
 }
 
-/* Hover State Interactions using hardware accelerated transforms */
-.footer-wrapper .footer-social-link:hover {
+.footer .footer-social-link:hover {
   border-color: #ffffff;
   transform: translateY(-2px);
 }
 
-.footer-wrapper .footer-social-link:hover .icon img,
-.footer-wrapper .footer-social-link:hover span.icon img {
-  opacity: 1;
-}
-
 /* ── Navigation Columns Headers ── */
-.footer-wrapper .footer-col-title {
-  font-size: .68rem;
+.footer .footer-col-title {
+  font-size: .75rem;
   font-weight: 600;
-  letter-spacing: .13em;
+  letter-spacing: .1em;
   text-transform: uppercase;
-  color: #d8c7b0;
+  color: var(--nav-text-gold, #b9925a);
   margin-bottom: 16px;
-  line-height: 1.2; /* Explicit metric lock prevents layout shifts from font swapping */
 }
 
-.footer-wrapper .footer-links {
+.footer .footer-links {
   list-style: none;
-  padding: 0;
+  padding-left: 0; /* Fixed: Explicitly removed browser default padding indentation */
   margin: 0;
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-.footer-wrapper .footer-links a {
-  font-size: .84rem;
+.footer .footer-links a {
+  font-size: .88rem;
   color: #ffffff; 
   text-decoration: none;
   transition: color .18s;
   display: inline-block;
-  line-height: 1.5; /* Explicit line-height prevents vertical text shifts */
+  line-height: 1.5; 
 }
 
-.footer-wrapper .footer-links a:hover {
-  color: #d8c7b0;
+.footer .footer-links a:hover {
+  color: var(--nav-text-gold, #b9925a);
 }
 
 /* ── Bottom Strip Copyright bar area ── */
-.footer-wrapper .footer-bottom {
-  max-width: 1280px;
+.footer .footer-bottom {
+  max-width: 1240px;
   margin: 0 auto;
-  padding: 20px 48px 28px;
+  padding: 20px 2rem 28px;
   border-top: 1px solid rgba(255, 255, 255, .15);
   display: flex;
   align-items: center;
@@ -172,33 +156,32 @@
   flex-wrap: wrap;
 }
 
-.footer-wrapper .footer-copy {
+.footer .footer-copy {
   font-size: .78rem;
   color: #cbd4c5;
-  line-height: 1.4; /* Explicit metric lock */
 }
 
 /* ── Responsive Viewport Breakpoints ── */
-@media (max-width: 960px) {
-  .footer-wrapper .footer-inner {
+@media (max-width: 920px) {
+  .footer .footer-inner {
     grid-template-columns: 1fr 1fr;
-    padding: 44px 32px 32px;
+    padding: 3rem 2rem;
   }
-  .footer-wrapper .footer-brand {
+  .footer .footer-brand {
     grid-column: 1 / -1;
   }
 }
 
 @media (max-width: 580px) {
-  .footer-wrapper .footer-inner {
+  .footer .footer-inner {
     grid-template-columns: 1fr;
-    padding: 36px 24px 28px;
-    gap: 32px;
+    padding: 2.5rem 1.5rem;
+    gap: 2rem;
   }
-  .footer-wrapper .footer-bottom {
+  .footer .footer-bottom {
     flex-direction: column;
     align-items: flex-start;
-    padding: 20px 24px 28px;
+    padding: 1.5rem;
     gap: 10px;
   }
 }

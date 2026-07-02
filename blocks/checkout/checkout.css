@@ -1,0 +1,361 @@
+/* ==========================================================================
+   CHECKOUT CONTAINER GRID SPLIT
+   ========================================================================== */
+.section.checkout-container-section {
+  height: auto !important;
+  display: block !important;
+  overflow: visible !important;
+}
+
+.checkout-wrapper {
+  width: 100% !important;
+  max-width: 1440px;
+  margin: 2.5rem auto;
+  padding: 0 1.5rem;
+  box-sizing: border-box;
+}
+
+/* Master block wrapper matching both system formats perfectly */
+.checkout,
+[data-block-name="checkout"] {
+  width: 100%;
+  display: flex !important;
+  flex-direction: row;
+  gap: 40px;
+  align-items: flex-start;
+  background-color: #fdfcfb; /* Museum-tier light cream canvas */
+  font-family: 'DM Sans', sans-serif;
+  color: #1a1a1a;
+  box-sizing: border-box;
+}
+
+/* Form Area Left Column */
+.checkout .checkout-form-panel,
+[data-block-name="checkout"] .checkout-form-panel {
+  width: 60%;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Sticky Receipt Panel Right Column */
+.checkout .checkout-summary-panel,
+[data-block-name="checkout"] .checkout-summary-panel {
+  width: 40%;
+  position: sticky;
+  top: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Base Card Block System */
+.checkout .form-card-block,
+[data-block-name="checkout"] .form-card-block {
+  background: #ffffff;
+  border: 1px solid rgba(43, 33, 24, 0.06);
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 20px rgba(43, 33, 24, 0.01);
+  box-sizing: border-box;
+}
+
+.checkout .form-card-block h2,
+[data-block-name="checkout"] .form-card-block h2 {
+  font-family: 'Playfair Display', serif;
+  font-weight: 600;
+  font-size: 1.4rem;
+  color: #121212;
+  margin: 0 0 1.5rem 0;
+  border-bottom: 1px dashed rgba(43, 33, 24, 0.08);
+  padding-bottom: 0.6rem;
+}
+
+/* ==========================================================================
+   FORM CONTROLS & FIELD INPUT STYLES
+   ========================================================================== */
+.checkout .form-fields-grid,
+[data-block-name="checkout"] .form-fields-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 16px;
+}
+
+.checkout .field-group, [data-block-name="checkout"] .field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.checkout .col-6, [data-block-name="checkout"] .col-6 { grid-column: span 6; }
+.checkout .col-3, [data-block-name="checkout"] .col-3 { grid-column: span 3; }
+.checkout .col-2, [data-block-name="checkout"] .col-2 { grid-column: span 2; }
+
+.checkout label, [data-block-name="checkout"] label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: #555555;
+}
+
+.checkout .input-ctrl, [data-block-name="checkout"] .input-ctrl {
+  width: 100%;
+  padding: 10px 14px;
+  font-family: inherit;
+  font-size: 14px;
+  background: #fafaf9;
+  border: 1px solid rgba(43, 33, 24, 0.12);
+  border-radius: 6px;
+  box-sizing: border-box;
+  color: #121212;
+  transition: all 0.3s ease;
+}
+.checkout .input-ctrl:focus, [data-block-name="checkout"] .input-ctrl:focus {
+  outline: none;
+  border-color: #b9925a;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(185, 146, 90, 0.1);
+}
+
+/* Interactive Option Rows */
+.checkout .option-row-label, [data-block-name="checkout"] .option-row-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: #fafaf9;
+  border: 1px solid rgba(43, 33, 24, 0.06);
+  border-radius: 8px;
+  cursor: pointer;
+  margin-bottom: 10px;
+  transition: all 0.3s ease;
+}
+.checkout .option-row-label:hover, [data-block-name="checkout"] .option-row-label:hover { border-color: rgba(185, 146, 90, 0.4); }
+
+.checkout .radio-input-wrapper, [data-block-name="checkout"] .radio-input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13.5px;
+  font-weight: 600;
+}
+.checkout .option-cost, [data-block-name="checkout"] .option-cost {
+  font-family: 'Playfair Display', serif;
+  font-weight: 600;
+  color: #1a3020;
+}
+
+/* ==========================================================================
+   TRANSACTION METHOD SELECTION TABS
+   ========================================================================== */
+.checkout .payment-tabs-menu, [data-block-name="checkout"] .payment-tabs-menu {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 1.5rem;
+  background: #fafaf9;
+  padding: 4px;
+  border-radius: 8px;
+  border: 1px solid rgba(43, 33, 24, 0.04);
+}
+
+.checkout .method-tab, [data-block-name="checkout"] .method-tab {
+  flex: 1;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: #666666;
+  background: transparent;
+  border: none;
+  padding: 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.checkout .method-tab.active, [data-block-name="checkout"] .method-tab.active {
+  background: #ffffff;
+  color: #121212;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.checkout .method-panel.hidden, [data-block-name="checkout"] .method-panel.hidden { display: none; }
+
+/* UPI/Wallet Option Boxes */
+.checkout .upi-logos-matrix, [data-block-name="checkout"] .upi-logos-matrix {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 1.2rem;
+}
+.checkout .upi-option, [data-block-name="checkout"] .upi-option {
+  border: 1px solid rgba(43, 33, 24, 0.1);
+  padding: 12px;
+  border-radius: 8px;
+  text-align: center;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  background: #ffffff;
+  transition: all 0.3s ease;
+}
+.checkout .upi-option:hover, [data-block-name="checkout"] .upi-option:hover,
+.checkout .upi-option.selected, [data-block-name="checkout"] .upi-option.selected {
+  border-color: #b9925a;
+  background: rgba(185, 146, 90, 0.02);
+}
+
+/* ==========================================================================
+   INTERACTIVE REPLICATED BANK CARD PREVIEW
+   ========================================================================== */
+.checkout .bank-card-preview, [data-block-name="checkout"] .bank-card-preview {
+  width: 100%;
+  height: 180px;
+  background: linear-gradient(135deg, #1a3020 0%, #2d4a36 100%); /* Estate Green Gradient Base */
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-sizing: border-box;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 8px 25px rgba(26, 48, 32, 0.15);
+  margin-bottom: 1.5rem;
+  position: relative;
+  overflow: hidden;
+}
+.checkout .bank-card-preview::before, [data-block-name="checkout"] .bank-card-preview::before {
+  content: ""; position: absolute; inset: 0; opacity: 0.1;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.checkout .cc-chip-logo, [data-block-name="checkout"] .cc-chip-logo {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  z-index: 2;
+}
+.checkout .chip-token, [data-block-name="checkout"] .chip-token { width: 32px; height: 24px; background: #e5c483; border-radius: 4px; opacity: 0.8; }
+.checkout .vaultora-cc-seal, [data-block-name="checkout"] .vaultora-cc-seal { font-family: 'Playfair Display', serif; font-style: italic; font-weight: 600; font-size: 1.1rem; letter-spacing: 1px; color: #e5c483; }
+
+.checkout #ccDisplayNum, [data-block-name="checkout"] #ccDisplayNum {
+  font-family: monospace;
+  font-size: 1.3rem;
+  letter-spacing: 2px;
+  word-spacing: 4px;
+  text-align: center;
+  margin: auto 0;
+  z-index: 2;
+}
+
+.checkout .cc-holder-exp-row, [data-block-name="checkout"] .cc-holder-exp-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  z-index: 2;
+}
+
+/* ==========================================================================
+   ORDER SUMMARY PANEL SIDE DECK
+   ========================================================================== */
+.checkout .order-summary-box, [data-block-name="checkout"] .order-summary-box {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+.checkout .summary-img-frame, [data-block-name="checkout"] .summary-img-frame {
+  width: 75px; height: 75px; border-radius: 6px; overflow: hidden; background: #fafaf9; flex-shrink: 0;
+}
+.checkout .summary-img-frame img, [data-block-name="checkout"] .summary-img-frame img { width: 100%; height: 100%; object-fit: cover; }
+
+.checkout .summary-product-details h3, [data-block-name="checkout"] .summary-product-details h3 { font-family: 'Playfair Display', serif; font-weight: 600; font-size: 1.15rem; margin: 0 0 2px 0; }
+.checkout .summary-product-details span, [data-block-name="checkout"] .summary-product-details span { font-size: 11px; color: #777777; display: block; margin-bottom: 4px; }
+.checkout .summary-product-details p, [data-block-name="checkout"] .summary-product-details p { font-size: 11px; font-weight: 700; color: #b9925a; margin: 0; text-transform: uppercase; letter-spacing: 0.5px; }
+
+.checkout .pricing-breakdown-ledger, [data-block-name="checkout"] .pricing-breakdown-ledger {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  border-top: 1px dashed rgba(43, 33, 24, 0.08);
+  padding-top: 1.2rem;
+}
+.checkout .ledger-row, [data-block-name="checkout"] .ledger-row { display: flex; justify-content: space-between; font-size: 13.5px; color: #555555; }
+.checkout .ledger-row.grand-total, [data-block-name="checkout"] .ledger-row.grand-total {
+  border-top: 1px solid rgba(43, 33, 24, 0.1);
+  padding-top: 1rem;
+  margin-top: 4px;
+  font-size: 1.5rem;
+  font-family: 'Playfair Display', serif;
+  font-weight: 600;
+  color: #1a3020;
+}
+
+/* Primary Form Submit Engine Control Button */
+.checkout .btn-checkout-submit, [data-block-name="checkout"] .btn-checkout-submit {
+  width: 100%;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  background: #1a3020; /* Deep Estate Green Primary Accent */
+  color: #ffffff;
+  border: none;
+  padding: 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 1.5rem;
+  transition: background 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.checkout .btn-checkout-submit:hover, [data-block-name="checkout"] .btn-checkout-submit:hover { background: #24422c; }
+
+/* ==========================================================================
+   SUCCESS OVERLAY DIALOG MODALS
+   ========================================================================== */
+.checkout-overlay {
+  position: fixed; inset: 0; background: rgba(26, 21, 18, 0.6); backdrop-filter: blur(4px);
+  z-index: 10000; display: none; align-items: center; justify-content: center; padding: 1.5rem;
+}
+.checkout-overlay.open { display: flex; }
+
+.checkout-overlay .success-modal-card {
+  background: #ffffff; border-radius: 16px; padding: 2.5rem; max-width: 440px; width: 100%;
+  text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.15); box-sizing: border-box;
+}
+
+.checkout-overlay .success-ring-icon {
+  width: 56px; height: 56px; background: rgba(31, 143, 77, 0.1); color: #1f8f4d;
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  font-size: 24px; margin: 0 auto 1.2rem auto;
+}
+
+.checkout-overlay h2 { font-family: 'Playfair Display', serif; font-size: 1.8rem; margin: 0 0 0.5rem 0; color: #121212; }
+.checkout-overlay p { font-size: 13.5px; line-height: 1.5; color: #666666; margin: 0 0 1.5rem 0; }
+
+.checkout-overlay .receipt-data-payload {
+  background: #fafaf9; border-radius: 8px; padding: 1rem 1.2rem; text-align: left;
+  font-size: 13px; line-height: 1.6; color: #444444; margin-bottom: 1.5rem; border: 1px solid rgba(43,33,24,0.04);
+}
+
+.checkout-overlay .countdown-redirect-notice { font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: #888888; font-weight: 600; }
+
+/* ==========================================================================
+   RESPONSIVE LAYOUT CONSTRAINTS
+   ========================================================================== */
+@media (max-width: 1024px) {
+  .checkout, [data-block-name="checkout"] { flex-direction: column-reverse; }
+  .checkout .checkout-form-panel, .checkout .checkout-summary-panel,
+  [data-block-name="checkout"] .checkout-form-panel, [data-block-name="checkout"] .checkout-summary-panel { width: 100%; position: static; }
+}
+@media (max-width: 600px) {
+  .checkout .form-fields-grid, [data-block-name="checkout"] .form-fields-grid { grid-template-columns: 1fr; }
+  .checkout .col-3, .checkout .col-2, [data-block-name="checkout"] .col-3, [data-block-name="checkout"] .col-2 { grid-column: span 1; }
+  .checkout .upi-logos-matrix, [data-block-name="checkout"] .upi-logos-matrix { grid-template-columns: 1fr; }
+}

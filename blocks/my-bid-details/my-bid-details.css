@@ -1,0 +1,318 @@
+/* ==========================================================================
+   MY BID DETAILS MASTER GRID STRUCTURE
+   ========================================================================== */
+.my-bid-details-wrapper {
+  width: 100% !important;
+  max-width: 1440px;
+  margin: 3rem auto;
+  padding: 0 1.5rem;
+  box-sizing: border-box;
+}
+
+.my-bid-details,
+[data-block-name="my-bid-details"] {
+  width: 100%;
+  display: flex !important;
+  flex-direction: row;
+  gap: 40px;
+  align-items: flex-start;
+  background-color: #fdfcfb;
+  font-family: 'DM Sans', sans-serif;
+  color: #1a1a1a;
+  box-sizing: border-box;
+}
+
+/* Left Column - Product Media Framing Deck */
+.my-bid-details .media-display-column {
+  width: 45%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Right Column - Realtime Financial Auction Core */
+.my-bid-details .auction-actions-column {
+  width: 55%;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* ==========================================================================
+   MEDIA COMPONENTS (CLEAN SCRIM LAYERS)
+   ========================================================================== */
+.my-bid-details .main-showcase-frame {
+  position: relative;
+  width: 100%;
+  height: 420px;
+  background: #f5f4f0;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(43, 33, 24, 0.06);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.02);
+}
+
+.my-bid-details .main-showcase-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Image Scrim Constraint: clear top & middle, anchored baseline shadow gradient */
+.my-bid-details .showcase-clear-scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.05) 60%, rgba(0,0,0,0.65) 100%);
+  pointer-events: none;
+}
+
+.my-bid-details .thumbnail-strip-carousel {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.my-bid-details .thumbnail-strip-carousel img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 6px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  background: #ffffff;
+  transition: all 0.3s ease;
+}
+.my-bid-details .thumbnail-strip-carousel img:hover {
+  border-color: #b9925a;
+  transform: translateY(-2px);
+}
+
+/* ==========================================================================
+   STATUS BADGES & INTERACTIVE TICKERS
+   ========================================================================== */
+.my-bid-details .auction-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  border-radius: 30px;
+  background: #1a3020; /* Forest Green leading indicator */
+  color: #ffffff;
+  margin-bottom: 0.8rem;
+}
+.my-bid-details .auction-badge.outbid { background: #a34c37; } /* Premium Rust Crimson outbid alert */
+.my-bid-details .auction-badge.ended { background: #555555; }
+
+.my-bid-details h1#productTitle {
+  font-family: 'Playfair Display', serif;
+  font-weight: 600;
+  font-size: 2.4rem;
+  color: #121212;
+  margin: 0 0 0.5rem 0;
+  line-height: 1.1;
+}
+
+.my-bid-details .catalog-metadata-bar {
+  font-size: 13px;
+  color: #666666;
+  display: flex;
+  gap: 20px;
+  margin-bottom: 1.5rem;
+}
+.my-bid-details .catalog-metadata-bar span strong { color: #121212; }
+
+/* Financial Performance Summary Ticker Grid */
+.my-bid-details .financial-performance-ticker {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+}
+
+.my-bid-details .ticker-node-card {
+  background: #ffffff;
+  border: 1px solid rgba(43, 33, 24, 0.06);
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.01);
+}
+
+.my-bid-details .ticker-node-card label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: #888888;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+  display: block;
+}
+
+.my-bid-details .ticker-node-card span {
+  font-size: 1.25rem;
+  font-family: 'Playfair Display', serif;
+  font-weight: 600;
+  color: #121212;
+}
+.my-bid-details #countdown { color: #e65100; font-family: 'DM Sans', sans-serif; font-size: 1.1rem; font-weight: 700; }
+
+/* ==========================================================================
+   DYNAMIC STATUS MESSAGES & BUTTON ACTIONS
+   ========================================================================== */
+.my-bid-details .status-notice-box {
+  padding: 1.2rem 1.5rem;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  background: #faf9f6;
+  border-left: 4px solid #b9925a;
+  line-height: 1.5;
+}
+
+.my-bid-details .action-block-card {
+  background: #ffffff;
+  border: 1px solid rgba(43, 33, 24, 0.06);
+  border-radius: 12px;
+  padding: 1.8rem;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.01);
+}
+
+.my-bid-details .action-block-card.hidden { display: none; }
+
+/* Rebid Input Controls */
+.my-bid-details .rebid-input-wrapper {
+  display: flex;
+  gap: 12px;
+  margin-top: 0.5rem;
+}
+
+.my-bid-details .rebid-field-ctrl {
+  flex-grow: 1;
+  padding: 12px 16px;
+  font-family: inherit;
+  font-size: 15px;
+  background: #fafaf9;
+  border: 1px solid rgba(43, 33, 24, 0.15);
+  border-radius: 6px;
+  outline: none;
+  transition: all 0.3s ease;
+}
+.my-bid-details .rebid-field-ctrl:focus {
+  border-color: #b9925a;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(185, 146, 90, 0.1);
+}
+
+/* Premium Primary/Secondary Escrow Buttons */
+.my-bid-details .btn-primary-action {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #ffffff;
+  background: #1a3020; /* Forest Green base */
+  border: none;
+  padding: 12px 24px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+.my-bid-details .btn-primary-action:hover { background: #24422c; }
+
+.my-bid-details .btn-secondary-action {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #a34c37; /* Crimson warning theme for lot decline actions */
+  background: transparent;
+  border: 1px solid rgba(163, 76, 55, 0.3);
+  padding: 11px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.my-bid-details .btn-secondary-action:hover {
+  background: #a34c37;
+  color: #ffffff;
+  border-color: #a34c37;
+}
+
+.my-bid-details .split-button-container {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+/* ==========================================================================
+   TIMELINE HISTORICAL ofertas LEDGER
+   ========================================================================== */
+.my-bid-details .timeline-ledger-deck {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 280px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.my-bid-details .timeline-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 14px;
+  background: #ffffff;
+  border-radius: 6px;
+  border: 1px solid rgba(43, 33, 24, 0.04);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.01);
+}
+
+.my-bid-details .timeline-left {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.my-bid-details .timeline-user {
+  font-size: 13px;
+  font-weight: 600;
+  color: #121212;
+}
+
+.my-bid-details .timeline-time {
+  font-size: 11px;
+  color: #888888;
+}
+
+.my-bid-details .timeline-amount {
+  font-family: 'Playfair Display', serif;
+  font-weight: 600;
+  font-size: 1.15rem;
+  color: #1a3020;
+}
+
+/* Dynamic Notification Toast Alerts */
+.my-bid-details-toast {
+  position: fixed; bottom: 30px; left: 50%; transform: translate3d(-50%, 20px, 0);
+  padding: 12px 24px; border-radius: 4px; color: #ffffff; font-size: 13px; font-weight: 600;
+  z-index: 9999; opacity: 0; pointer-events: none; transition: all 0.3s ease;
+}
+.my-bid-details-toast.show { opacity: 1; transform: translate3d(-50%, 0, 0); }
+
+/* ==========================================================================
+   RESPONSIVE SCALING HANDLERS
+   ========================================================================== */
+@media (max-width: 1024px) {
+  .my-bid-details, [data-block-name="my-bid-details"] { flex-direction: column; }
+  .my-bid-details .media-display-column, .my-bid-details .auction-actions-column { width: 100%; }
+  .my-bid-details .main-showcase-frame { height: 320px; }
+}
+@media (max-width: 600px) {
+  .my-bid-details .financial-performance-ticker { grid-template-columns: repeat(2, 1fr); }
+  .my-bid-details .split-button-container { flex-direction: column; align-items: stretch; }
+  .my-bid-details .btn-primary-action, .my-bid-details .btn-secondary-action { width: 100%; text-align: center; }
+}

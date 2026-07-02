@@ -5,8 +5,18 @@
  * centralized AWS S3 database state sync framework.
  */
 
-import { getProducts, getBids, getSession, saveBids, saveProducts } from '../../scripts/storage.js';
-
+/* ==========================================================================
+   UPDATED TOP IMPORT STATEMENT
+   ========================================================================== */
+import { 
+  getProducts, 
+  getBids, 
+  getSession, 
+  saveBids, 
+  saveProducts, 
+  getFavorites,  /* ADDED */
+  saveFavorites  /* ADDED */
+} from '../../scripts/storage.js';
 const SEARCH_SORT_EVENT = 'auctionlisting:state-change';
 const FILTER_EVENT = 'auctionfilters:change';
 
@@ -345,8 +355,7 @@ function buildDynamicCard(p, session, favList) {
   card.append(media, body);
 
   card.addEventListener('click', () => {
-    window.location.href = `detail.html?id=${p.id}`;
-  });
+window.location.href = `detail?id=${p.id}`;  });
 
   return card;
 }

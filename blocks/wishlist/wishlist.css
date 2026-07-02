@@ -1,0 +1,340 @@
+/* ==========================================================================
+   WISHLIST BASE CANVAS
+   ========================================================================== */
+.wishlist-dashboard {
+  width: 100%;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+/* ==========================================================================
+   HEADER ROW COMPRESSION ("MY FAVOURITES")
+   ========================================================================== */
+.wishlist-header {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  border-bottom: 1px solid #eae7df;
+  margin-bottom: 2rem;
+}
+
+.wishlist-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.6rem, 2.8vw, 2.25rem);
+  font-weight: 400;
+  line-height: 1.1;
+  margin: 0;
+  color: var(--nav-forest-dark);
+  letter-spacing: -0.01em;
+}
+
+.wishlist-title em {
+  font-style: italic;
+  font-family: 'Playfair Display', serif;
+  color: var(--nav-text-gold);
+}
+
+.wishlist-subtitle {
+  font-family: var(--body-font-family);
+  font-size: var(--body-font-size-s);
+  line-height: 1.4;
+  color: var(--text-muted);
+  margin: 0;
+  font-weight: 400;
+}
+
+/* ==========================================================================
+   STRICT 5-COLUMN GRID SPECIFICATION
+   ========================================================================== */
+.wishlist-dashboard .auctionproducts-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+  gap: 0.85rem !important;
+  width: 100%;
+}
+
+/* ==========================================================================
+   RESTORED BASE CARD STYLING WITH COMPACT 5-CARD DIMENSIONS
+   ========================================================================== */
+.wishlist-dashboard .auctionproducts-card {
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border: 1px solid #eae7df;
+  border-radius: 110px 110px 20px 20px !important;
+  overflow: hidden;
+  padding: 5px;
+  min-width: 0;
+  max-width: 220px;
+  margin: 0 auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.01);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
+}
+
+.wishlist-dashboard .auctionproducts-card:hover {
+  transform: translateY(-12px);
+  box-shadow: 0 12px 24px rgba(46, 54, 42, 0.06);
+}
+
+/* ==========================================================================
+   IMAGE & MEDIA CONTAINER ARCHES
+   ========================================================================== */
+.wishlist-dashboard .auctionproducts-media {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  background: #fff;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 110px 110px 0 0 !important;
+  padding: 0;
+}
+
+.wishlist-dashboard .auctionproducts-img-single {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: 110px 110px 0 0 !important;
+}
+
+/* ==========================================================================
+   RESTORED CARD BODY & COMPACT TYPOGRAPHY
+   ========================================================================== */
+.wishlist-dashboard .auctionproducts-body {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.6rem 0.6rem 0.75rem !important;
+  background: #fff;
+}
+
+.wishlist-dashboard .auctionproducts-seller {
+  font-family: var(--body-font-family);
+  font-size: 0.58rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--nav-text-gold);
+  margin: 0;
+}
+
+.wishlist-dashboard .auctionproducts-title {
+  font-family: var(--body-font-family);
+  font-size: 0.82rem !important;
+  font-weight: 700;
+  line-height: 1.25;
+  margin: 0 0 0.1rem 0;
+  color: #1a1a1a;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  height: 1.25em;
+  transition: color 0.2s ease;
+}
+
+.wishlist-dashboard .auctionproducts-card:hover .auctionproducts-title {
+  color: var(--nav-text-gold);
+}
+
+/* Live Time Spacing Metrics */
+.wishlist-dashboard .auctionproducts-bid-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Spreads label and timer nicely */
+  gap: 0.4rem;
+  margin-top: 0.1rem;
+}
+
+.wishlist-dashboard .auctionproducts-bid-label {
+  font-family: var(--body-font-family);
+  font-size: 0.58rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+}
+
+.wishlist-dashboard .auctionproducts-timer {
+  font-family: var(--body-font-family);
+  font-size: 0.58rem; /* Scaled micro for 5-card row width thresholds */
+  font-weight: 700;
+  color: var(--theme-rust, #8f9874);
+  background: var(--accent-blush-light, #fff5f2);
+  padding: 0.1rem 0.35rem;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+}
+
+/* Urgent Countdown Flash */
+.wishlist-dashboard .bid-timer-urgent {
+  color: #b85c2b !important;
+  background: rgba(184, 92, 43, 0.12) !important;
+}
+
+/* Financial Information Elements */
+.wishlist-dashboard .auctionproducts-price-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.3rem;
+  margin-top: 0.05rem;
+}
+
+.wishlist-dashboard .auctionproducts-price {
+  font-family: 'Playfair Display', serif;
+  font-size: 0.95rem !important;
+  font-weight: 600;
+  color: var(--nav-forest-dark);
+}
+
+.wishlist-dashboard .auctionproducts-bids-count {
+  font-family: var(--body-font-family);
+  font-size: 0.62rem;
+  color: var(--text-muted);
+}
+
+/* ==========================================================================
+   BUTTON SPECIFICATIONS
+   ========================================================================== */
+.wishlist-dashboard .auctionproducts-bid-btn {
+  margin-top: 0.35rem !important;
+  width: fit-content;
+  font-family: var(--body-font-family);
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #fff;
+  background: var(--nav-forest-dark);
+  border: none;
+  border-radius: 8px;
+  padding: 0.4rem 0.85rem !important;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.15s ease;
+}
+
+.wishlist-dashboard .auctionproducts-bid-btn:hover {
+  background: var(--theme-rust, #8f9874);
+}
+
+.wishlist-dashboard .auctionproducts-fav {
+  position: absolute;
+  bottom: 0.7rem !important;
+  right: 0.7rem !important;
+  z-index: 3;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 1px solid #f5eae6;
+  background: #fff;
+  color: var(--accent-blush, #ff4d6d);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  transition: transform 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.wishlist-dashboard .auctionproducts-fav svg {
+  width: 12px;
+  height: 12px;
+  transition: fill 0.2s ease, color 0.2s ease;
+}
+
+.wishlist-dashboard .auctionproducts-fav:hover {
+  transform: scale(1.08);
+  border-color: var(--accent-blush, #ff4d6d);
+}
+
+.wishlist-dashboard .auctionproducts-fav.is-active {
+  background-color: #fdf5f2;
+  border-color: var(--accent-blush, #ff4d6d);
+  color: #ff4d6d;
+}
+
+.wishlist-dashboard .auctionproducts-fav.is-active svg {
+  fill: #ff4d6d;
+}
+
+/* ==========================================================================
+   FALLBACK RESPONSIVE LAYOUT MATRIX
+   ========================================================================== */
+.wishlist-empty-msg {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 4rem 2rem;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  border: 1px dashed var(--nav-circle-bg);
+  border-radius: 14px;
+  background: #ffffff;
+  margin: 0;
+}
+
+@media (max-width: 1200px) {
+  .wishlist-dashboard .auctionproducts-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 992px) {
+  .wishlist-dashboard .auctionproducts-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .wishlist-dashboard .auctionproducts-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 0.75rem !important;
+  }
+  .wishlist-dashboard {
+    padding: 0 10px 3rem;
+  }
+}
+
+@media (max-width: 440px) {
+  .wishlist-dashboard .auctionproducts-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .wishlist-dashboard .auctionproducts-card {
+    max-width: 260px;
+    border-radius: 130px 130px 20px 20px !important;
+  }
+  .wishlist-dashboard .auctionproducts-media,
+  .wishlist-dashboard .auctionproducts-img-single {
+    border-radius: 130px 130px 0 0 !important;
+  }
+}
+
+/* Ensure this rule is active on the page to animate the toast */
+.toast-bubble {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: var(--nav-forest-dark, #46513f);
+  color: #fff;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border-radius: 999px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease;
+  opacity: 0;
+  z-index: 2000;
+  pointer-events: none;
+}
+
+.toast-bubble.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}

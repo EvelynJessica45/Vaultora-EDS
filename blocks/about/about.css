@@ -1,0 +1,110 @@
+.about-hero-container {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 2rem;
+  align-items: center;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 2.5rem 10px;
+}
+
+@media (min-width: 768px) {
+  .about-hero-container {
+    flex-direction: row;
+    gap: 4rem;
+  }
+}
+
+.about-hero-text-side {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.about-hero-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+}
+
+.about-hero-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2.2rem, 4vw, 3.5rem);
+  font-weight: 400;
+  line-height: 1.1;
+  color: var(--nav-forest-dark);
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.about-hero-title em {
+  font-style: italic;
+  color: var(--nav-text-gold);
+}
+
+.about-hero-desc {
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--text-color);
+  margin: 0 0 1.5rem 0;
+  max-width: 520px;
+}
+
+.about-hero-actions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.btn-about-primary,
+.btn-about-secondary {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0.85rem 1.75rem;
+  border-radius: 4px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.btn-about-primary {
+  background: var(--nav-forest-dark);
+  color: #fff;
+  border: 1px solid var(--nav-forest-dark);
+}
+
+.btn-about-primary:hover {
+  background: var(--nav-text-gold);
+  border-color: var(--nav-text-gold);
+}
+
+.btn-about-secondary {
+  background: transparent;
+  color: var(--nav-forest-dark);
+  border: 1px solid var(--nav-circle-bg);
+}
+
+.btn-about-secondary:hover {
+  border-color: var(--nav-text-gold);
+  color: var(--nav-text-gold);
+}
+
+.about-hero-image-side {
+  flex: 1;
+  width: 100%;
+  position: relative;
+}
+
+.about-hero-image-side img {
+  width: 100%;
+  height: auto;
+  max-height: 420px;
+  object-fit: cover;
+  border-radius: 24px;
+  box-shadow: 0 10px 30px rgba(46, 54, 42, 0.05);
+}

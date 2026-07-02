@@ -1,0 +1,333 @@
+/* ==========================================================================
+   DASHBOARD ROOT PLATFORM CORE
+   ========================================================================== */
+.my-listing-details-wrapper {
+  width: 100% !important;
+  max-width: 1440px;
+  margin: 2.5rem auto;
+  padding: 0 1.5rem;
+  box-sizing: border-box;
+}
+
+.my-listing-details,
+[data-block-name="my-listing-details"] {
+  width: 100%;
+  display: flex !important;
+  flex-direction: row;
+  gap: 32px;
+  align-items: flex-start;
+  background-color: #fcfbfa; /* Warm minimal gallery canvas */
+  font-family: 'DM Sans', sans-serif;
+  color: #1a1a1a;
+  box-sizing: border-box;
+}
+
+/* ==========================================================================
+   LEFT PANEL FRAME: PRODUCT IDENTITY CARD
+   ========================================================================== */
+.my-listing-details .listing-identity-panel {
+  width: 32%;
+  flex-shrink: 0;
+  background: #ffffff;
+  border: 1px solid rgba(43, 33, 24, 0.06);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-sizing: border-box;
+  box-shadow: 0 4px 20px rgba(43, 33, 24, 0.02);
+  position: sticky;
+  top: 30px;
+}
+
+.my-listing-details .media-frame {
+  width: 100%;
+  height: 280px;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: #f5f3ef;
+  margin-bottom: 1.2rem;
+}
+
+.my-listing-details .media-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.my-listing-details .asset-category-badge {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #b9925a; /* Luxury Gold Accent */
+  margin-bottom: 0.5rem;
+  display: inline-block;
+}
+
+.my-listing-details h1.asset-title {
+  font-family: 'Playfair Display', serif;
+  font-weight: 600;
+  font-size: 1.8rem;
+  line-height: 1.2;
+  color: #121212;
+  margin: 0 0 0.4rem 0;
+}
+
+.my-listing-details .asset-id-label {
+  font-size: 11px;
+  color: #888888;
+  font-family: monospace;
+  margin-bottom: 1.2rem;
+  display: block;
+}
+
+.my-listing-details .asset-divider {
+  width: 100%;
+  height: 1px;
+  background: rgba(43, 33, 24, 0.08);
+  margin: 1.2rem 0;
+}
+
+.my-listing-details .asset-description-box p {
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: #555555;
+  margin: 0;
+}
+
+/* ==========================================================================
+   RIGHT PANEL FRAME: TRANSACTIONAL PERFORMANCE ENGINE
+   ========================================================================== */
+.my-listing-details .performance-metrics-panel {
+  flex-grow: 1;
+  width: 68%;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Financial Micro-Grid */
+.my-listing-details .metrics-ticker-tape {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.my-listing-details .ticker-card {
+  background: #ffffff;
+  border: 1px solid rgba(43, 33, 24, 0.06);
+  border-radius: 8px;
+  padding: 1.2rem;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.01);
+}
+
+.my-listing-details .ticker-label {
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  color: #777777;
+  text-transform: uppercase;
+  margin-bottom: 0.4rem;
+  display: block;
+}
+
+.my-listing-details .ticker-value {
+  font-size: 1.4rem;
+  font-family: 'Playfair Display', serif;
+  font-weight: 600;
+  color: #1a3020; /* Luxury Forest Green value metric */
+}
+
+.my-listing-details #m-status {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* ==========================================================================
+   CHART & SPARKLINE DATA VISUALIZER
+   ========================================================================== */
+.my-listing-details .dashboard-section-card {
+  background: #ffffff;
+  border: 1px solid rgba(43, 33, 24, 0.06);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 20px rgba(43, 33, 24, 0.02);
+}
+
+.my-listing-details .card-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.2rem;
+}
+
+.my-listing-details .card-header-row h2 {
+  font-family: 'Playfair Display', serif;
+  font-weight: 600;
+  font-size: 1.35rem;
+  margin: 0;
+}
+
+.my-listing-details .chart-extremes-legend {
+  display: flex;
+  gap: 16px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.my-listing-details .extreme-peak { color: #e65100; }
+.my-listing-details .extreme-floor { color: #46513f; }
+
+.my-listing-details .canvas-graph-container {
+  width: 100%;
+  background: #fafaf9;
+  border-radius: 6px;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.my-listing-details #bidsSparklineCanvas {
+  width: 100%;
+  height: 180px;
+  display: block;
+}
+
+/* ==========================================================================
+   BIDDERS LIST & USER INTERACTION TRACKS
+   ========================================================================== */
+.my-listing-details .bid-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.2rem;
+  background: #ffffff;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+  transition: transform 0.3s ease;
+}
+
+.my-listing-details .bid-item:hover {
+  transform: translateX(4px);
+}
+
+.my-listing-details .bid-user-profile h3 {
+  font-size: 14.5px;
+  font-weight: 600;
+  margin: 0 0 0.2rem 0;
+}
+
+.my-listing-details .bid-timestamp {
+  font-size: 11px;
+  color: #888888;
+  display: block;
+}
+
+.my-listing-details .rank-indicator-tag {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-top: 0.4rem;
+  display: inline-block;
+}
+
+.my-listing-details .bid-financial-side .bid-amt {
+  font-family: 'Playfair Display', serif;
+  font-weight: 600;
+  font-size: 1.3rem;
+  color: #1a3020;
+}
+
+.my-listing-details .toggle-bidders-btn {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #b9925a;
+  background: transparent;
+  border: 1px solid rgba(185, 146, 90, 0.3);
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin: 0.5rem auto 0 auto;
+  display: block;
+}
+
+.my-listing-details .toggle-bidders-btn:hover {
+  background: #b9925a;
+  color: #ffffff;
+  border-color: #b9925a;
+}
+
+.my-listing-details .plain-empty-box-notice {
+  text-align: center;
+  padding: 3rem;
+  color: #777777;
+  font-style: italic;
+  font-size: 14px;
+}
+
+/* ==========================================================================
+   LOGISTICS & FULFILLMENT SYSTEMS
+   ========================================================================== */
+.my-listing-details .order-fulfillment-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.my-listing-details .invoice-reference-badge {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  background: #1a3020;
+  color: #ffffff;
+  padding: 4px 10px;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+.my-listing-details .item-prop-row {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 10px;
+  border-bottom: 1px dashed rgba(43, 33, 24, 0.08);
+  font-size: 13.5px;
+}
+
+.my-listing-details .item-prop-lbl {
+  color: #777777;
+  font-weight: 500;
+}
+
+.my-listing-details .item-prop-val {
+  color: #121212;
+  font-weight: 600;
+}
+
+/* ==========================================================================
+   MOBILE RESPONSIVITY BREAKPOINTS
+   ========================================================================== */
+@media (max-width: 1024px) {
+  .my-listing-details,
+  [data-block-name="my-listing-details"] {
+    flex-direction: column;
+  }
+  .my-listing-details .listing-identity-panel {
+    width: 100%;
+    position: static;
+  }
+  .my-listing-details .performance-metrics-panel {
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .my-listing-details .metrics-ticker-tape {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

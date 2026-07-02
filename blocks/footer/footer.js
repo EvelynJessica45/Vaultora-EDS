@@ -1,143 +1,199 @@
-import { createOptimizedPicture } from '../../scripts/aem.js';
+import { createOptimizedPicture, decorateIcons } from '../../scripts/aem.js';
 
-export default function decorate(block) {
-  const rows = [...block.children];
-  if (rows.length < 4) return;
+/**
+ * Universal layout decorator for the footer block
+ * @param {Element} block The footer block element
+ */
+export default async function decorate(block) {
+  let rows = [...block.children];
 
-  const headersRow = rows[1];
-  const contentRow = rows[2];
-  const copyrightRow = rows[3];
+  // ── HOOD RENDERING RUNTIME CHECK ──
+  if (!rows || rows.length === 0 || (rows.length === 1 && !rows[0].textContent.trim())) {
+    try {
+      const resp = await fetch('/footer.plain.html');
+      if (!resp.ok) throw new Error('Global layout configuration asset not resolved');
+      const html = await resp.text();
+      const doc = new DOMParser().parseFromString(html, 'text/html');
+      
+      const originWrapper = doc.querySelector('body > div');
+      rows = originWrapper ? [...originWrapper.children] : [];
+    } catch (e) {
+      console.error('Asynchronous navigation layout extraction pass failed:', e);
+      return;
+    }
+  }
 
-  // Initialize virtual rendering workspace fragment container
+  // ── FILTER OUT CONFIGURATION ROWS ──
+  rows = rows.filter(row => {
+    const text = row.innerText?.toLowerCase().trim() || '';
+    return !text.startsWith('col width');
+  });
+
+  // Identify distinct rows matching your authored matrix map fingerprint strings
+  let contentRow = rows.find(row => row.innerText?.toLowerCase().includes('luxury sustainable') || row.innerText?.toLowerCase().includes('browse auctions'));
+  let headersRow = rows.find(row => row.innerText?.toLowerCase().includes('marketplace') || row.innerText?.toLowerCase().includes('account'));
+  let copyrightRow = rows.find(row => row.innerText?.toLowerCase().includes('copyright') || row.innerText?.toLowerCase().includes('©'));
+
+  // ── ROBUST FALLBACK SYSTEM ──
+  if (!contentRow && rows.length > 0) {
+    if (rows.length >= 3) {
+      contentRow = rows[0];
+      headersRow = headersRow || rows[1];
+      copyrightRow = copyrightRow || rows[2];
+    } else if (rows.length === 2) {
+      contentRow = rows[0];
+      copyrightRow = copyrightRow || rows[1];
+    } else {
+      contentRow = rows[0];
+    }
+  }
+
+  if (!contentRow) {
+    console.warn('Footer execution halted: Unable to trace valid content rows.');
+    return;
+  }
+
+  // Ensure asset icon text blocks match up with span element transformations completely
+  decorateIcons(contentRow);
+
   const fragment = document.createDocumentFragment();
 
-  // 1. Decorative glowing gradient layout line accent rule
+  // Top layout split line rule
   const rule = document.createElement('div');
   rule.className = 'footer-rule';
   fragment.appendChild(rule);
 
-  // 2. Main column grid container
+  // Main columns layout grid canvas container
   const innerContainer = document.createElement('div');
   innerContainer.className = 'footer-inner';
 
-  if (contentRow && headersRow) {
-    const columnsData = [...contentRow.children];
-    const headingsData = [...headersRow.children];
+  // Extract column elements, stripping out row label text ("Content" and "Headers")
+  const columnsData = [...contentRow.children].filter(cell => {
+    const txt = cell.innerText?.toLowerCase().trim();
+    return txt !== 'content';
+  });
+  
+  const headingsData = headersRow ? [...headersRow.children].filter(cell => {
+    const txt = cell.innerText?.toLowerCase().trim();
+    return txt !== 'headers';
+  }) : [];
 
-    columnsData.forEach((colCell, i) => {
-      if (i === 0) return; // Drop structural meta label 'Content'
-
-      const colWrap = document.createElement('div');
+  columnsData.forEach((colCell, i) => {
+    const colWrap = document.createElement('div');
+    
+    // Column Index 0: Brand Identity Column
+    if (i === 0 || colCell.querySelector('img, picture') || colCell.innerText?.toLowerCase().includes('luxury sustainable')) {
+      colWrap.className = 'footer-brand';
       
-      if (i === 1) {
-        colWrap.className = 'footer-brand';
-        
-        // Fix image delivery & LCP discovery mechanics
-        const rawImg = colCell.querySelector('picture img');
-        if (rawImg) {
-          const optimizedPicture = createOptimizedPicture(rawImg.src, rawImg.alt || 'Vaultora Logo', false, [{ width: '250' }]);
-          const optimizedImg = optimizedPicture.querySelector('img');
-          if (optimizedImg) {
-            optimizedImg.setAttribute('width', '160');
-            optimizedImg.setAttribute('height', '108'); 
-            // Crucial performance optimization:
-            optimizedImg.setAttribute('loading', 'eager');
-            optimizedImg.setAttribute('fetchpriority', 'high');
-          }
-          const logoWrap = document.createElement('div');
-          logoWrap.className = 'footer-logo-wrap';
-          logoWrap.appendChild(optimizedPicture);
-          colWrap.appendChild(logoWrap);
+      // Extract, optimize, and safely translate the brand logo graphic image
+      const rawImg = colCell.querySelector('picture img, img');
+      if (rawImg) {
+        const optimizedPicture = createOptimizedPicture(rawImg.src, 'Vaultora Logo', false, [{ width: '250' }]);
+        const optimizedImg = optimizedPicture.querySelector('img');
+        if (optimizedImg) {
+          optimizedImg.setAttribute('width', '140');
+          optimizedImg.setAttribute('height', '95'); 
+          optimizedImg.setAttribute('loading', 'lazy');
         }
-
-        // Fast text processing avoiding micro DOM loops
-        const paragraphs = [...colCell.querySelectorAll('p')];
-        paragraphs.forEach((p) => {
-          const text = p.textContent.trim();
-          if (text && !p.querySelector('picture') && !p.querySelector('span.icon')) {
-            const tagline = document.createElement('p');
-            tagline.className = 'footer-tagline';
-            tagline.textContent = text;
-            colWrap.appendChild(tagline);
-          }
-        });
-
-        // Fast processing for the icons inside column 1
-        const nativeIcons = [...colCell.querySelectorAll('span.icon')];
-        if (nativeIcons.length > 0) {
-          const socialsWrap = document.createElement('div');
-          socialsWrap.className = 'footer-socials';
-          
-          const networks = ['instagram', 'linkedin', 'x'];
-          nativeIcons.forEach((iconSpan, index) => {
-            const networkName = networks[index] || 'social';
-            const anchor = document.createElement('a');
-            anchor.href = `#${networkName}`;
-            anchor.ariaLabel = `Visit our ${networkName} page`; // Strict accessible name compliance
-            anchor.className = `footer-social-link link-${networkName}`;
-            anchor.appendChild(iconSpan);
-            socialsWrap.appendChild(anchor);
-          });
-          colWrap.appendChild(socialsWrap);
-        }
-
-      } else {
-        colWrap.className = 'footer-nav-col';
-        
-        const titleText = headingsData[i] ? headingsData[i].textContent.trim() : '';
-        if (titleText) {
-          const titleDiv = document.createElement('div');
-          titleDiv.className = 'footer-col-title';
-          titleDiv.textContent = titleText;
-          colWrap.appendChild(titleDiv);
-        }
-
-        const linksList = document.createElement('ul');
-        linksList.className = 'footer-links';
-
-        const linkParagraphs = [...colCell.querySelectorAll('p')];
-        linkParagraphs.forEach((p) => {
-          const text = p.textContent.trim();
-          if (!text) return;
-
-          const listItem = document.createElement('li');
-          const anchor = document.createElement('a');
-          const existingAnchor = p.querySelector('a');
-          
-          if (existingAnchor) {
-            anchor.href = existingAnchor.href;
-            anchor.textContent = existingAnchor.textContent;
-          } else {
-            anchor.href = `#${text.toLowerCase().replace(/\s+/g, '-')}`;
-            anchor.textContent = text;
-          }
-
-          listItem.appendChild(anchor);
-          linksList.appendChild(listItem);
-        });
-
-        colWrap.appendChild(linksList);
+        const logoWrap = document.createElement('div');
+        logoWrap.className = 'footer-logo-wrap';
+        logoWrap.appendChild(optimizedPicture);
+        colWrap.appendChild(logoWrap);
       }
 
+      // Appending description paragraphs
+      colCell.querySelectorAll('p').forEach((p) => {
+        const text = p.textContent.trim();
+        if (text && !p.querySelector('picture') && !p.querySelector('span.icon')) {
+          const tagline = document.createElement('p');
+          tagline.className = 'footer-tagline';
+          tagline.textContent = text;
+          colWrap.appendChild(tagline);
+        }
+      });
+
+      // Render social navigation interaction icons cleanly
+      const nativeIcons = [...colCell.querySelectorAll('span.icon')];
+      if (nativeIcons.length > 0) {
+        const socialsWrap = document.createElement('div');
+        socialsWrap.className = 'footer-socials';
+        
+        const networks = ['instagram', 'linkedin', 'x'];
+        nativeIcons.forEach((iconSpan, index) => {
+          const networkName = networks[index] || 'social';
+          const anchor = document.createElement('a');
+          anchor.href = `#${networkName}`;
+          anchor.ariaLabel = `Visit our ${networkName} page`; 
+          anchor.className = `footer-social-link link-${networkName}`;
+          anchor.appendChild(iconSpan);
+          socialsWrap.appendChild(anchor);
+        });
+        colWrap.appendChild(socialsWrap);
+      }
+
+    } else {
+      // Columns 1, 2, 3: Link Navigation Columns
+      colWrap.className = 'footer-nav-col';
+      
+      // Fixed: Match the current link column index directly with headingsData[i]
+      const titleText = headingsData[i] ? headingsData[i].textContent.trim() : '';
+      if (titleText) {
+        const titleDiv = document.createElement('div');
+        titleDiv.className = 'footer-col-title';
+        titleDiv.textContent = titleText;
+        colWrap.appendChild(titleDiv);
+      }
+
+      const linksList = document.createElement('ul');
+      linksList.className = 'footer-links';
+
+      colCell.querySelectorAll('p, a, li').forEach((item) => {
+        const text = item.textContent.trim();
+        if (!text) return;
+
+        const listItem = document.createElement('li');
+        const anchor = document.createElement('a');
+        const existingAnchor = item.querySelector('a') || (item.tagName === 'A' ? item : null);
+        
+        if (existingAnchor) {
+          anchor.href = existingAnchor.href;
+          anchor.textContent = existingAnchor.textContent;
+        } else {
+          anchor.href = `#${text.toLowerCase().replace(/\s+/g, '-')}`;
+          anchor.textContent = text;
+        }
+
+        listItem.appendChild(anchor);
+        linksList.appendChild(listItem);
+      });
+
+      colWrap.appendChild(linksList);
+    }
+
+    if (colWrap.hasChildNodes()) {
       innerContainer.appendChild(colWrap);
-    });
-  }
+    }
+  });
+
   fragment.appendChild(innerContainer);
 
-  // 3. Build Bottom Strip
-  if (copyrightRow && copyrightRow.children[1]) {
-    const bottomBar = document.createElement('div');
-    bottomBar.className = 'footer-bottom';
+  // 3. Extract and project the bottom legal strip copyright row cleanly
+  if (copyrightRow) {
+    const targetCell = copyrightRow.children[1] || copyrightRow.children[0];
+    if (targetCell) {
+      const bottomBar = document.createElement('div');
+      bottomBar.className = 'footer-bottom';
 
-    const copyDiv = document.createElement('div');
-    copyDiv.className = 'footer-copy';
-    copyDiv.textContent = copyrightRow.children[1].textContent.split('(')[0].trim();
-    
-    bottomBar.appendChild(copyDiv);
-    fragment.appendChild(bottomBar);
+      const copyDiv = document.createElement('div');
+      copyDiv.className = 'footer-copy';
+      copyDiv.textContent = targetCell.textContent.trim();
+      
+      bottomBar.appendChild(copyDiv);
+      fragment.appendChild(bottomBar);
+    }
   }
 
-  // Clear out the block content and commit the virtual fragment in one single step
+  // Clear unstyled nodes and mount the dynamic block document fragments safely
   block.innerHTML = '';
   block.appendChild(fragment);
 }

@@ -1,0 +1,164 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Inter:wght@200;300;400&display=swap');
+
+.section.category-container,
+.category-wrapper {
+  overflow: visible !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  max-width: 100% !important;
+  width: 100% !important;
+}
+
+.category-container {
+  background-color: #ffffff !important;
+  overflow-x: hidden !important;
+}
+
+.category {
+  position: relative;
+  height: 450vh;
+  background: #0b0c10;
+  width: 100%;
+}
+
+.category .sticky-viewport {
+  position: sticky;
+  top: 0; left: 0; width: 100%; height: 100vh;
+  overflow: hidden;
+  z-index: 2;
+}
+
+.category .video-canvas-wrap {
+  position: relative;
+  width: 100%; height: 100%;
+}
+
+/* Canvas background alignment */
+.category canvas {
+  position: absolute;
+  top: 0; 
+  left: 23%; 
+  width: 88% !important; 
+  height: 100% !important;
+}
+
+/* Shifted padding from 6rem to 3.5rem to pull content further to the extreme left border */
+.category .editorial-overlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: 520px 1fr;
+  gap: 2rem;
+  align-items: center;
+  padding: 0 0 0 3.5rem; 
+  box-sizing: border-box;
+  background: linear-gradient(90deg, #0b0c10 0%, #0b0c10 23%, rgba(11,12,16,0.92) 30%, rgba(11,12,16,0.1) 85%, transparent 100%);
+  z-index: 5;
+}
+
+/* ==========================================================================
+   TYPOGRAPHY LAYER SETUP (Cinzel Display, Cormorant Italic, and Minimal Inter)
+   ========================================================================== */
+
+.category .luxury-sidebar {
+  display: flex;
+  flex-direction: column;
+  z-index: 6;
+}
+
+/* Technical Label - Clean White Muted Label */
+.category .hub-volume-tag {
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  font-weight: 300;
+  letter-spacing: 6px;
+  color: rgba(255, 255, 255, 0.4);
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+
+/* "The Portals of Acquisition" - High-End Structural Typo Variant (Cinzel font) */
+.category .hub-main-headline {
+  font-family: 'Cinzel', serif;
+  font-weight: 400;
+  font-size: 2.85rem;
+  line-height: 1.2;
+  letter-spacing: 0.04em;
+  color: #ffffff;
+  margin: 0 0 1.6rem 0;
+  text-transform: uppercase;
+  background: linear-gradient(180deg, #ffffff 40%, rgba(255, 255, 255, 0.7) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+/* Elegant serif description subheading (Solid Gold Accent) */
+.category .hub-serif-subheading {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 1.6rem;
+  line-height: 1.35;
+  color: #e3c592;
+  margin: 0 0 2rem 0;
+  padding-left: 12px;
+  border-left: 1px solid rgba(227, 197, 146, 0.4);
+}
+
+/* Clean, crisp baseline body layout copy */
+.category .hub-body-description {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9px;
+  font-size: 0.88rem;
+  font-weight: 300;
+  letter-spacing: 0.03em;
+  line-height: 1.9;
+  color: rgba(255, 255, 255, 0.5);
+  margin: 0 0 3.2rem 0;
+}
+
+.category .canvas-viewport-spacer {
+  pointer-events: none;
+  background: transparent;
+}
+
+/* CTA Design */
+.category .luxury-cta-btn {
+  display: inline-flex; align-items: center; gap: 1.2rem; pointer-events: auto;
+  background: transparent; color: #ffffff !important; text-decoration: none;
+  font-family: 'Inter', sans-serif;
+  font-size: 10px; font-weight: 400; letter-spacing: 4px; text-transform: uppercase;
+  padding: 1.1rem 2.8rem; border-radius: 0px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  width: fit-content;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.category .luxury-cta-btn svg { color: rgba(255, 255, 255, 0.4); transition: transform 0.4s ease, color 0.4s ease; }
+.category .luxury-cta-btn:hover {
+  background: #ffffff;
+  color: #0b0c10 !important;
+  border-color: #ffffff;
+}
+.category .luxury-cta-btn:hover svg { color: #0b0c10; transform: translateX(5px); }
+
+/* Bottom Left HUD Stamp adjusted to align to the new left edge line */
+.category .hud-watermark {
+  position: absolute; bottom: 3rem; left: 3.5rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 8px; font-weight: 300; letter-spacing: 4px;
+  color: rgba(227, 197, 146, 0.3);
+}
+
+@media (max-width: 1024px) {
+  .category canvas { left: 0; width: 100% !important; opacity: 0.25; }
+  .category .editorial-overlay {
+    grid-template-columns: 1fr;
+    padding: 4rem 2rem;
+    background: linear-gradient(180deg, rgba(11,12,16,0.85) 0%, #0b0c10 100%);
+  }
+  .category .hub-main-headline { font-size: 2.2rem; }
+  .category .hub-serif-subheading { font-size: 1.35rem; }
+  .category .hud-watermark { left: 2rem; }
+}
+
