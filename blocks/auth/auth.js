@@ -1,13 +1,88 @@
 import { decorateIcons } from '../../scripts/aem.js';
-import { 
-  getUsers, 
-  saveUsers, 
-  saveSession 
+import {
+  getUsers,
+  saveUsers,
+  saveSession
 } from '../../scripts/storage.js';
-import { sendVerificationEmail } from '../../scripts/notification-service.js';
 
 /**
- * Decorates the Auth block (Login & Registration Toggle)
+ * Icons live in one external sprite (/icons/icons.svg) instead of an icon
+ * font or inline-per-instance SVG markup. One small cached request serves
+ * every icon on the page (vs. a font-CDN request before), and each <use>
+ * still inherits color via currentColor exactly like the old inline icons
+ * did, so per-context coloring (error red, valid green, etc.) still works.
+ */
+const ICON_SPRITE = '/icons/icons.svg';
+
+function iconMarkup(name) {
+  return `<svg viewBox="0 0 24 24"><use href="${ICON_SPRITE}#icon-${name}"></use></svg>`;
+}
+
+function icon(name, className = 'auth-icon') {
+  return `<span class="${className}" aria-hidden="true">${iconMarkup(name)}</span>`;
+}
+
+function setIcon(el, name) {
+  if (el) el.innerHTML = iconMarkup(name);
+}
+
+/**
+ * Fonts are now self-hosted (see the @font-face rules in auth.css) instead
+ * of pulled from fonts.googleapis.com, so there's no external font origin
+ * left at all — no DNS lookup, no render-blocking cross-origin request,
+ * and cache lifetime is fully under this site's control. All that's left
+ * to do from JS is hint the browser to fetch the two above-the-fold
+ * weights (heading + body) a little earlier.
+ */
+function preloadFonts() {
+  if (document.querySelector('link[data-auth-fonts]')) return;
+
+  [
+    { href: '/fonts/cormorant-garamond-700.woff2' },
+    { href: '/fonts/dm-sans-400.woff2' },
+  ].forEach(({ href }) => {
+    const link = document.createElement('link');
+    link.rel = 'preload';
+    link.as = 'font';
+    link.type = 'font/woff2';
+    link.href = href;
+    link.crossOrigin = 'anonymous';
+    link.dataset.authFonts = 'true';
+    document.head.appendChild(link);
+  });
+}
+
+/**
+ * EmailJS is only needed when the person actually submits the register
+ * form or requests a password reset — most visitors never do either on a
+ * given page load. Loading it eagerly on every decorate() call was costing
+ * unused JS + main-thread time on every single visit. It's now fetched
+ * once, on demand, and cached via emailJsPromise so repeat calls are free.
+ */
+let emailJsPromise = null;
+function ensureEmailJs() {
+  if (window.emailjs) return Promise.resolve(window.emailjs);
+  if (emailJsPromise) return emailJsPromise;
+
+  emailJsPromise = new Promise((resolve, reject) => {
+    const script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js';
+    script.onload = () => {
+      window.emailjs.init('E-RRC2LnjiMrh0Ez8');
+      resolve(window.emailjs);
+    };
+    script.onerror = (err) => {
+      emailJsPromise = null;
+      reject(err);
+    };
+    document.head.appendChild(script);
+  });
+
+  return emailJsPromise;
+}
+
+/**
+ * Decorates the Auth block (Login, Registration, Verification & Reset Toggles)
  * @param {Element} block The auth block element
  */
 export default async function decorate(block) {
@@ -15,11 +90,11 @@ export default async function decorate(block) {
   if (!rows || rows.length === 0) return;
 
   const cells = [...rows[0].children];
-  
+
   const getCellLines = (cellElement) => {
     if (!cellElement) return [];
     return [...cellElement.querySelectorAll('p, li, div')]
-      .map(p => p.textContent.trim())
+      .map(el => el.textContent.trim())
       .filter(txt => txt !== '');
   };
 
@@ -36,85 +111,93 @@ export default async function decorate(block) {
   container.innerHTML = `
     <div class="auth-forms-holder">
       <div class="form-box login">
-        <form novalidate>
+        <form novalidate aria-label="Account Login">
           <h1>${loginData[0] || 'Login'}</h1>
-          
+
           <div class="input-box">
-            <input type="email" id="loginEmail" placeholder="${loginData[1] || 'Email'}" required autocomplete="username">
-            <i class='bx bx-user'></i>
+            <label for="loginEmail" class="visually-hidden">Email Address</label>
+            <input type="email" id="loginEmail" placeholder="${loginData[1] || 'Email'}" aria-label="Email Address" required autocomplete="username">
+            ${icon('user')}
           </div>
-          
+
           <div class="input-box">
-            <input type="password" id="loginPassword" placeholder="${loginData[2] || 'Password'}" required autocomplete="current-password">
+            <label for="loginPassword" class="visually-hidden">Password</label>
+            <input type="password" id="loginPassword" placeholder="${loginData[2] || 'Password'}" aria-label="Password" required autocomplete="current-password">
             <button type="button" class="password-toggle-btn" id="toggleLoginPasswordBtn" aria-label="Show password">
-              <i class='bx bx-hide' id="loginPasswordIcon"></i>
+              ${icon('hide')}
             </button>
           </div>
-          
-          <div class="form-options-row" style="text-align: right; margin-bottom: 6px; width: 100%;">
-            <a href="#forgot" class="forgot-password-link" style="font-size: 11px; color: #9c8772; text-decoration: none;">${loginData[3] || 'Forgot Password?'}</a>
+
+          <div class="form-options-row">
+            <a href="#forgot" class="forgot-password-link">${loginData[3] || 'Forgot Password?'}</a>
           </div>
-          
+
           <button type="submit" class="btn">Login</button>
-          <p class="mobile-switch-text">${welcomeData[1] || "Don't have an account?"} <span class="switch-link-btn trigger-to-register">${welcomeData[2] || 'Register'}</span></p>
+          <p class="mobile-switch-text">${welcomeData[1] || "Don't have an account?"} <button type="button" class="switch-link-btn trigger-to-register">${welcomeData[2] || 'Register'}</button></p>
         </form>
       </div>
 
       <div class="form-box register">
-        <form novalidate>
+        <form novalidate aria-label="Account Registration">
           <h1>${registerData[0] || 'Registration'}</h1>
-          
+
           <div class="input-box">
-            <input type="text" id="regUsername" placeholder="${registerData[1] || 'Username'}" required autocomplete="name">
-            <i class='bx bx-user'></i>
+            <label for="regUsername" class="visually-hidden">Username</label>
+            <input type="text" id="regUsername" placeholder="${registerData[1] || 'Username'}" aria-label="Username" required autocomplete="name">
+            ${icon('user')}
           </div>
-          
+
           <div class="input-box">
-            <input type="email" id="regEmail" placeholder="${registerData[2] || 'Email'}" required autocomplete="email">
-            <i class='bx bx-envelope'></i>
+            <label for="regEmail" class="visually-hidden">Email Address</label>
+            <input type="email" id="regEmail" placeholder="${registerData[2] || 'Email'}" aria-label="Email Address" required autocomplete="email">
+            ${icon('envelope')}
           </div>
-          
+
           <div class="role-select-group">
-            <select id="regRole" class="role-select-menu" required>
+            <label for="regRole" class="visually-hidden">Select Account Type</label>
+            <select id="regRole" class="role-select-menu" aria-label="Select Account Type" required>
               <option value="" disabled selected hidden>${registerData[3] || 'Select Account Type...'}</option>
-              <option value="buyer">Collector (Buyer)</option>
-              <option value="seller">Artisan / Curator (Seller)</option>
+              <option value="buyer">Collector (Buyer Only)</option>
+              <option value="seller">Artisan / Curator (Seller Only)</option>
+              <option value="both">Collector & Artisan (Both Buyer & Seller)</option>
             </select>
-            <i class='bx bx-briefcase' style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: #b59d84; pointer-events: none; font-size: 16px;"></i>
+            ${icon('briefcase', 'role-select-icon')}
           </div>
-          
+
           <div class="input-box password-group">
-            <input type="password" id="regPassword" placeholder="${registerData[4] || 'Password'}" required autocomplete="new-password">
+            <label for="regPassword" class="visually-hidden">Password</label>
+            <input type="password" id="regPassword" placeholder="${registerData[4] || 'Password'}" aria-label="Password" required autocomplete="new-password">
             <button type="button" class="password-toggle-btn" id="toggleRegPasswordBtn" aria-label="Show password">
-              <i class='bx bx-hide' id="regPasswordIcon"></i>
+              ${icon('hide')}
             </button>
-            
+
             <div class="password-requirements" id="passwordRequirements">
               <p class="req-title">Password Requirements</p>
-              <ul>
-                <li id="reqLength" class="invalid"><i class="bx bx-circle"></i> Min 8 characters</li>
-                <li id="reqUpper" class="invalid"><i class="bx bx-circle"></i> At least 1 uppercase</li>
-                <li id="reqLower" class="invalid"><i class="bx bx-circle"></i> At least 1 lowercase</li>
-                <li id="reqNumber" class="invalid"><i class="bx bx-circle"></i> At least 1 number</li>
-                <li id="reqSymbol" class="invalid"><i class="bx bx-circle"></i> At least 1 special char</li>
+              <ul aria-live="polite">
+                <li id="reqLength" class="invalid">${icon('circle')} Min 8 characters</li>
+                <li id="reqUpper" class="invalid">${icon('circle')} At least 1 uppercase</li>
+                <li id="reqLower" class="invalid">${icon('circle')} At least 1 lowercase</li>
+                <li id="reqNumber" class="invalid">${icon('circle')} At least 1 number</li>
+                <li id="reqSymbol" class="invalid">${icon('circle')} At least 1 special char</li>
               </ul>
             </div>
           </div>
-          
+
           <div class="input-box confirm-password-group">
-            <input type="password" id="regConfirmPassword" placeholder="${registerData[5] || 'Confirm Password'}" required autocomplete="new-password">
+            <label for="regConfirmPassword" class="visually-hidden">Confirm Password</label>
+            <input type="password" id="regConfirmPassword" placeholder="${registerData[5] || 'Confirm Password'}" aria-label="Confirm Password" required autocomplete="new-password">
             <button type="button" class="password-toggle-btn" id="toggleConfirmPasswordBtn" aria-label="Show confirm password">
-              <i class='bx bx-hide' id="confirmPasswordIcon"></i>
+              ${icon('hide')}
             </button>
-            
-            <div class="confirm-error-message" id="confirmErrorBlock">
-              <i class="bx bx-error-circle" style="color:#d64545; font-size:12px;"></i>
+
+            <div class="confirm-error-message" id="confirmErrorBlock" aria-live="assertive">
+              ${icon('error-circle')}
               <span id="confirmErrorText">Passwords do not match.</span>
             </div>
           </div>
-          
+
           <button type="submit" class="btn">Register</button>
-          <p class="mobile-switch-text">${returningData[1] || "Already have an account?"} <span class="switch-link-btn trigger-to-login">${returningData[2] || 'Login'}</span></p>
+          <p class="mobile-switch-text">${returningData[1] || "Already have an account?"} <button type="button" class="switch-link-btn trigger-to-login">${returningData[2] || 'Login'}</button></p>
         </form>
       </div>
     </div>
@@ -123,21 +206,51 @@ export default async function decorate(block) {
       <div class="toggle-panel toggle-left">
         <h1>${returningData[0] || 'Welcome Back!'}</h1>
         <p>${returningData[1] || 'Already have an account?'}</p>
-        <button type="button" class="btn trigger-to-login">${returningData[2] || 'Login'}</button>
+        <button type="button" class="btn trigger-to-login" aria-label="Switch to Login form">
+          ${returningData[2] || 'Login'}
+        </button>
       </div>
       <div class="toggle-panel toggle-right">
         <h1>${welcomeData[0] || 'Hello, Welcome!'}</h1>
         <p>${welcomeData[1] || "Don't have an account?"}</p>
-        <button type="button" class="btn trigger-to-register">${welcomeData[2] || 'Register'}</button>
+        <button type="button" class="btn trigger-to-register" aria-label="Switch to Registration form">
+          ${welcomeData[2] || 'Register'}
+        </button>
       </div>
     </div>
 
-    <div class="custom-popup-overlay" id="customAuthPopup">
+    <div class="custom-popup-overlay" id="customAuthPopup" role="dialog" aria-modal="true" aria-labelledby="popupTitle" aria-describedby="popupMessage">
       <div class="custom-popup-box">
-        <div class="popup-icon-wrap" id="popupIconBox"><i class='bx bx-check-circle'></i></div>
+        <div class="popup-icon-wrap" id="popupIconBox">${icon('check-circle')}</div>
         <h3 class="popup-title" id="popupTitle">Notification</h3>
         <p class="popup-msg" id="popupMessage"></p>
         <button type="button" class="popup-confirm-btn" id="closePopupBtn">Continue</button>
+      </div>
+    </div>
+
+    <div class="custom-popup-overlay" id="customResetPopup" role="dialog" aria-modal="true" aria-labelledby="resetPopupTitle">
+      <div class="custom-popup-box reset-form-card">
+        <div class="popup-icon-wrap reset-key-icon">${icon('key')}</div>
+        <h3 class="popup-title" id="resetPopupTitle">Reset Password</h3>
+        <p class="popup-msg" id="resetPopupEmail"></p>
+
+        <div class="input-box">
+          <label for="newResetPassword" class="visually-hidden">New Password</label>
+          <input type="password" id="newResetPassword" placeholder="New Password" aria-label="New Password" required>
+          ${icon('lock-alt')}
+        </div>
+        <div class="input-box">
+          <label for="confirmResetPassword" class="visually-hidden">Confirm New Password</label>
+          <input type="password" id="confirmResetPassword" placeholder="Confirm New Password" aria-label="Confirm New Password" required>
+          ${icon('lock-open-alt')}
+        </div>
+
+        <div class="confirm-error-message" id="resetErrorBlock" aria-live="assertive">
+          ${icon('error-circle')}
+          <span id="resetErrorText">Passwords do not match.</span>
+        </div>
+
+        <button type="button" class="popup-confirm-btn" id="submitResetBtn">Update Password</button>
       </div>
     </div>
   `;
@@ -146,33 +259,26 @@ export default async function decorate(block) {
     container.classList.add('active');
   }
 
-  if (!document.querySelector('link[href*="boxicons"]')) {
-    const bxLink = document.createElement('link');
-    bxLink.rel = 'stylesheet';
-    bxLink.href = 'https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css';
-    document.head.appendChild(bxLink);
-  }
+  preloadFonts();
 
   const resetFormFields = () => {
     const forms = container.querySelectorAll('form');
     forms.forEach(form => form.reset());
-    
+
     const reqBox = container.querySelector('#passwordRequirements');
     if (reqBox) reqBox.classList.remove('has-content');
-    
+
     const errBlock = container.querySelector('#confirmErrorBlock');
     if (errBlock) errBlock.classList.remove('is-visible');
-    
+
     const p1 = container.querySelector('#regPassword');
     const p2 = container.querySelector('#regConfirmPassword');
     if (p1) p1.style.borderColor = '';
     if (p2) p2.style.borderColor = '';
-    
-    const reqItems = container.querySelectorAll('.password-requirements li');
-    reqItems.forEach(li => {
+
+    container.querySelectorAll('.password-requirements li').forEach(li => {
       li.className = 'invalid';
-      const icon = li.querySelector('i');
-      if (icon) icon.className = 'bx bx-circle';
+      setIcon(li.querySelector('.auth-icon'), 'circle');
     });
   };
 
@@ -193,15 +299,14 @@ export default async function decorate(block) {
   });
 
   await (window.__storeReady || Promise.resolve());
-
   initAuthValidation(container);
-
   decorateIcons(container);
   block.appendChild(container);
+  checkURLTokenInterceptions(container);
 }
 
+// Complete initialization and intercept token modules mapped accurately from source configurations
 function initAuthValidation(container) {
-  // Explicitly query login input handles in the localized scope
   const loginPasswordInput = container.querySelector("#loginPassword");
 
   function generateToken() {
@@ -223,45 +328,37 @@ function initAuthValidation(container) {
 
       titleEl.textContent = title;
       msgEl.textContent = message;
-
-      if (isError) {
-        iconBox.className = "popup-icon-wrap error-state";
-        iconBox.innerHTML = "<i class='bx bx-error-circle'></i>";
-      } else {
-        iconBox.className = "popup-icon-wrap";
-        iconBox.innerHTML = "<i class='bx bx-check-circle'></i>";
-      }
+      iconBox.className = isError ? "popup-icon-wrap error-state" : "popup-icon-wrap";
+      iconBox.innerHTML = icon(isError ? 'error-circle' : 'check-circle');
 
       overlay.classList.add('show');
-      function handleClosure() {
+      closeBtn.onclick = () => {
         overlay.classList.remove('show');
-        closeBtn.removeEventListener('click', handleClosure);
         resolve();
-      }
-      closeBtn.addEventListener('click', handleClosure);
+      };
     });
   }
 
-  // ── WIRE HARNESS FOR INDEPENDENT FIELD VISIBILITY HANDLES ──
-  const wireEyeToggle = (inputSelector, buttonSelector, iconSelector) => {
+  const wireEyeToggle = (inputSelector, buttonSelector) => {
     const input = container.querySelector(inputSelector);
     const btn = container.querySelector(buttonSelector);
-    const icon = container.querySelector(iconSelector);
+    const iconWrap = btn ? btn.querySelector('.auth-icon') : null;
 
-    btn?.addEventListener('click', (e) => {
+    if (!input || !btn || !iconWrap) return;
+
+    btn.addEventListener('click', (e) => {
       e.preventDefault();
       const isHidden = input.type === "password";
       input.type = isHidden ? "text" : "password";
-      icon.classList.toggle("bx-hide", !isHidden);
-      icon.classList.toggle("bx-show", isHidden);
+      setIcon(iconWrap, isHidden ? 'show' : 'hide');
+      btn.setAttribute('aria-label', isHidden ? 'Hide password' : 'Show password');
     });
   };
 
-  wireEyeToggle("#loginPassword", "#toggleLoginPasswordBtn", "#loginPasswordIcon");
-  wireEyeToggle("#regPassword", "#toggleRegPasswordBtn", "#regPasswordIcon");
-  wireEyeToggle("#regConfirmPassword", "#toggleConfirmPasswordBtn", "#confirmPasswordIcon");
+  wireEyeToggle("#loginPassword", "#toggleLoginPasswordBtn");
+  wireEyeToggle("#regPassword", "#toggleRegPasswordBtn");
+  wireEyeToggle("#regConfirmPassword", "#toggleConfirmPasswordBtn");
 
-  // ── WIRE FORGOT PASSWORD INTERACTION ──
   const forgotLink = container.querySelector('.forgot-password-link');
   forgotLink?.addEventListener('click', async (e) => {
     e.preventDefault();
@@ -270,16 +367,36 @@ function initAuthValidation(container) {
       showCustomModal('Reset Terminated', 'Please specify your targeted account profile email context space first.', true);
       return;
     }
+
     const users = getUsers();
-    const match = users.find(u => u.email.toLowerCase() === emailInput.toLowerCase());
-    if (!match) {
-      showCustomModal('Account Missing', 'No matching credentials context exist on our secure nodes.', true);
+    const userIndex = users.findIndex(u => u.email.toLowerCase() === emailInput.toLowerCase());
+
+    if (userIndex === -1) {
+      await showCustomModal('Dispatch Completed', `If that account exists, a recovery validation link has been dispatched to your inbox.`);
       return;
     }
-    await showCustomModal('Dispatch Sent', `A dedicated password token link was issued successfully to ${emailInput}.`);
+
+    const resetToken = generateToken();
+    users[userIndex].resetToken = resetToken;
+    await saveUsers(users);
+
+    const baseHref = window.location.href.split('#')[0].split('?')[0];
+    const resetLink = `${baseHref}?resetToken=${resetToken}`;
+
+    try {
+      const emailjs = await ensureEmailJs();
+      await emailjs.send('service_wviwj9n', 'template_2bn0bqb', {
+        name: users[userIndex].name,
+        email: emailInput,
+        verify_link: resetLink
+      });
+      await showCustomModal('Dispatch Completed', `A password recovery link has been safely routed to ${emailInput}. Check your inbox folder context.`);
+    } catch (err) {
+      console.error('Forgot transmission error:', err);
+      await showCustomModal('Network Interruption', 'Failed to safely bridge routing networks.', true);
+    }
   });
 
-  // ── REALTIME DATA GRAPH ENGINE VALIDATORS ──
   const password = container.querySelector('#regPassword');
   const confirmPassword = container.querySelector('#regConfirmPassword');
   const reqBox = container.querySelector('#passwordRequirements');
@@ -303,10 +420,7 @@ function initAuthValidation(container) {
       const isValid = rule.regex.test(value);
       if (rule.el) {
         rule.el.className = isValid ? 'valid' : 'invalid';
-        const iconElement = rule.el.querySelector('i');
-        if (iconElement) {
-          iconElement.className = isValid ? 'bx bx-check-circle' : 'bx bx-circle';
-        }
+        setIcon(rule.el.querySelector('.auth-icon'), isValid ? 'check-circle' : 'circle');
       }
     });
     if (confirmPassword.value.length > 0) validatePasswordMatch();
@@ -332,7 +446,6 @@ function initAuthValidation(container) {
 
   confirmPassword?.addEventListener('input', validatePasswordMatch);
 
-  // ── REGISTRATION FORM SUBMISSION SUB-SYSTEM ──
   const registerForm = container.querySelector('.form-box.register form');
   registerForm?.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -367,24 +480,32 @@ function initAuthValidation(container) {
     }
 
     const token = generateToken();
-    const newUser = { 
-      userId: getNextId(users), 
-      name, 
-      email, 
-      password: pwd, 
-      verified: false, 
-      token, 
-      role 
+    const baseHref = window.location.href.split('#')[0].split('?')[0];
+    const verifyLink = `${baseHref}?token=${token}`;
+
+    const newUser = {
+      userId: getNextId(users),
+      name,
+      email,
+      password: pwd,
+      verified: false,
+      token,
+      role
     };
 
     users.push(newUser);
     await saveUsers(users);
 
     try {
-      await sendVerificationEmail(name, email, token);
+      const emailjs = await ensureEmailJs();
+      await emailjs.send('service_wviwj9n', 'template_7r9agem', {
+        name: name,
+        email: email,
+        verify_link: verifyLink
+      });
       await showCustomModal('Registration Placed', `Verification dispatch sent to ${email}. Please confirm via your inbox folder panel.`);
     } catch (err) {
-      console.error('Email tracking system interruption:', err);
+      console.error('Registration transmission error:', err);
       await showCustomModal('Network Interruption', 'Profile initialized, but transaction dispatch failed to route.', true);
     }
 
@@ -396,7 +517,6 @@ function initAuthValidation(container) {
     password.style.borderColor = '';
   });
 
-  // ── USER PROFILE AUTHENTICATION PIPELINE LAYER ──
   const loginForm = container.querySelector('.form-box.login form');
   loginForm?.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -417,9 +537,9 @@ function initAuthValidation(container) {
         loginPasswordInput.value = '';
         loginPasswordInput.placeholder = 'Invalid email or password';
       }
-      
+
       showCustomModal('Authentication Failure', 'The credentials provided do not match our database records.', true);
-      
+
       setTimeout(() => {
         if (loginPasswordInput) {
           loginPasswordInput.style.borderColor = '';
@@ -443,8 +563,101 @@ function initAuthValidation(container) {
     };
 
     saveSession(sessionPayload);
-    await showCustomModal('Welcome Back', `Welcome back, ${match.name}!`);
-    
-    window.location.href = sessionPayload.role === 'seller' ? 'seller-dashboard' : 'dashboard';
+    await showCustomModal('Welcome Back', `Welcome back, ${match.name}! Redirecting to your dashboard workspace...`);
+
+    setTimeout(() => {
+      window.location.href = sessionPayload.role === 'seller' ? '../seller-dashboard.html' : '../dashboard.html';
+    }, 3000);
   });
+}
+
+async function checkURLTokenInterceptions(container) {
+  const urlParams = new URLSearchParams(window.location.search);
+  const verifyToken = urlParams.get('token');
+  const resetToken = urlParams.get('resetToken');
+
+  if (!verifyToken && !resetToken) return;
+
+  const showModal = (title, message, isError = false) => {
+    return new Promise((resolve) => {
+      const overlay = container.querySelector('#customAuthPopup');
+      const iconBox = container.querySelector('#popupIconBox');
+      const titleEl = container.querySelector('#popupTitle');
+      const msgEl = container.querySelector('#popupMessage');
+      const closeBtn = container.querySelector('#closePopupBtn');
+
+      titleEl.textContent = title;
+      msgEl.textContent = message;
+      iconBox.className = isError ? "popup-icon-wrap error-state" : "popup-icon-wrap";
+      iconBox.innerHTML = icon(isError ? 'error-circle' : 'check-circle');
+
+      overlay.classList.add('show');
+      closeBtn.onclick = () => {
+        overlay.classList.remove('show');
+        resolve();
+      };
+    });
+  };
+
+  const users = getUsers();
+
+  if (verifyToken) {
+    const user = users.find(u => u.token === verifyToken);
+    if (!user) {
+      await showModal('Invalid Link', 'This verification token was not found or has already expired.', true);
+    } else if (user.verified) {
+      await showModal('Already Verified', `Your account configuration is already active. Go ahead and log in, ${user.name}!`);
+    } else {
+      user.verified = true;
+      await saveUsers(users);
+      await showModal('Email Verified!', `Welcome to Vaultora, ${user.name}! Your account registration has been successfully activated. You can now log in.`);
+    }
+    window.history.replaceState({}, document.title, window.location.pathname);
+  }
+
+  if (resetToken) {
+    const user = users.find(u => u.resetToken === resetToken);
+    if (!user) {
+      await showModal('Invalid Token', 'This password recovery linkage verification has expired.', true);
+      window.history.replaceState({}, document.title, window.location.pathname);
+      return;
+    }
+
+    const resetOverlay = container.querySelector('#customResetPopup');
+    const emailLabel = container.querySelector('#resetPopupEmail');
+    const pwdInput = container.querySelector('#newResetPassword');
+    const confirmInput = container.querySelector('#confirmResetPassword');
+    const errorBlock = container.querySelector('#resetErrorBlock');
+    const submitBtn = container.querySelector('#submitResetBtn');
+
+    emailLabel.textContent = `Account Profile: ${user.email}`;
+    resetOverlay.classList.add('show');
+
+    submitBtn.onclick = async () => {
+      const p1 = pwdInput.value.trim();
+      const p2 = confirmInput.value.trim();
+
+      if (p1.length < 8) {
+        pwdInput.style.borderColor = '#d64545';
+        errorBlock.querySelector('span').textContent = "Password must be at least 8 characters.";
+        errorBlock.classList.add('is-visible');
+        return;
+      }
+
+      if (p1 !== p2) {
+        confirmInput.style.borderColor = '#d64545';
+        errorBlock.querySelector('span').textContent = "Passwords do not match.";
+        errorBlock.classList.add('is-visible');
+        return;
+      }
+
+      user.password = p1;
+      delete user.resetToken;
+      await saveUsers(users);
+
+      resetOverlay.classList.remove('show');
+      await showModal('Update Successful', 'Your profile password structure has been updated. Please log in using your new credentials.');
+      window.history.replaceState({}, document.title, window.location.pathname);
+    };
+  }
 }

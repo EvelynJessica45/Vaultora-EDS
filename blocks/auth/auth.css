@@ -1,23 +1,118 @@
-@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;700&display=swap");
+/* ==========================================================================
+   FONT LOADING NOTE
+   Fonts are self-hosted from /fonts/ (see @font-face rules below) instead
+   of being pulled from fonts.googleapis.com. That removes an entire
+   external origin: no DNS lookup, no render-blocking cross-origin request,
+   and the files are served — and cached — under this site's own control.
+   Only the weights actually used elsewhere in this file are declared.
+   ========================================================================== */
 
-/* .auth-wrapper {
-  background-color: var(--cream, #f5f0e6);
-} */
-
-.auth .container {
-  position: relative;
-  width: 860px;
-  height: 450px;
-  background: #fdfcf9;
-  margin: 40px auto;
-  border-radius: 28px;
-  box-shadow: 0 20px 60px rgba(42, 41, 38, 0.12);
-  overflow: hidden;
-  border: 1px solid rgba(181, 157, 132, 0.25);
-  display: flex;
+@font-face {
+  font-family: "Cormorant Garamond";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/fonts/cormorant-garamond-700.woff2") format("woff2");
 }
 
-/* ── HOLDS FORMS SIDE-BY-SIDE FIXED POSITION ── */
+@font-face {
+  font-family: "Cormorant Garamond";
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/cormorant-garamond-400italic.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "DM Sans";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/dm-sans-400.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "DM Sans";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("/fonts/dm-sans-500.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "DM Sans";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("/fonts/dm-sans-600.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "DM Sans";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/fonts/dm-sans-700.woff2") format("woff2");
+}
+
+/* ==========================================================================
+   0. SCREEN READER ACCESSIBILITY ELEMENTS
+   ========================================================================== */
+.auth .visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+.auth .bg-layer-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+  overflow: hidden;
+}
+
+.auth .bg-fallback-asset {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  pointer-events: none;
+  user-select: none;
+  /* Belt-and-suspenders CLS guard: even if the <img> tag is missing explicit
+     width/height attributes (fix at the markup source if you can), this
+     keeps the box from collapsing/reflowing before the image loads. */
+  aspect-ratio: 16 / 9;
+  background: #fdfcf9;
+}
+
+/* ==========================================================================
+   1. MAIN BLOCK CANVAS WRAPPERS
+   ========================================================================== */
+.auth .container {
+  position: relative;
+  width: 100%;
+  max-width: 51.25rem; /* 820px */
+  height: 28.75rem;   /* 460px */
+  background: #fdfcf9;
+  margin: 3.75rem auto;
+  border-radius: 24px;
+  box-shadow: 0 20px 60px rgba(42, 41, 38, 0.15);
+  overflow: hidden;
+  border: 1px solid rgba(181, 157, 132, 0.35);
+  display: flex;
+  z-index: 10;
+  contain: content;
+}
+
 .auth .auth-forms-holder {
   position: absolute;
   width: 100%;
@@ -38,50 +133,27 @@
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 25px 40px;
+  padding: 0.93rem 2.18rem;
   box-sizing: border-box;
   z-index: 1;
-  transition: transform 1.8s cubic-bezier(0.76, 0, 0.24, 1), opacity 1.4s ease;
+  transition: transform 1.2s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.8s ease;
 }
 
-.auth .form-box.login {
-  left: 0;
-  transform: translateX(0);
-  opacity: 1;
-  z-index: 5;
-}
+.auth .form-box.login { left: 0; transform: translateX(0); opacity: 1; z-index: 5; }
+.auth .form-box.register { left: 0; transform: translateX(0); opacity: 0; z-index: 1; }
 
-.auth .form-box.register {
-  left: 0;
-  transform: translateX(0);
-  opacity: 0;
-  z-index: 1;
-}
+.auth .container.active .form-box.login { transform: translateX(100%); opacity: 0; z-index: 1; }
+.auth .container.active .form-box.register { transform: translateX(100%); opacity: 1; z-index: 5; }
 
-.auth .container.active .form-box.login {
-  transform: translateX(100%);
-  opacity: 0;
-  z-index: 1;
-}
-
-.auth .container.active .form-box.register {
-  transform: translateX(100%);
-  opacity: 1;
-  z-index: 5;
-}
-
-.auth form {
-  width: 100%;
-}
+.auth form { width: 100%; }
 
 .auth p {
-  font-size: 13.5px;
-  color: #4e4b46;
-  margin-bottom: 20px;
-  font-weight: 300;
+  font-size: 0.78rem;
+  color: #2a2926;
+  margin-bottom: 0.75rem;
+  font-weight: 400;
 }
 
-/* ── THE SLIDING CANVAS PANEL ENGINE ── */
 .auth .toggle-box {
   position: absolute;
   top: 0;
@@ -90,13 +162,13 @@
   height: 100%;
   z-index: 10;
   overflow: hidden;
-  border-radius: 120px 28px 28px 120px;
-  transition: transform 1.5s cubic-bezier(0.76, 0, 0.24, 1), border-radius 1.2s cubic-bezier(0.76, 0, 0.24, 1);
+  border-radius: 120px 24px 24px 120px;
+  transition: transform 1.2s cubic-bezier(0.25, 1, 0.5, 1), border-radius 0.8s ease;
 }
 
 .auth .container.active .toggle-box {
   transform: translateX(-100%);
-  border-radius: 28px 120px 120px 28px;
+  border-radius: 24px 120px 120px 24px;
 }
 
 .auth .toggle-box::before {
@@ -106,18 +178,15 @@
   top: 0;
   width: 200%;
   height: 100%;
-  background: #46513f;
+  background: #384232;
   background-image:
     radial-gradient(ellipse at 30% 40%, rgba(141, 151, 115, 0.35) 0%, transparent 55%),
     radial-gradient(ellipse at 70% 70%, rgba(181, 157, 132, 0.2) 0%, transparent 45%);
-  transition: transform 1.8s cubic-bezier(0.76, 0, 0.24, 1);
+  transition: transform 1.2s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
-.auth .container.active .toggle-box::before {
-  transform: translateX(50%);
-}
+.auth .container.active .toggle-box::before { transform: translateX(50%); }
 
-/* ── PANEL CONTENTS INDIVIDUAL CONTROLS ── */
 .auth .toggle-panel {
   position: absolute;
   width: 100%;
@@ -126,169 +195,146 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 0 36px;
+  padding: 0 1.87rem;
   box-sizing: border-box;
   color: #f5f0e6;
   text-align: center;
-  transition: transform 2s cubic-bezier(0.76, 0, 0.24, 1), opacity 0.8s ease;
+  transition: transform 1.2s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.6s ease;
 }
 
-.auth .toggle-left {
-  transform: translateX(-120%);
-  opacity: 0;
-}
+.auth .toggle-left { transform: translateX(-120%); opacity: 0; }
+.auth .container.active .toggle-left { transform: translateX(0); opacity: 1; }
 
-.auth .container.active .toggle-left {
-  transform: translateX(0);
-  opacity: 1;
-}
+.auth .toggle-right { right: 0; transform: translateX(0); opacity: 1; }
+.auth .container.active .toggle-right { transform: translateX(120%); opacity: 0; }
 
-.auth .toggle-right {
-  right: 0;
-  transform: translateX(0);
-  opacity: 1;
-}
-
-.auth .container.active .toggle-right {
-  transform: translateX(120%);
-  opacity: 0;
-}
-
-/* Text Element Fonts Definitions */
 .auth h1, .auth .toggle-panel h1 {
   font-family: "Cormorant Garamond", serif;
-  font-size: 32px;
-  font-weight: 600;
+  font-size: 1.75rem;
+  font-weight: 700;
   color: #2a2926;
-  margin-bottom: 4px;
+  margin-bottom: 0.5rem;
 }
 
-.auth .toggle-panel h1 {
-  color: #f5f0e6;
-  font-style: italic;
-  font-weight: 300;
-  font-size: 34px;
-}
+.auth .toggle-panel h1 { color: #f5f0e6; font-style: italic; font-weight: 400; font-size: 1.87rem; }
+.auth .toggle-panel p { color: rgba(245, 240, 230, 0.92); margin-bottom: 1rem; }
 
-.auth .toggle-panel p {
-  color: rgba(245, 240, 230, 0.75);
-  margin-bottom: 24px;
-}
-
-/* ── INPUT SYSTEM MAPPING ── */
 .auth .input-box,
 .auth .role-select-group {
   position: relative;
-  margin: 8px 0;
+  margin: 0.35rem 0;
   width: 100%;
 }
 
 .auth .input-box input, .auth .role-select-menu {
   width: 100%;
-  padding: 10px 48px 10px 16px;
+  padding: 0.62rem 2.25rem 0.62rem 0.85rem;
   background: #f5f0e6;
-  border-radius: 10px;
-  border: 1px solid rgba(156, 135, 114, 0.3);
-  font-size: 14px;
+  border-radius: 8px;
+  border: 1.5px solid rgba(156, 135, 114, 0.5);
+  font-size: 0.87rem;
   color: #2a2926;
   outline: none;
   box-sizing: border-box;
   font-family: "DM Sans", sans-serif;
-  transition: all 0.25s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .auth .input-box input:focus,
 .auth .role-select-menu:focus {
-  border-color: #737b5c;
+  border-color: #384232;
   background: #ffffff;
-  box-shadow: 0 0 0 3px rgba(115, 123, 92, 0.1);
+  box-shadow: 0 0 0 3px rgba(56, 66, 50, 0.2);
 }
 
-.auth .input-box i {
+/* Icons are now inline SVG (see auth.js) instead of an icon font, so there's
+   no third-party font request, no FOIT/FOUT icon "pop", and no extra
+   render-blocking origin. Sizing is pre-allocated to avoid layout shift. */
+.auth .input-box > .auth-icon,
+.auth .role-select-icon {
   position: absolute;
-  right: 16px;
+  right: 12px;
   top: 50%;
   transform: translateY(-50%);
-  font-size: 18px;
-  color: #b59d84;
+  width: 16px;
+  height: 16px;
+  color: #5b4d40;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   pointer-events: none;
+}
+
+.auth .auth-icon svg,
+.auth .role-select-icon svg {
+  width: 100%;
+  height: 100%;
+  display: block;
 }
 
 .auth .btn {
   width: 100%;
-  height: 42px;
-  background: #46513f;
-  border-radius: 10px;
+  height: 2.37rem;
+  background: #384232;
+  border-radius: 8px;
   border: none;
   color: #f5f0e6;
-  font-size: 14px;
-  font-weight: 500;
+  font-size: 0.87rem;
+  font-weight: 600;
   cursor: pointer;
-  margin-top: 6px;
+  margin-top: 0.25rem;
   letter-spacing: 0.5px;
-  box-shadow: 0 4px 12px rgba(70, 81, 63, 0.2);
-  transition: all 0.25s ease;
+  transition: background 0.2s ease, transform 0.1s ease;
 }
 
-.auth .btn:hover {
-  background: #2a2926;
-  box-shadow: 0 6px 20px rgba(42, 41, 38, 0.25);
-  transform: translateY(-1px);
-}
+.auth .btn:hover { background: #2a2926; }
+.auth .btn:active { transform: scale(0.99); }
 
 .auth .toggle-panel .btn {
-  width: 150px;
-  height: 44px;
+  width: 9.37rem;
+  height: 2.37rem;
   background: transparent;
-  border: 1.5px solid rgba(248, 245, 239, 0.65);
-  box-shadow: none;
+  border: 1.5px solid #f5f0e6;
 }
 
-.auth .toggle-panel .btn:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: #f5f0e6;
-}
+.auth .toggle-panel .btn:hover { background: rgba(255, 255, 255, 0.15); }
 
-/* ── COMPONENT REQUIREMENT DRAWER MODULES ── */
 .auth .password-requirements {
   max-height: 0;
   overflow: hidden;
-  background: rgba(70, 81, 63, 0.04);
-  border-radius: 8px;
-  padding: 0 12px;
-  transition: max-height 0.3s ease, border-color 0.3s ease;
+  background: rgba(56, 66, 50, 0.04);
+  border-radius: 6px;
+  padding: 0 10px;
+  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
   text-align: left;
 }
 
 .auth .password-requirements.has-content {
-  max-height: 150px;
-  padding: 10px 12px;
-  margin-top: 6px;
-  border: 1px solid rgba(156, 135, 114, 0.15);
+  max-height: 115px;
+  padding: 6px 10px;
+  margin-top: 4px;
+  border: 1px solid rgba(156, 135, 114, 0.25);
 }
 
 .auth .req-title {
-  font-size: 11px !important;
-  font-weight: 600 !important;
+  font-size: 10px !important;
+  font-weight: 700 !important;
   text-transform: uppercase;
-  margin-bottom: 4px !important;
-  letter-spacing: 0.5px;
+  color: #384232;
+  margin-bottom: 2px !important;
 }
 
 .auth .password-requirements ul {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2px 8px;
   padding: 0; margin: 0; list-style: none;
 }
 
-.auth .password-requirements li {
-  font-size: 12px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin: 2px 0;
-}
-
-.auth .password-requirements li.invalid { color: #a85c3a; }
-.auth .password-requirements li.valid { color: #46513f; font-weight: 500; }
+.auth .password-requirements li { font-size: 10px; display: flex; align-items: center; gap: 4px; }
+.auth .password-requirements li .auth-icon { width: 12px; height: 12px; position: static; color: inherit; }
+.auth .password-requirements li.invalid { color: #96431f; } /* darkened for reliable 4.5:1 contrast at small size */
+.auth .password-requirements li.valid { color: #384232; font-weight: 600; }
 
 .auth .password-toggle-btn {
   position: absolute;
@@ -298,7 +344,18 @@
   background: none;
   border: none;
   cursor: pointer;
-  z-index: 5;
+  padding: 0;
+  display: inline-flex;
+}
+
+.auth .password-toggle-btn .auth-icon {
+  position: static;
+  width: 16px;
+  height: 16px;
+  color: #5b4d40;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .auth .confirm-error-message {
@@ -306,120 +363,125 @@
   overflow: hidden;
   opacity: 0;
   background: rgba(214, 69, 69, 0.04);
-  border-radius: 8px;
-  transition: all 0.3s ease;
-  text-align: left;
+  border-radius: 6px;
+  transition: all 0.25s ease;
 }
 
 .auth .confirm-error-message.is-visible {
-  max-height: 40px;
+  max-height: 28px;
   opacity: 1;
-  padding: 6px 12px;
-  margin-top: 6px;
-  border: 1px solid rgba(214, 69, 69, 0.15);
+  padding: 4px 10px;
+  margin-top: 4px;
+  border: 1px solid rgba(214, 69, 69, 0.25);
 }
 
-.auth .confirm-error-message span {
-  font-size: 12px; color: #d64545; font-weight: 500; margin-left: 6px;
+.auth .confirm-error-message span { font-size: 11px; color: #d64545; font-weight: 600; margin-left: 4px; }
+.auth .confirm-error-message .auth-icon { position: static; width: 12px; height: 12px; color: #d64545; }
+
+.auth .switch-link-btn {
+  background: none;
+  border: none;
+  color: #384232;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+  font-size: inherit;
 }
 
-/* ── MODAL INTERACTION POPUPS ── */
+.auth .form-options-row a {
+  font-size: 11px;
+  color: #5b4d40; /* darkened from #706152 for reliable 4.5:1 contrast */
+  text-decoration: none;
+  font-weight: 500;
+}
+.auth .form-options-row a:hover { text-decoration: underline; }
+
 .auth .custom-popup-overlay {
   position: fixed; inset: 0;
-  background: rgba(42, 41, 38, 0.4);
+  background: rgba(42, 41, 38, 0.5);
   backdrop-filter: blur(4px);
   z-index: 10000;
   display: flex; justify-content: center; align-items: center;
   opacity: 0; visibility: hidden;
-  transition: all 0.3s ease;
+  transition: opacity 0.25s, visibility 0.25s;
 }
 
 .auth .custom-popup-overlay.show { opacity: 1; visibility: visible; }
 
 .auth .custom-popup-box {
   background: #fdfcf9;
-  border: 1px solid rgba(181, 157, 132, 0.3);
+  border: 1px solid rgba(181, 157, 132, 0.4);
   border-radius: 20px; padding: 2rem;
-  width: 100%; max-width: 360px; text-align: center;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.1);
-  transform: scale(0.9) translateY(10px);
-  transition: transform 0.3s ease;
+  width: 90%; max-width: 360px; text-align: center;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.15);
 }
-
-.auth .custom-popup-overlay.show .custom-popup-box { transform: scale(1) translateY(0); }
 
 .auth .popup-icon-wrap {
-  width: 50px; height: 50px; border-radius: 50%; background: rgba(70, 81, 63, 0.08);
-  color: #46513f; display: inline-flex; justify-content: center; align-items: center; font-size: 28px; margin-bottom: 1rem;
+  width: 48px;
+  height: 48px;
+  margin: 0 auto 12px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(56, 66, 50, 0.1);
+  color: #384232;
+}
+.auth .popup-icon-wrap.error-state { background: rgba(214, 69, 69, 0.1); color: #d64545; }
+.auth .popup-icon-wrap .auth-icon { position: static; width: 24px; height: 24px; color: inherit; }
+
+.auth .container:not(.active) .form-box.login > h1,
+.auth .container:not(.active) .form-box.login > p,
+.auth .container:not(.active) .form-box.login > .mobile-switch-text,
+.auth .container:not(.active) .form-box.login form > h1,
+.auth .container:not(.active) .form-box.login form > p,
+.auth .container:not(.active) .form-box.login form > .mobile-switch-text,
+.auth .container.active .form-box.register > h1,
+.auth .container.active .form-box.register > p,
+.auth .container.active .form-box.register > .mobile-switch-text,
+.auth .container.active .form-box.register form > h1,
+.auth .container.active .form-box.register form > p,
+.auth .container.active .form-box.register form > .mobile-switch-text {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
 }
 
-.auth .popup-icon-wrap.error-state { background: rgba(214, 69, 69, 0.08); color: #d64545; }
-.auth .popup-title { font-family: "Cormorant Garamond", serif; font-size: 24px; color: #2a2926; margin-bottom: 0.5rem; }
-.auth .popup-msg { font-size: 13.5px; color: #4e4b46; margin-bottom: 1.5rem; }
-.auth .popup-confirm-btn {
-  width: 100%; height: 42px; background: #46513f; color: #f5f0e6; border: none; border-radius: 8px; cursor: pointer;
+.auth .form-box .input-box input,
+.auth .form-box .role-select-menu,
+.auth .form-box .form-options-row,
+.auth .form-box .btn {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
 }
 
-.auth .mobile-switch-text { display: none; }
+.auth .container.active .form-box.register h1 { opacity: 1 !important; transform: translateY(0) !important; }
 
-/* ── RESPONSIVE VIEWPORT BREAKPOINTS ── */
+.auth .reset-form-card { max-width: 400px; padding: 2.5rem 2rem; border: 1px solid rgba(181, 157, 132, 0.4); }
+.auth .reset-key-icon { background: rgba(56, 66, 50, 0.1); color: #384232; width: 55px; height: 55px; }
+.auth .reset-key-icon .auth-icon { width: 28px; height: 28px; }
+.auth .reset-form-card .input-box { margin: 12px 0; }
+.auth .reset-form-card .input-box input { padding: 12px 42px 12px 16px; background: #fbfbf9; border-radius: 8px; }
+.auth .reset-form-card .input-box .auth-icon { color: #5b4d40; }
+
+#resetErrorBlock { max-height: 0; overflow: hidden; opacity: 0; background: rgba(214, 69, 69, 0.04); border-radius: 6px; transition: all 0.3s ease; text-align: left; }
+#resetErrorBlock.is-visible { max-height: 38px; opacity: 1; padding: 8px 12px; margin-bottom: 12px; border: 1px solid rgba(214, 69, 69, 0.15); }
+#resetErrorBlock span { font-size: 12px; color: #d64545; font-weight: 600; margin-left: 4px; }
+#resetErrorBlock .auth-icon { position: static; width: 12px; height: 12px; color: #d64545; }
+#submitResetBtn { margin-top: 10px; height: 44px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; background: #384232; }
+
 @media screen and (max-width: 960px) {
-  .auth .container { width: 95%; height: auto; min-height: 540px; }
+  .auth .container { width: 92%; height: auto; min-height: 500px; }
 }
 
 @media screen and (max-width: 768px) {
-  .auth .container { flex-direction: column; height: auto; background: transparent; box-shadow: none; border: none; }
+  .auth .container { flex-direction: column; height: auto; background: transparent; box-shadow: none; border: none; margin: 20px auto; }
   .auth .toggle-box { display: none !important; }
-  .auth .form-box { position: relative; width: 100%; height: auto; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); opacity: 1 !important; transform: none !important; }
+  .auth .form-box { position: relative; width: 100%; height: auto; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.06); opacity: 1 !important; transform: none !important; padding: 30px 20px; margin-bottom: 20px; }
   .auth .mobile-switch-text { display: block; margin-top: 14px; text-align: center; }
-  .auth .switch-link-btn { background: none; border: none; color: #46513f; font-weight: 700; cursor: pointer; text-decoration: underline; }
 
-  .auth .container:not(.active) .form-box.login { display: flex; z-index: 1; }
+  .auth .container:not(.active) .form-box.login { display: flex; z-index: 5; }
   .auth .container:not(.active) .form-box.register { display: none; }
   .auth .container.active .form-box.login { display: none; }
-  .auth .container.active .form-box.register { display: flex; z-index: 1; }
-}
-
-.auth .form-box h1,
-.auth .form-box p,
-.auth .form-box .input-box,
-.auth .form-box .role-select-group,
-.auth .form-box .form-options-row,
-.auth .form-box .btn,
-.auth .form-box .mobile-switch-text {
-  opacity: 0;
-  transform: translateY(14px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
-}
-
-.auth .form-box.login h1 { transition-delay: 0.5s; }
-.auth .form-box.login .input-box:nth-of-type(1) { transition-delay: 0.9s; }
-.auth .form-box.login .input-box:nth-of-type(2) { transition-delay: 0.7s; }
-.auth .form-box.login .form-options-row { transition-delay: 0.8s; }
-.auth .form-box.login .btn { transition-delay: 0.9s; }
-.auth .form-box.login .mobile-switch-text { transition-delay: 1s; }
-
-.auth .form-box.register h1 { transition-delay: 0.9s; }
-.auth .form-box.register .input-box:nth-of-type(1) { transition-delay: 0.9s; }
-.auth .form-box.register .input-box:nth-of-type(2) { transition-delay: 0.7s; }
-.auth .form-box.register .role-select-group { transition-delay: 0.8s; }
-.auth .form-box.register .password-group { transition-delay: 0.9s; }
-.auth .form-box.register .confirm-password-group { transition-delay: 1s; }
-.auth .form-box.register .btn { transition-delay: 1.1s; }
-.auth .form-box.register .mobile-switch-text { transition-delay: 1.2s; }
-
-.auth .container:not(.active) .form-box.login h1,
-.auth .container:not(.active) .form-box.login p,
-.auth .container:not(.active) .form-box.login .input-box,
-.auth .container:not(.active) .form-box.login .form-options-row,
-.auth .container:not(.active) .form-box.login .btn,
-.auth .container:not(.active) .form-box.login .mobile-switch-text,
-.auth .container.active .form-box.register h1,
-.auth .container.active .form-box.register p,
-.auth .container.active .form-box.register .input-box,
-.auth .container.active .form-box.register .role-select-group,
-.auth .container.active .form-box.register .btn,
-.auth .container.active .form-box.register .mobile-switch-text {
-  opacity: 1;
-  transform: translateY(0);
+  .auth .container.active .form-box.register { display: flex; z-index: 5; }
 }
