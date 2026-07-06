@@ -1,36 +1,159 @@
-/* stylelint-disable max-line-length */
-@font-face {
-  font-family: roboto-condensed;
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url('../fonts/roboto-condensed-bold.woff2') format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
+/* ==========================================================================
+   Vaultora Fonts
+   Self-hosted Font System
+   Optimized for Lighthouse 100
+   ========================================================================== */
+
+/* ==========================================================================
+   DM Sans
+   Primary UI Font
+   ========================================================================== */
 
 @font-face {
-  font-family: roboto;
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url('../fonts/roboto-bold.woff2') format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-
-@font-face {
-  font-family: roboto;
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url('../fonts/roboto-medium.woff2') format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-
-@font-face {
-  font-family: roboto;
+  font-family: "DM Sans";
+  src:
+    local("DM Sans Regular"),
+    local("DMSans-Regular"),
+    url("/fonts/dm-sans-400.woff2") format("woff2");
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url('../fonts/roboto-regular.woff2') format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+
+  /* Reduce CLS */
+  ascent-override: 96%;
+  descent-override: 24%;
+  line-gap-override: 0%;
+  size-adjust: 102%;
+}
+
+@font-face {
+  font-family: "DM Sans";
+  src:
+    local("DM Sans Medium"),
+    local("DMSans-Medium"),
+    url("/fonts/dm-sans-500.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+
+  ascent-override: 96%;
+  descent-override: 24%;
+  line-gap-override: 0%;
+  size-adjust: 102%;
+}
+
+@font-face {
+  font-family: "DM Sans";
+  src:
+    local("DM Sans SemiBold"),
+    local("DMSans-SemiBold"),
+    url("/fonts/dm-sans-600.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+
+  ascent-override: 96%;
+  descent-override: 24%;
+  line-gap-override: 0%;
+  size-adjust: 102%;
+}
+
+@font-face {
+  font-family: "DM Sans";
+  src:
+    local("DM Sans Bold"),
+    local("DMSans-Bold"),
+    url("/fonts/dm-sans-700.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+
+  ascent-override: 96%;
+  descent-override: 24%;
+  line-gap-override: 0%;
+  size-adjust: 102%;
+}
+
+/* ==========================================================================
+   Cormorant Garamond
+   Premium Display Font
+   ========================================================================== */
+
+@font-face {
+  font-family: "Cormorant Garamond";
+  src:
+    local("Cormorant Garamond Italic"),
+    url("/fonts/cormorant-garamond-400italic.woff2") format("woff2");
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+
+  ascent-override: 92%;
+  descent-override: 26%;
+  line-gap-override: 0%;
+  size-adjust: 101%;
+}
+
+@font-face {
+  font-family: "Cormorant Garamond";
+  src:
+    local("Cormorant Garamond Medium"),
+    url("/fonts/cormorant-garamond-500.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+
+  ascent-override: 92%;
+  descent-override: 26%;
+  line-gap-override: 0%;
+  size-adjust: 101%;
+}
+
+@font-face {
+  font-family: "Cormorant Garamond";
+  src:
+    local("Cormorant Garamond SemiBold"),
+    url("/fonts/cormorant-garamond-600.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+
+  ascent-override: 92%;
+  descent-override: 26%;
+  line-gap-override: 0%;
+  size-adjust: 101%;
+}
+
+@font-face {
+  font-family: "Cormorant Garamond";
+  src:
+    local("Cormorant Garamond Bold"),
+    url("/fonts/cormorant-garamond-700.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+
+  ascent-override: 92%;
+  descent-override: 26%;
+  line-gap-override: 0%;
+  size-adjust: 101%;
+}
+
+/* ==========================================================================
+   Font Variables
+   ========================================================================== */
+
+:root {
+  --font-body:
+    "DM Sans",
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+
+  --font-heading:
+    "Cormorant Garamond",
+    Georgia,
+    serif;
 }

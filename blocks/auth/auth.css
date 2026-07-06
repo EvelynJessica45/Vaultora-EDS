@@ -1,63 +1,7 @@
-/* ==========================================================================
-   FONT LOADING NOTE
-   Fonts are self-hosted from /fonts/ (see @font-face rules below) instead
-   of being pulled from fonts.googleapis.com. That removes an entire
-   external origin: no DNS lookup, no render-blocking cross-origin request,
-   and the files are served — and cached — under this site's own control.
-   Only the weights actually used elsewhere in this file are declared.
-   ========================================================================== */
+/* ═══════════════════════════════════════════════════════════════
+   Vaultora — Production Authentication Layout Engine (Optimized)
+   ═══════════════════════════════════════════════════════════════ */
 
-@font-face {
-  font-family: "Cormorant Garamond";
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url("/fonts/cormorant-garamond-700.woff2") format("woff2");
-}
-
-@font-face {
-  font-family: "Cormorant Garamond";
-  font-style: italic;
-  font-weight: 400;
-  font-display: swap;
-  src: url("/fonts/cormorant-garamond-400italic.woff2") format("woff2");
-}
-
-@font-face {
-  font-family: "DM Sans";
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("/fonts/dm-sans-400.woff2") format("woff2");
-}
-
-@font-face {
-  font-family: "DM Sans";
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url("/fonts/dm-sans-500.woff2") format("woff2");
-}
-
-@font-face {
-  font-family: "DM Sans";
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: url("/fonts/dm-sans-600.woff2") format("woff2");
-}
-
-@font-face {
-  font-family: "DM Sans";
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url("/fonts/dm-sans-700.woff2") format("woff2");
-}
-
-/* ==========================================================================
-   0. SCREEN READER ACCESSIBILITY ELEMENTS
-   ========================================================================== */
 .auth .visually-hidden {
   position: absolute !important;
   width: 1px !important;
@@ -70,14 +14,16 @@
   border: 0 !important;
 }
 
+/* ── HIGH-PERFORMANCE GLOBAL BACKGROUND CANVAS ── */
 .auth .bg-layer-wrapper {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: -1;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
   overflow: hidden;
+  contain: strict;
+  pointer-events: none;
 }
 
 .auth .bg-fallback-asset {
@@ -87,30 +33,26 @@
   object-position: center;
   pointer-events: none;
   user-select: none;
-  /* Belt-and-suspenders CLS guard: even if the <img> tag is missing explicit
-     width/height attributes (fix at the markup source if you can), this
-     keeps the box from collapsing/reflowing before the image loads. */
-  aspect-ratio: 16 / 9;
   background: #fdfcf9;
+  will-change: transform;
 }
 
-/* ==========================================================================
-   1. MAIN BLOCK CANVAS WRAPPERS
-   ========================================================================== */
+/* ── MAIN BLOCK CANVAS WRAPPERS ── */
 .auth .container {
   position: relative;
   width: 100%;
   max-width: 51.25rem; /* 820px */
-  height: 28.75rem;   /* 460px */
-  background: #fdfcf9;
-  margin: 3.75rem auto;
+  min-height: 28.75rem; /* 460px */
+  background: rgba(253, 252, 249, 0.94);
+  margin: 2rem auto;
   border-radius: 24px;
-  box-shadow: 0 20px 60px rgba(42, 41, 38, 0.15);
-  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(42, 41, 38, 0.12);
   border: 1px solid rgba(181, 157, 132, 0.35);
   display: flex;
   z-index: 10;
   contain: content;
+  content-visibility: auto;
+  contain-intrinsic-size: 100% 460px;
 }
 
 .auth .auth-forms-holder {
@@ -120,6 +62,7 @@
   top: 0;
   left: 0;
   display: flex;
+  z-index: 2;
 }
 
 .auth .form-box {
@@ -127,7 +70,7 @@
   top: 0;
   width: 50%;
   height: 100%;
-  background: #fdfcf9;
+  background: transparent;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -136,7 +79,8 @@
   padding: 0.93rem 2.18rem;
   box-sizing: border-box;
   z-index: 1;
-  transition: transform 1.2s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.8s ease;
+  transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.4s ease;
+  will-change: transform, opacity;
 }
 
 .auth .form-box.login { left: 0; transform: translateX(0); opacity: 1; z-index: 5; }
@@ -163,7 +107,8 @@
   z-index: 10;
   overflow: hidden;
   border-radius: 120px 24px 24px 120px;
-  transition: transform 1.2s cubic-bezier(0.25, 1, 0.5, 1), border-radius 0.8s ease;
+  transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), border-radius 0.4s ease;
+  will-change: transform;
 }
 
 .auth .container.active .toggle-box {
@@ -182,7 +127,8 @@
   background-image:
     radial-gradient(ellipse at 30% 40%, rgba(141, 151, 115, 0.35) 0%, transparent 55%),
     radial-gradient(ellipse at 70% 70%, rgba(181, 157, 132, 0.2) 0%, transparent 45%);
-  transition: transform 1.2s cubic-bezier(0.25, 1, 0.5, 1);
+  transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+  will-change: transform;
 }
 
 .auth .container.active .toggle-box::before { transform: translateX(50%); }
@@ -199,7 +145,8 @@
   box-sizing: border-box;
   color: #f5f0e6;
   text-align: center;
-  transition: transform 1.2s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.6s ease;
+  transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.4s ease;
+  will-change: transform, opacity;
 }
 
 .auth .toggle-left { transform: translateX(-120%); opacity: 0; }
@@ -209,7 +156,7 @@
 .auth .container.active .toggle-right { transform: translateX(120%); opacity: 0; }
 
 .auth h1, .auth .toggle-panel h1 {
-  font-family: "Cormorant Garamond", serif;
+  font-family: var(--serif-font-family), serif;
   font-size: 1.75rem;
   font-weight: 700;
   color: #2a2926;
@@ -236,20 +183,18 @@
   color: #2a2926;
   outline: none;
   box-sizing: border-box;
-  font-family: "DM Sans", sans-serif;
+  font-family: var(--body-font-family), sans-serif;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.auth .input-box input:focus,
-.auth .role-select-menu:focus {
+.auth .input-box input:focus-visible,
+.auth .role-select-menu:focus-visible {
   border-color: #384232;
   background: #ffffff;
-  box-shadow: 0 0 0 3px rgba(56, 66, 50, 0.2);
+  box-shadow: 0 0 0 3px rgba(56, 66, 50, 0.35);
+  outline: none;
 }
 
-/* Icons are now inline SVG (see auth.js) instead of an icon font, so there's
-   no third-party font request, no FOIT/FOUT icon "pop", and no extra
-   render-blocking origin. Sizing is pre-allocated to avoid layout shift. */
 .auth .input-box > .auth-icon,
 .auth .role-select-icon {
   position: absolute;
@@ -270,6 +215,8 @@
   width: 100%;
   height: 100%;
   display: block;
+  fill: none;
+  stroke: currentColor;
 }
 
 .auth .btn {
@@ -287,7 +234,8 @@
   transition: background 0.2s ease, transform 0.1s ease;
 }
 
-.auth .btn:hover { background: #2a2926; }
+.auth .btn:hover { background: #1a1a1a; }
+.auth .btn:focus-visible { outline: 2px solid #384232; outline-offset: 2px; }
 .auth .btn:active { transform: scale(0.99); }
 
 .auth .toggle-panel .btn {
@@ -333,8 +281,8 @@
 
 .auth .password-requirements li { font-size: 10px; display: flex; align-items: center; gap: 4px; }
 .auth .password-requirements li .auth-icon { width: 12px; height: 12px; position: static; color: inherit; }
-.auth .password-requirements li.invalid { color: #96431f; } /* darkened for reliable 4.5:1 contrast at small size */
-.auth .password-requirements li.valid { color: #384232; font-weight: 600; }
+.auth .password-requirements li.invalid { color: #9c3a16; } 
+.auth .password-requirements li.valid { color: #2c5e3b; font-weight: 600; }
 
 .auth .password-toggle-btn {
   position: absolute;
@@ -346,6 +294,7 @@
   cursor: pointer;
   padding: 0;
   display: inline-flex;
+  min-height: 36px;
 }
 
 .auth .password-toggle-btn .auth-icon {
@@ -389,95 +338,168 @@
   font-size: inherit;
 }
 
+.auth .form-options-row {
+  margin: 8px 0;
+}
+
 .auth .form-options-row a {
   font-size: 11px;
-  color: #5b4d40; /* darkened from #706152 for reliable 4.5:1 contrast */
+  color: #4a3e33; 
   text-decoration: none;
   font-weight: 500;
 }
 .auth .form-options-row a:hover { text-decoration: underline; }
 
+/* ── PREMIUM COMPOSITED POPUP DIALOGS ── */
 .auth .custom-popup-overlay {
-  position: fixed; inset: 0;
-  background: rgba(42, 41, 38, 0.5);
-  backdrop-filter: blur(4px);
+  position: fixed;
+  inset: 0;
+  background: rgba(26, 26, 26, 0.45);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   z-index: 10000;
-  display: flex; justify-content: center; align-items: center;
-  opacity: 0; visibility: hidden;
-  transition: opacity 0.25s, visibility 0.25s;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  will-change: opacity, visibility;
+  padding: 20px;
 }
 
-.auth .custom-popup-overlay.show { opacity: 1; visibility: visible; }
+.auth .custom-popup-overlay.show {
+  opacity: 1;
+  visibility: visible;
+}
 
 .auth .custom-popup-box {
   background: #fdfcf9;
-  border: 1px solid rgba(181, 157, 132, 0.4);
-  border-radius: 20px; padding: 2rem;
-  width: 90%; max-width: 360px; text-align: center;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+  border: 1px solid rgba(181, 157, 132, 0.45);
+  border-radius: 20px;
+  padding: 2.5rem 2.25rem;
+  width: 100%;
+  max-width: 420px;
+  min-height: 280px;
+  text-align: center;
+  box-shadow: 0 30px 70px rgba(26, 26, 26, 0.18);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transform: scale(0.96);
+  transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  will-change: transform;
+}
+
+.auth .custom-popup-overlay.show .custom-popup-box {
+  transform: scale(1);
 }
 
 .auth .popup-icon-wrap {
-  width: 48px;
-  height: 48px;
-  margin: 0 auto 12px;
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 20px;
   border-radius: 50%;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: rgba(56, 66, 50, 0.1);
+  background: rgba(56, 66, 50, 0.08);
   color: #384232;
 }
-.auth .popup-icon-wrap.error-state { background: rgba(214, 69, 69, 0.1); color: #d64545; }
-.auth .popup-icon-wrap .auth-icon { position: static; width: 24px; height: 24px; color: inherit; }
 
-.auth .container:not(.active) .form-box.login > h1,
-.auth .container:not(.active) .form-box.login > p,
-.auth .container:not(.active) .form-box.login > .mobile-switch-text,
-.auth .container:not(.active) .form-box.login form > h1,
-.auth .container:not(.active) .form-box.login form > p,
-.auth .container:not(.active) .form-box.login form > .mobile-switch-text,
-.auth .container.active .form-box.register > h1,
-.auth .container.active .form-box.register > p,
-.auth .container.active .form-box.register > .mobile-switch-text,
-.auth .container.active .form-box.register form > h1,
-.auth .container.active .form-box.register form > p,
-.auth .container.active .form-box.register form > .mobile-switch-text {
-  opacity: 1 !important;
-  transform: translateY(0) !important;
+.auth .popup-icon-wrap.error-state {
+  background: rgba(156, 58, 22, 0.08);
+  color: #9c3a16;
 }
 
-.auth .form-box .input-box input,
-.auth .form-box .role-select-menu,
-.auth .form-box .form-options-row,
-.auth .form-box .btn {
-  opacity: 1 !important;
-  transform: translateY(0) !important;
+.auth .popup-icon-wrap .auth-icon {
+  position: static;
+  width: 26px;
+  height: 26px;
+  color: inherit;
+  display: inline-flex;
 }
 
-.auth .container.active .form-box.register h1 { opacity: 1 !important; transform: translateY(0) !important; }
+.auth .popup-title {
+  font-family: var(--serif-font-family), serif;
+  font-size: 1.6rem;
+  font-weight: 500;
+  color: #1a1a1a;
+  margin: 0 0 10px 0;
+  line-height: 1.3;
+}
 
-.auth .reset-form-card { max-width: 400px; padding: 2.5rem 2rem; border: 1px solid rgba(181, 157, 132, 0.4); }
-.auth .reset-key-icon { background: rgba(56, 66, 50, 0.1); color: #384232; width: 55px; height: 55px; }
+.auth .popup-msg {
+  font-family: var(--body-font-family), sans-serif;
+  font-size: 0.92rem;
+  color: #555555;
+  line-height: 1.6;
+  margin: 0 0 24px 0;
+  padding: 0 10px;
+}
+
+.auth .popup-confirm-btn {
+  width: 100%;
+  height: 2.75rem;
+  background: #384232;
+  border: none;
+  border-radius: 8px;
+  color: #f5f0e6;
+  font-family: var(--body-font-family), sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.auth .popup-confirm-btn:hover { background: #1a1a1a; }
+.auth .popup-confirm-btn:focus-visible { outline: 2px solid #384232; outline-offset: 2px; }
+
+.auth .reset-form-card { width: 100%; max-width: 440px; padding: 3rem 2.5rem; border: 1px solid rgba(181, 157, 132, 0.4); }
+.auth .reset-key-icon { background: rgba(56, 66, 50, 0.08); color: #384232; width: 60px; height: 60px; }
 .auth .reset-key-icon .auth-icon { width: 28px; height: 28px; }
-.auth .reset-form-card .input-box { margin: 12px 0; }
-.auth .reset-form-card .input-box input { padding: 12px 42px 12px 16px; background: #fbfbf9; border-radius: 8px; }
-.auth .reset-form-card .input-box .auth-icon { color: #5b4d40; }
+.auth .reset-form-card .input-box { margin: 14px 0; }
+.auth .reset-form-card .input-box input { padding: 14px 44px 14px 16px; background: #fbfbf9; border-radius: 8px; }
 
 #resetErrorBlock { max-height: 0; overflow: hidden; opacity: 0; background: rgba(214, 69, 69, 0.04); border-radius: 6px; transition: all 0.3s ease; text-align: left; }
 #resetErrorBlock.is-visible { max-height: 38px; opacity: 1; padding: 8px 12px; margin-bottom: 12px; border: 1px solid rgba(214, 69, 69, 0.15); }
 #resetErrorBlock span { font-size: 12px; color: #d64545; font-weight: 600; margin-left: 4px; }
-#resetErrorBlock .auth-icon { position: static; width: 12px; height: 12px; color: #d64545; }
-#submitResetBtn { margin-top: 10px; height: 44px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; background: #384232; }
+#submitResetBtn { margin-top: 10px; height: 44px; font-weight: 600; text-transform: uppercase; background: #384232; }
 
+/* ── HIGH VISIBILITY PERFORMANCE LIFTS FOR RESPONSIVE BREAKPOINTS ── */
 @media screen and (max-width: 960px) {
   .auth .container { width: 92%; height: auto; min-height: 500px; }
 }
 
 @media screen and (max-width: 768px) {
-  .auth .container { flex-direction: column; height: auto; background: transparent; box-shadow: none; border: none; margin: 20px auto; }
+  .auth .container {
+    flex-direction: column;
+    height: auto;
+    background: transparent;
+    box-shadow: none;
+    border: none;
+    margin: 10px auto;
+    border-radius: 0;
+  }
   .auth .toggle-box { display: none !important; }
-  .auth .form-box { position: relative; width: 100%; height: auto; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.06); opacity: 1 !important; transform: none !important; padding: 30px 20px; margin-bottom: 20px; }
+  .auth .form-box {
+    position: relative;
+    width: 100%;
+    height: auto;
+    border-radius: 20px;
+    background: rgba(253, 252, 249, 0.95);
+    border: 1px solid rgba(181, 157, 132, 0.35);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+    opacity: 1 !important;
+    transform: none !important;
+    padding: 30px 20px;
+    margin-bottom: 20px;
+  }
   .auth .mobile-switch-text { display: block; margin-top: 14px; text-align: center; }
 
   .auth .container:not(.active) .form-box.login { display: flex; z-index: 5; }
