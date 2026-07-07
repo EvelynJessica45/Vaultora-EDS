@@ -16,6 +16,7 @@ const SVGS = {
 };
 
 export default function decorate(block) {
+  console.log("DEBUG: [decorate] Initializing mylistings block entry point.");
   block.textContent = '';
 
   const dashboard = document.createElement('div');
@@ -140,18 +141,37 @@ export default function decorate(block) {
 
   function renderMyListings() {
     const session = getSession();
-    if (!session) return;
+    console.log("DEBUG: [renderMyListings] Active identity payload:", session);
+
+    if (!session) {
+      console.error("DEBUG: [renderMyListings] Aborted rendering because session returned falsy value.");
+      return;
+    }
 
     const searchQuery = dashboard.querySelector('#listingSearchInput')?.value.toLowerCase() || '';
     const chosenFilter = dashboard.querySelector('#statusFilterSelector')?.value || 'all';
 
     const allProducts = getProducts() || [];
+    console.log(`DEBUG: [renderMyListings] Total catalog records found in storage.js: ${allProducts.length}`);
+
     const myProducts = allProducts.filter(p => {
       if (!p) return false;
-      if (p.sellerEmail && session.email) return p.sellerEmail.toLowerCase() === session.email.toLowerCase();
-      if (p.seller && session.name) return p.seller === session.name;
+      
+      const sessionEmail = session.email ? session.email.toLowerCase() : '';
+      const productEmail = p.sellerEmail ? p.sellerEmail.toLowerCase() : '';
+      const sessionName = session.name ? session.name.toLowerCase() : '';
+      const productName = p.seller ? p.seller.toLowerCase() : '';
+      
+      const emailMatches = productEmail && sessionEmail && (productEmail === sessionEmail);
+      const nameMatches = productName && sessionName && (productName === sessionName);
+
+      if (emailMatches || nameMatches) {
+        return true;
+      }
       return false;
     });
+
+    console.log(`DEBUG: [renderMyListings] Filtered owner specific records ('myProducts'): ${myProducts.length}`, myProducts);
 
     calculateAndPopulateMetrics(myProducts);
 
@@ -195,6 +215,7 @@ export default function decorate(block) {
     }
 
     if (totalVisible === 0) {
+      console.log("DEBUG: [renderMyListings] Total visible items is 0. Displaying fallback layout panel.");
       container.innerHTML = `
         <div class="mylistings-no-results">
           <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom: 1rem;"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M3 7l3-4h12l3 4"/><line x1="9" y1="11" x2="15" y2="11"/></svg>
@@ -272,24 +293,38 @@ export default function decorate(block) {
 
     requestAnimationFrame(() => {
       container.innerHTML = HTMLBuffer;
+      console.log("DEBUG: [renderMyListings] Injected card layouts into the main view container.");
     });
   }
 
   // Optimized Event Delegation Strategy mapping context paths strictly on the root container element
   container.onclick = function(e) {
+    console.log("DEBUG: [container.onclick] Intercepted a click event down inside the list canvas wrapper.", e.target);
+
     const earlyTerminationButton = e.target.closest('.btn-end-auction-early');
     if (earlyTerminationButton) {
+      console.log("DEBUG: [container.onclick] Early termination trigger recognized. Product ID:", earlyTerminationButton.dataset.id);
       e.stopPropagation();
       triggerEarlyTermination(e, earlyTerminationButton.dataset.id);
       return;
     }
 
-   const itemCard = e.target.closest('.mylistings-item-card');
+    const itemCard = e.target.closest('.mylistings-item-card');
     if (itemCard) {
-      const targetUrl = window.location.hostname.includes('localhost') 
-        ? `my-listing-details?id=${itemCard.dataset.id}`
-        : `my-listing-details.html?id=${itemCard.dataset.id}`;
+      const targetProductId = itemCard.dataset.id;
+      console.log(`DEBUG: [container.onclick] Product card matched successfully. Found attached product ID attribute: ${targetProductId}`);
+      
+      const hostIsLocal = window.location.hostname.includes('localhost');
+      const targetUrl = hostIsLocal 
+        ? `my-listing-details?id=${targetProductId}`
+        : `my-listing-details.html?id=${targetProductId}`;
+        
+      console.log(`DEBUG: [container.onclick] Evaluation environment - Hostname: ${window.location.hostname} | Local Environment Check: ${hostIsLocal}`);
+      console.log(`DEBUG: [container.onclick] Rerouting window path destination pointer over to -> "${targetUrl}"`);
+      
       window.location.href = targetUrl;
+    } else {
+      console.log("DEBUG: [container.onclick] Click registered inside container canvas layout grid, but no card structure was matched.");
     }
   };
 
@@ -382,16 +417,20 @@ export default function decorate(block) {
   if (filterSelect) {
     filterSelect.addEventListener('change', renderMyListings);
   }
-(async () => {
+
+  (async () => {
+    console.log("DEBUG: [Lifecycle IIFE] Execution kicked off. Testing for window.__storeReady hydration sync state.");
     const storeTimeout = new Promise((resolve) => setTimeout(resolve, 100));
     await Promise.race([window.__storeReady || Promise.resolve(), storeTimeout]);
 
     const initialSessionCheck = getSession() || JSON.parse(localStorage.getItem('Vaultora_session'));
+    console.log("DEBUG: [Lifecycle IIFE] Complete Identity Check output object state:", initialSessionCheck);
 
     if (!initialSessionCheck) {
-      console.warn("Vaultora Auth: No active session found. Redirecting to register.");
+      console.warn("DEBUG: [Lifecycle IIFE] Vaultora Auth: No active user session discovered. Routing window to '/register'.");
       window.location.replace('/register');
     } else {
+      console.log("DEBUG: [Lifecycle IIFE] Identity passed initialization validation checks. Triggering secondary data filter layout engine.");
       renderMyListings();
     }
   })();
