@@ -47,7 +47,7 @@ export default function decorate(block) {
     allBids.filter(b => b.user && b.user.toLowerCase() === userEmail).map(b => String(b.productId))
   )];
 
-  // 2. Build the consolidated dynamic list of unique bidded items
+  // Build the consolidated dynamic list of unique bidded items
   const uniqueUserBids = userBiddedProductIds.map(pid => {
     const product = allProducts.find(p => String(p.id) === pid);
     const productBids = getBidHistoryForProduct(pid);
@@ -203,7 +203,7 @@ export default function decorate(block) {
         const isPriority = index < 2;
         const imageDOM = item.image 
           ? `<img src="${item.image}" alt="${item.title}" loading="${isPriority ? 'eager' : 'lazy'}" width="85" height="85" decoding="async" ${isPriority ? 'fetchpriority="high"' : ''}/>` 
-          : `<div class="thumb-placeholder">${item.title.charAt(0)}</div>`;
+          : `<div class="thumb-placeholder" style="width:85px; height:85px; display:flex; align-items:center; justify-content:center;">${item.title.charAt(0)}</div>`;
 
         gridHTML += `
           <div class="mybids-item-card border-indicator--${sec.id}" data-id="${item.id}" role="button" tabIndex="0" aria-label="View auction details for ${item.title}">

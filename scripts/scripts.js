@@ -14,9 +14,16 @@ import {
   buildBlock,
 } from './aem.js';
 
+// Optimize Font Loading: Render fonts asynchronously with high performance targets to avoid render blocks
 async function loadFonts() {
-  await loadCSS(`${window.hlx.codeBasePath}/styles/fonts.css`);
   try {
+    const fontLink = document.createElement('link');
+    fontLink.rel = 'stylesheet';
+    fontLink.href = `${window.hlx.codeBasePath}/styles/fonts.css`;
+    fontLink.media = 'print';
+    fontLink.onload = () => { fontLink.media = 'all'; };
+    document.head.appendChild(fontLink);
+    
     if (!window.location.hostname.includes('localhost')) {
       sessionStorage.setItem('fonts-loaded', 'true');
     }
@@ -125,6 +132,7 @@ export function decorateMain(main) {
 async function loadEager(doc) {
   document.documentElement.lang = 'en';
   
+  // FIX SEO: Force static header configurations and bypass local indexing block overrides safely
   const clearRobotsBlocks = () => {
     const metas = Array.from(doc.querySelectorAll('meta[name="robots"]'));
     metas.forEach(el => el.remove());
@@ -133,12 +141,21 @@ async function loadEager(doc) {
     targetMeta.name = 'robots';
     targetMeta.content = 'index, follow, max-image-preview:large';
     doc.head.appendChild(targetMeta);
+
+    if (!doc.querySelector('meta[name="description"]')) {
+      const metaDesc = doc.createElement('meta');
+      metaDesc.name = 'description';
+      metaDesc.content = 'Review and manage your real-time active, won, or historical bids on our consolidated premium luxury auction ecosystem dashboard.';
+      doc.head.appendChild(metaDesc);
+    }
   };
   clearRobotsBlocks();
 
+  // Optimise LCP assets via explicit cross-origin resource hints
   const preconnectHint = doc.createElement('link');
   preconnectHint.rel = 'preconnect';
   preconnectHint.href = 'https://vaultora.s3.ap-south-1.amazonaws.com';
+  preconnectHint.crossOrigin = 'anonymous';
   doc.head.append(preconnectHint);
 
   decorateTemplateAndTheme();
@@ -158,13 +175,11 @@ async function loadEager(doc) {
     await loadSection(main.querySelector('.section'), waitForFirstImage);
   }
   
-  setTimeout(() => {
-    try {
-      if (sessionStorage.getItem('fonts-loaded')) {
-        loadFonts();
-      }
-    } catch (e) {}
-  }, 0);
+  if (window.requestIdleCallback) {
+    window.requestIdleCallback(() => loadFonts());
+  } else {
+    setTimeout(loadFonts, 10);
+  }
 }
 
 async function loadLazy(doc) {
@@ -190,12 +205,6 @@ async function loadLazy(doc) {
   }
 
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
-  
-  if (window.requestIdleCallback) {
-    window.requestIdleCallback(() => loadFonts());
-  } else {
-    setTimeout(loadFonts, 100);
-  }
 }
 
 function loadDelayed() {
