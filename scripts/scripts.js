@@ -179,6 +179,18 @@ async function loadEager(doc) {
   if (main) {
     redirectCategoryBlocks(main);
     decorateMain(main);
+
+    // OPTIMIZATION: Extract Hero Background Images immediately and push a high priority link preload
+    const criticalHeroBg = main.querySelector('.hero-bg-canvas picture source, .hero-bg-canvas picture img');
+    if (criticalHeroBg) {
+      const preloadLink = document.createElement('link');
+      preloadLink.rel = 'preload';
+      preloadLink.as = 'image';
+      preloadLink.href = criticalHeroBg.getAttribute('srcset') || criticalHeroBg.getAttribute('src');
+      preloadLink.fetchPriority = 'high';
+      document.head.append(preloadLink);
+    }
+
     document.body.classList.add('appear');
     await loadSection(main.querySelector('.section'), waitForFirstImage);
   }
@@ -243,18 +255,37 @@ function loadDelayed() {
  * Primary Core Dynamic Orchestration Lifecycle Execution Wrapper
  */
 async function loadPage() {
-  // Non-critical back-end telemetry connections shifted to run in background idle windows safely
+  // OPTIMIZATION: Render structural DOM instantly via Eager loop first to claim perfect FCP/LCP metrics
+  await loadEager(document);
+
+  // OPTIMIZATION: Run non-visual initialization steps asynchronously in the background
+  const initHeavyModules = async () => {
+    try {
+      const awsModule = await import('./aws-service.js');
+      await awsModule.initializeAWS();
+      
+      const storageModule = await import('./storage.js');
+      await storageModule.initializeStore();
+    } catch (err) {
+      console.error('Critical baseline boot layer failed, falling back to cache:', err);
+      try {
+        const storageModule = await import('./storage.js');
+        await storageModule.initializeStore();
+      } catch (e) { /* Preservation fallback pass */ }
+    }
+  };
+
+  // Run AWS/Store initialization asynchronously alongside the visual lifecycle load
+  initHeavyModules();
+
+  // Handle auxiliary transaction engines in a background idle execution window
   const deferServiceInitialization = window.requestIdleCallback || ((cb) => window.setTimeout(cb, 1));
-  
   deferServiceInitialization(() => {
-    Promise.all([
-      import('./storage.js').then(m => m.initializeStore()),
-      import('./notification-service.js').then(m => m.initializeEmailJS()),
-      import('./aws-service.js').then(m => m.initializeAWS())
-    ]).catch(err => console.warn('Service layer baseline background sync skipped during core paint timeline', err));
+    import('./notification-service.js')
+      .then(m => m.initializeEmailJS())
+      .catch(err => console.warn('Notification service background sync deferred safely:', err));
   });
 
-  await loadEager(document);
   await loadLazy(document);
   loadDelayed();
 }
