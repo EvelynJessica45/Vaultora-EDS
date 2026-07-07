@@ -1,164 +1,257 @@
-export default function decorate(block) {
+import { createOptimizedPicture } from '../../scripts/aem.js';
+
+/**
+ * Extracts and normalizes user role contexts safely from token stores.
+ * Optimized to prevent repeated JSON string parsing patterns.
+ */
+function getUserRole() {
+  const token = localStorage.getItem('user_token');
+  if (!token) return null;
+  
+  const storedRole = localStorage.getItem('user_role');
+  if (storedRole) return storedRole.toLowerCase().trim();
+
+  try {
+    if (token.includes('.')) {
+      const payload = token.split('.')[1];
+      if (payload) {
+        const profile = JSON.parse(atob(payload));
+        return (profile.role || 'buyer').toLowerCase().trim();
+      }
+    }
+  } catch (e) {
+    console.warn("Authentication profiling metadata reading caught exception:", e);
+  }
+  return 'buyer'; 
+}
+
+/**
+ * High-performance layout structural card limiter.
+ * Avoids global document mutations to protect viewport responsiveness.
+ */
+function enforceFiveAuctionsLimit(container) {
+  const grid = container || document.querySelector('.featured-auctions-grid-five');
+  if (!grid) return;
+  
+  const auctionCards = grid.children;
+  const len = auctionCards.length;
+  if (len === 0) return;
+
+  for (let i = 0; i < len; i++) {
+    if (i >= 5) {
+      auctionCards[i].classList.add('is-hidden');
+    } else {
+      auctionCards[i].classList.remove('is-hidden');
+    }
+  }
+}
+
+export default async function decorate(block) {
   const rows = [...block.children];
   if (!rows.length) return;
 
-  // 1. Gather picture instances safely
-  const pictures = block.querySelectorAll('picture');
-  const bgPicture = pictures[0] ? pictures[0].cloneNode(true) : null;
-  const cardPicture = pictures[1] ? pictures[1].cloneNode(true) : null;
-
-  // 2. Strict DOM Mapping coordinates
-  const row1Col1 = rows[0]?.children[0]; 
-  const row1Col2 = rows[0]?.children[1]; 
-  const row2Col1 = rows[1]?.children[0]; 
-
-  // Parse Badge info text blocks
-  const leftParas = row1Col1 ? [...row1Col1.querySelectorAll('p')] : [];
-  const badgeTagText = leftParas.find(p => p.querySelector('code'))?.innerText.trim() || 'NEW DROPS DAILY';
-  const badgeSubText = leftParas.find(p => p.innerText.includes('products listed'))?.innerText.trim() || '25,000+ products listed';
-
-  // Parse Card properties safely
-  const cardParas = row1Col2 ? [...row1Col2.querySelectorAll('p')] : [];
-  const cardStatus = cardParas.find(p => p.innerText.includes('LIVE AUCTION'))?.innerText.trim() || 'LIVE AUCTION';
-  const cardTitle = row1Col2?.querySelector('strong')?.innerText.trim() || '1960s Heritage Chronograph';
-  const cardPrice = cardParas.find(p => p.innerText.startsWith('$') || p.innerText.includes('2,450'))?.innerText.trim() || '$2,450';
-  const cardTimer = cardParas.find(p => p.querySelector('code') && p.innerText.includes(':'))?.innerText.trim() || '02:14:09';
-
-  // FIX: Force description text capture explicitly under the card
-  let descriptionText = 'From vintage collectibles and luxury fashion to electronics and home décor, discover unique products, list your own items, or compete in live auctions.';
-  if (row2Col1) {
-    const customDesc = row2Col1.querySelector('p')?.innerText.trim();
-    if (customDesc && !customDesc.includes('Column 1') && customDesc.length > 20) {
-      descriptionText = customDesc;
-    }
-  }
-
-  // Parse button links out of cell wrappers dynamically
-  const actionLinks = [];
-  if (row2Col1) {
-    row2Col1.querySelectorAll('a').forEach(a => actionLinks.push(a.cloneNode(true)));
-    if (actionLinks.length === 0) {
-      row2Col1.querySelectorAll('em, p').forEach(el => {
-        const txt = el.innerText.replace(/[\[\]]/g, '').trim();
-        if (txt.includes('Bidding') || txt.includes('Start') || txt.includes('Item') || txt.includes('Sell')) {
-          const mockBtn = document.createElement('a');
-          mockBtn.href = '#';
-          mockBtn.textContent = txt.replace('Button Link', '').trim();
-          actionLinks.push(mockBtn);
-        }
-      });
-    }
-  }
-
-  // Parse statistics and map to Rupees
-  const statsList = [];
-  rows.slice(2).forEach((row) => {
-    [...row.children].forEach((cell) => {
-      let strongVal = cell.querySelector('strong')?.innerHTML || '';
-      const labelVal = cell.innerText.replace(cell.querySelector('strong')?.innerText || '', '').trim();
-      
-      if (strongVal && labelVal && !labelVal.includes('Keep this cell')) {
-        // Convert $8.2M+ to ₹70Cr+ or keep internationalized Rupees notation
-        if (strongVal.includes('$8.2M')) {
-          strongVal = '₹70Cr+';
-        }
-        statsList.push({ number: strongVal, label: labelVal });
-      }
-    });
-  });
-
-  // --- 3. REBUILD INJECTED DOM WORKSPACE ---
-  block.innerHTML = '';
-
-  // Inject full width background canvas
-  if (bgPicture) {
-    const bgContainer = document.createElement('div');
-    bgContainer.className = 'hero-bg-canvas';
-    bgContainer.appendChild(bgPicture);
-    block.appendChild(bgContainer);
-  }
+  // Detach block contents using a single structural clearance sweep
+  block.textContent = '';
+  
+  const fragment = document.createDocumentFragment();
+  const heroSection = document.createElement('div');
+  heroSection.className = 'home-hero-section';
 
   const innerContainer = document.createElement('div');
   innerContainer.className = 'hero-inner-container';
 
-  // Ribbon Navigation header text
+  // Ribbon Label Element Extraction
+  const targetCode = rows[1]?.children[0]?.querySelector('code');
+  const ribbonText = targetCode ? targetCode.innerText : 'NEW DROPS DAILY';
+  const ribbonSub = rows[1]?.children[0]?.innerText?.replace(ribbonText, '').trim() || '25,000+ products listed';
+  
   const ribbon = document.createElement('div');
   ribbon.className = 'hero-top-ribbon';
-  ribbon.textContent = 'BUY • SELL • BID • DISCOVER';
-  innerContainer.appendChild(ribbon);
+  ribbon.innerHTML = `${ribbonText} &bull; ${ribbonSub}`;
+  innerContainer.append(ribbon);
 
-  // Responsive Grid Split Panel
-  const splitGrid = document.createElement('div');
-  splitGrid.className = 'hero-split-grid';
-
-  // Assemble Left Panel with Line-by-Line Headline Breakdown
-  const leftPanel = document.createElement('div');
-  leftPanel.className = 'hero-left-panel';
-  leftPanel.innerHTML = `
-    <div class="hero-badge-wrapper">
-      <span class="hero-badge-pill">${badgeTagText}</span>
-      <span class="hero-badge-info">${badgeSubText}</span>
-    </div>
-    <h1 class="hero-main-title">
-      <span class="title-line">BUY, SELL &</span>
-      <span class="title-line">BID ON</span>
-      <span class="title-line gold-font">Extraordinary</span>
-      <span class="title-line">FINDS</span>
-    </h1>
-  `;
-  splitGrid.appendChild(leftPanel);
-
-  // Assemble Right Panel (Card -> Description -> Buttons -> Stats Footer)
-  const rightPanel = document.createElement('div');
-  rightPanel.className = 'hero-right-panel';
-
-  const auctionCard = document.createElement('div');
-  auctionCard.className = 'hero-auction-card';
-  auctionCard.innerHTML = `
-    <span class="card-status-pill">${cardStatus}</span>
-    <div class="card-image-box"></div>
-    <h3 class="card-item-title">${cardTitle}</h3>
-    <div class="card-meta-flex">
-      <span class="card-meta-price">${cardPrice}</span>
-      <span class="card-meta-timer">${cardTimer}</span>
-    </div>
-  `;
-  if (cardPicture) auctionCard.querySelector('.card-image-box').appendChild(cardPicture);
-
+  // Structural Text Content Zone Layout
   const textZone = document.createElement('div');
   textZone.className = 'hero-text-zone';
-  textZone.innerHTML = `<p class="hero-main-desc">${descriptionText}</p>`;
 
-  const actionsRow = document.createElement('div');
-  actionsRow.className = 'hero-actions-wrapper';
-  actionLinks.forEach((btn, index) => {
-    btn.className = index === 0 ? 'hero-btn primary' : 'hero-btn secondary';
-    actionsRow.appendChild(btn);
-  });
+  const badgeWrapper = document.createElement('div');
+  badgeWrapper.className = 'hero-badge-wrapper';
+  badgeWrapper.innerHTML = '<span class="hero-badge-pill">Live Auction</span><span class="hero-badge-info">Vaultora Verified Assets</span>';
+  textZone.append(badgeWrapper);
+
+  const rawTitle = rows[2]?.children[0]?.innerHTML || 'Buy, Sell & Bid on Extraordinary Finds';
+  const mainTitle = document.createElement('h1');
+  mainTitle.className = 'hero-main-title';
+  mainTitle.innerHTML = rawTitle.replace('#', '').replace('<em>', '<span class="gold-font">').replace('</em>', '</span>');
+  textZone.append(mainTitle);
+
+  const descParagraph = rows[2]?.children[1]?.querySelector('p');
+  const descText = descParagraph ? descParagraph.innerText : (rows[2]?.children[1]?.innerText || '');
+  const descNode = document.createElement('p');
+  descNode.className = 'hero-main-desc';
+  descNode.textContent = descText;
+  textZone.append(descNode);
+
+  // Active Buttons Container Group
+  const actionsWrapper = document.createElement('div');
+  actionsWrapper.className = 'hero-actions-wrapper';
   
-  if (actionLinks.length === 0) {
-    actionsRow.innerHTML = `
-      <a href="#" class="hero-btn primary">Start Bidding</a>
-      <a href="#" class="hero-btn secondary">Sell an Item</a>
-    `;
-  }
-  textZone.appendChild(actionsRow);
+  const startBiddingBtn = document.createElement('a');
+  startBiddingBtn.className = 'hero-btn primary';
+  startBiddingBtn.textContent = 'Start Bidding';
+  startBiddingBtn.setAttribute('href', '/dashboard');
+  
+  const sellItemBtn = document.createElement('a');
+  sellItemBtn.className = 'hero-btn secondary sell-item-trigger';
+  sellItemBtn.textContent = 'Sell an Item';
+  sellItemBtn.setAttribute('href', '#');
 
-  // Inject metrics list inside the right text area zone beneath the buttons
-  if (statsList.length > 0) {
-    const statsFlexRow = document.createElement('div');
-    statsFlexRow.className = 'hero-right-stats-row';
-    statsList.forEach(stat => {
-      const box = document.createElement('div');
-      box.className = 'stat-metric-box';
-      box.innerHTML = `<h3>${stat.number}</h3><p>${stat.label}</p>`;
-      statsFlexRow.appendChild(box);
+  actionsWrapper.append(startBiddingBtn, sellItemBtn);
+  textZone.append(actionsWrapper);
+
+  // Bottom Statistics Block Slice
+  const statsRow = document.createElement('div');
+  statsRow.className = 'hero-right-stats-row';
+  statsRow.innerHTML = `
+    <div class="stat-metric-box"><h3>10,000+</h3><p>Active Sellers</p></div>
+    <div class="stat-metric-box"><h3>50,000+</h3><p>Auctions Closed</p></div>
+    <div class="stat-metric-box"><h3>$8.2M+</h3><p>In Transactions</p></div>
+  `;
+  textZone.append(statsRow);
+  innerContainer.append(textZone);
+
+  // Background Full-Bleed Canvas Image Implementation
+  const bgCanvas = document.createElement('div');
+  bgCanvas.className = 'hero-bg-canvas';
+  
+  const sourceImg = rows[0]?.children[0]?.querySelector('img');
+  if (sourceImg) {
+    const src = sourceImg.getAttribute('src');
+    const optimizedPic = createOptimizedPicture(src, sourceImg.alt || 'Hero Background', true, [
+      { media: '(min-width: 1024px)', width: '2000' },
+      { media: '(min-width: 600px)', width: '1200' },
+      { width: '750' }
+    ]);
+    const img = optimizedPic.querySelector('img');
+    if (img) {
+      img.setAttribute('fetchpriority', 'high');
+      img.setAttribute('loading', 'eager');
+    }
+    bgCanvas.append(optimizedPic);
+  } else {
+    const sourcePic = rows[0]?.children[0]?.querySelector('picture');
+    if (sourcePic) {
+      const clonedPic = sourcePic.cloneNode(true);
+      const img = clonedPic.querySelector('img');
+      if (img) {
+        img.setAttribute('fetchpriority', 'high');
+        img.setAttribute('loading', 'eager');
+      }
+      bgCanvas.append(clonedPic);
+    }
+  }
+  
+  heroSection.append(bgCanvas, innerContainer);
+  fragment.append(heroSection);
+  block.append(fragment);
+
+  // Initialize modular interface state features and events across components
+  setupPageInteractions();
+}
+
+function setupPageInteractions() {
+  // 1. Update Promo Banner Button target destination link tracking parameters
+  const promoCtaBtn = document.querySelector('.promo-banner-cta-btn');
+  if (promoCtaBtn) {
+    promoCtaBtn.innerHTML = 'Link to Ending Auctions &rarr;';
+    promoCtaBtn.setAttribute('href', 'https://yourdomain.com/ending-soon');
+  }
+
+  // 2. Configure the "Browse All" button link routing
+  const browseAllBtn = document.querySelector('.categories-browse-all');
+  if (browseAllBtn) {
+    browseAllBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      window.location.href = '/dashboard';
     });
-    textZone.appendChild(statsFlexRow);
   }
 
-  rightPanel.append(auctionCard, textZone);
-  splitGrid.appendChild(rightPanel);
-  innerContainer.appendChild(splitGrid);
-  block.appendChild(innerContainer);
+  // 3. Limit Featured Auctions using an optimized localized observer interface
+  const gridContainer = document.querySelector('.featured-auctions-grid-five');
+  if (gridContainer) {
+    enforceFiveAuctionsLimit(gridContainer);
+    const observer = new MutationObserver(() => enforceFiveAuctionsLimit(gridContainer));
+    observer.observe(gridContainer, { childList: true });
+  }
+
+  // 4. Secure Auth Routing for the "Sell an Item" action link triggers
+  const textZoneContainer = document.querySelector('.hero-text-zone');
+  if (textZoneContainer) {
+    textZoneContainer.addEventListener('click', (e) => {
+      const btn = e.target.closest('.sell-item-trigger');
+      if (!btn) return;
+      
+      e.preventDefault();
+      
+      const role = getUserRole();
+      if (role === 'seller' || role === 'both' || role === 'seller-buyer' || role === 'admin') {
+        window.location.href = '/seller-dashboard';
+      } else if (localStorage.getItem('user_token') || localStorage.getItem('user_role')) {
+        showSystemPopup('Access Denied', 'Your active profile is configured as a Buyer. Please update your profile parameters to gain access to vendor dashboards.');
+      } else {
+        showSystemPopup('Authentication Required', 'Authentication profiling context missing. Please log in to proceed.', () => {
+          window.location.href = '/register';
+        });
+      }
+    });
+  }
+
+  // 5. Shared Click Event Handler for Favorites Buttons
+  document.body.addEventListener('click', (e) => {
+    const btn = e.target.closest('.card-editorial-btn-fav');
+    if (!btn) return;
+
+    e.preventDefault();
+    
+    const isFavorited = btn.getAttribute('data-favorited') === 'true';
+    if (isFavorited) {
+      btn.setAttribute('data-favorited', 'false');
+      btn.style.backgroundColor = '';
+      btn.style.color = '';
+    } else {
+      btn.setAttribute('data-favorited', 'true');
+      btn.style.backgroundColor = '#b9925a';
+      btn.style.color = '#ffffff';
+    }
+  });
+}
+
+function showSystemPopup(title, message, callback = null) {
+  const existingModal = document.getElementById('system-alert-portal');
+  if (existingModal) existingModal.remove();
+
+  const portal = document.createElement('div');
+  portal.id = 'system-alert-portal';
+  portal.style.cssText = 'position:fixed; inset:0; background:rgba(18,21,28,0.7); z-index:9999; display:flex; align-items:center; justify-content:center; padding:1.5rem; font-family:"DM Sans", sans-serif;';
+
+  const box = document.createElement('div');
+  box.style.cssText = 'background:#ffffff; max-width:400px; width:100%; border-radius:16px; padding:2rem; box-shadow:0 20px 40px rgba(0,0,0,0.15); text-align:center; transform:scale(0.9); transition:transform 0.2s cubic-bezier(0.25, 1, 0.5, 1);';
+
+  box.innerHTML = `
+    <h3 style="font-family:'Playfair Display',serif; font-size:1.5rem; margin:0 0 1rem 0; color:#2e362a;">${title}</h3>
+    <p style="font-size:0.9rem; color:#666666; line-height:1.5; margin:0 0 1.75rem 0;">${message}</p>
+    <button id="portal-close-trigger" style="background:#2e362a; color:#ffffff; border:none; padding:0.75rem 2rem; border-radius:50px; font-weight:600; font-size:0.88rem; cursor:pointer; width:100%;">Continue</button>
+  `;
+
+  portal.append(box);
+  document.body.append(portal);
+
+  requestAnimationFrame(() => {
+    box.style.transform = 'scale(1)';
+  });
+
+  document.getElementById('portal-close-trigger').addEventListener('click', () => {
+    portal.remove();
+    if (callback) callback();
+  }, { once: true });
 }
