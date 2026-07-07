@@ -1,5 +1,5 @@
 /* =========================================================================
-   MY BID DETAILS — HIGH-PERFORMANCE RENDERING ENGINE (OPTIMIZED)
+   MY BID DETAILS — HIGH-PERFORMANCE RENDERING ENGINE
    ========================================================================= */
 
 import { getProducts, getBids, getSession, saveProducts, saveBids } from '../../scripts/storage.js';
@@ -13,27 +13,30 @@ let cachedLeftCol = null;
 let cachedRightCol = null;
 let cachedToastNode = null;
 
-const stateCache = {
-  myHighest: 0,
-  highest: 0,
-  rank: 0,
-  isLive: false,
-  uniqueAmounts: []
-};
-
+// Cross-browser idle scheduler used to push non-critical, below-the-fold
+// rendering (timeline ledger, countdown init) off the first-paint path.
 const scheduleIdle = (typeof window !== 'undefined' && window.requestIdleCallback)
   ? window.requestIdleCallback.bind(window)
   : (cb) => setTimeout(() => cb({ didTimeout: false, timeRemaining: () => 0 }), 1);
 
+// Formatters are expensive to construct; build once and reuse everywhere
+// instead of calling toLocaleString() repeatedly (each call builds a new
+// formatter internally).
 const inrFormatter = new Intl.NumberFormat('en-IN');
 const timelineDateFormatter = new Intl.DateTimeFormat('en-IN', { dateStyle: 'medium', timeStyle: 'short' });
 
 export default function decorate(block) {
+  // Clear any structural index blocks at runtime to force search crawl engine
+  // discovery. Runs synchronously and immediately (NOT deferred) because this
+  // directly affects the SEO "page is blocked from indexing" audit — it must
+  // be present as early as possible. Note: the durable fix is a
+  // server-rendered <meta name="robots"> in the page's head.html; this is an
+  // idempotent runtime guard, not a replacement for that.
   const unblockAEMSEO = () => {
     document.querySelectorAll('meta[name="robots"]').forEach(meta => meta.remove());
     const metaRobots = document.createElement('meta');
     metaRobots.name = 'robots';
-    metaRobots.content = 'index, follow, max-image-preview:large';
+    metaRobots.content = 'index, follow';
     document.head.appendChild(metaRobots);
 
     if (!document.querySelector('meta[name="description"]')) {
@@ -47,15 +50,14 @@ export default function decorate(block) {
 
   const rows = [...block.children];
   const config = {};
-  const rowsLen = rows.length;
-  for (let i = 0; i < rowsLen; i++) {
-    const cols = rows[i].querySelectorAll(':scope > div');
+  rows.forEach(row => {
+    const cols = row.querySelectorAll(':scope > div');
     if (cols.length >= 2) {
       const key = cols[0].textContent.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
       const val = cols[1].textContent.trim();
       config[key] = val;
     }
-  }
+  });
 
   const authorText = {
     leadingMsg: config.leadingmessage || "🟢 You currently hold the highest bid.",
@@ -122,11 +124,15 @@ export default function decorate(block) {
 
     determineWinner();
 
+    // Phase 1 (critical, above-the-fold): render the hero image and the
+    // bid status/ticker as soon as the browser is ready to paint.
     requestAnimationFrame(() => {
       renderProductPanel();
-      calculateBidStatusMetrics();
       renderBidStatusCore();
 
+      // Phase 2 (non-critical, below-the-fold): timeline ledger and the
+      // countdown ticker aren't needed for first paint, so they're pushed
+      // to an idle slot to keep the initial main-thread task short.
       scheduleIdle(() => {
         renderTimelineLedger();
         startCountdownTimer();
@@ -141,15 +147,8 @@ export default function decorate(block) {
     if (!availableBids.length) return;
 
     const initialPrice = Number(product.startingBid || product.price || 0);
-    const validOverBids = [];
-    const underBids = [];
-    const abLen = availableBids.length;
-
-    for (let i = 0; i < abLen; i++) {
-      const b = availableBids[i];
-      if (Number(b.amount) >= initialPrice) validOverBids.push(b);
-      else underBids.push(b);
-    }
+    const validOverBids = availableBids.filter(b => Number(b.amount) >= initialPrice);
+    const underBids = availableBids.filter(b => Number(b.amount) < initialPrice);
 
     let winner = null;
     if (validOverBids.length > 0) {
@@ -160,16 +159,14 @@ export default function decorate(block) {
       winner = underBids[0];
     }
 
-    if (winner) {
-      product.winnerEmail = winner.user;
-      product.paymentStatus = product.paymentStatus || "pending";
+    product.winnerEmail = winner.user;
+    product.paymentStatus = product.paymentStatus || "pending";
 
-      const products = typeof getProducts === 'function' ? getProducts() : [];
-      const idx = products.findIndex(p => String(p.id) === String(product.id));
-      if (idx !== -1) {
-        products[idx] = product;
-        if (typeof saveProducts === 'function') await saveProducts(products);
-      }
+    const products = typeof getProducts === 'function' ? getProducts() : [];
+    const idx = products.findIndex(p => String(p.id) === String(product.id));
+    if (idx !== -1) {
+      products[idx] = product;
+      if (typeof saveProducts === 'function') await saveProducts(products);
     }
   }
 
@@ -186,6 +183,8 @@ export default function decorate(block) {
     const mainImgEl = document.createElement('img');
     mainImgEl.id = 'mainImage';
     mainImgEl.alt = product.title || 'Main Showcase Lot';
+    // This is the LCP candidate: never lazy-load it, discover it eagerly,
+    // and hint the browser to prioritize its network fetch.
     mainImgEl.setAttribute('loading', 'eager');
     mainImgEl.setAttribute('decoding', 'async');
     mainImgEl.setAttribute('fetchpriority', 'high');
@@ -210,6 +209,9 @@ export default function decorate(block) {
       mainImgEl.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="648" height="460" viewBox="0 0 648 460"><rect width="100%" height="100%" fill="%23f5f4f0"/></svg>';
     }
 
+    // Single delegated click listener instead of one listener per thumbnail:
+    // identical click-to-swap behavior, fewer retained listeners/less memory
+    // as the gallery grows.
     thumbsContainer.addEventListener('click', (event) => {
       const target = event.target.closest('img[data-src]');
       if (!target) return;
@@ -217,59 +219,38 @@ export default function decorate(block) {
     }, { passive: true });
 
     const thumbFragment = document.createDocumentFragment();
-    const imgLen = images.length;
-    for (let i = 0; i < imgLen; i++) {
-      const img = images[i];
-      if (!img) continue;
+    images.forEach((img, idx) => {
+      if (!img) return;
       const imgNode = document.createElement('img');
       imgNode.src = img;
       imgNode.dataset.src = img;
-      imgNode.alt = `Thumbnail visualization asset node slot ${i + 1}`;
+      imgNode.alt = `Thumbnail visualization asset node slot ${idx + 1}`;
+      // Thumbnails are never the LCP element: safe to lazy-load and decode
+      // asynchronously so they don't compete with the hero image fetch.
       imgNode.setAttribute('decoding', 'async');
       imgNode.setAttribute('loading', 'lazy');
       imgNode.width = 84;
       imgNode.height = 84;
       thumbFragment.appendChild(imgNode);
-    }
+    });
     thumbsContainer.appendChild(thumbFragment);
   }
 
-  function calculateBidStatusMetrics() {
+  function renderBidStatusCore() {
     const products = typeof getProducts === 'function' ? getProducts() : [];
     const fresh = products.find(p => String(p.id) === String(product.id));
     if (fresh) product = fresh;
 
-    const emailLower = session.email.toLowerCase();
-    let myHighest = 0;
-    const bidsLen = bids.length;
+    const myBids = bids.filter(b => b.user.toLowerCase() === session.email.toLowerCase());
+    const myHighest = myBids.length ? Math.max(...myBids.map(b => Number(b.amount))) : 0;
 
-    for (let i = 0; i < bidsLen; i++) {
-      const b = bids[i];
-      if (b.user.toLowerCase() === emailLower) {
-        const amt = Number(b.amount);
-        if (amt > myHighest) myHighest = amt;
-      }
-    }
+    // `bids` is already sorted descending once in loadBidDetails — reuse it
+    // directly instead of sorting it again here.
+    const highest = bids.length ? Number(bids[0].amount) : Number(product.startingBid || product.price || 0);
 
-    const highest = bidsLen ? Number(bids[0].amount) : Number(product.startingBid || product.price || 0);
-
-    const uniqueAmounts = [];
-    for (let i = 0; i < bidsLen; i++) {
-      const amt = bids[i].amount;
-      if (uniqueAmounts.indexOf(amt) === -1) uniqueAmounts.push(amt);
-    }
-    uniqueAmounts.sort((a, b) => b - a);
+    const uniqueAmounts = [...new Set(bids.map(b => b.amount))].sort((a, b) => b - a);
     const rank = uniqueAmounts.indexOf(myHighest) + 1;
-
-    stateCache.myHighest = myHighest;
-    stateCache.highest = highest;
-    stateCache.rank = rank;
-    stateCache.isLive = product.auctionStatus === 'active';
-    stateCache.uniqueAmounts = uniqueAmounts;
-  }
-
-  function renderBidStatusCore() {
-    const { myHighest, highest, rank, isLive } = stateCache;
+    const isLive = product.auctionStatus === 'active';
 
     cachedRightCol.innerHTML = `
       <div>
@@ -306,12 +287,12 @@ export default function decorate(block) {
       </div>
 
       <div class="action-block-card hidden" id="paymentCompletedSection">
-        <div style="font-size:13px; color:#0f2414; font-weight:600; margin-bottom:6px;">✅ Settlement Audit Complete</div>
-        <p style="font-size:12px; margin:0; color:#000000; line-height:1.5;">Consignment tracking is active. Invoices dispatched to client records window node channels.</p>
+        <div style="font-size:14px; color:#0f2414; font-weight:600; margin-bottom:6px;">✅ Settlement Audit Complete</div>
+        <p style="font-size:13px; margin:0; color:#000000; line-height:1.5;">Consignment tracking is active. Invoices dispatched to client records window node channels.</p>
       </div>
 
       <div class="dashboard-section-card">
-        <div style="font-family:'Playfair Display', Georgia, serif; font-size:1.25rem; font-weight:600; color:#121212;">Historical Allocation Ledger</div>
+        <div style="font-family:'Playfair Display', Georgia, serif; font-size:1.35rem; font-weight:600; color:#121212;">Historical Allocation Ledger</div>
         <div class="timeline-ledger-deck" id="bidHistoryContainer"></div>
       </div>
     `;
@@ -330,7 +311,7 @@ export default function decorate(block) {
       } else {
         badge.textContent = "Outbid";
         badge.className = "auction-badge outbid";
-        status.innerHTML = `${authorText.outbidMsg}<br><span style="font-size:12px; font-weight:700; color:#822210; display:inline-block; margin-top:4px;">Ceiling Deficiency: ₹${inrFormatter.format(highest - myHighest)}</span>`;
+        status.innerHTML = `${authorText.outbidMsg}<br><span style="font-size:13px; font-weight:700; color:#822210; display:inline-block; margin-top:4px;">Ceiling Deficiency: ₹${inrFormatter.format(highest - myHighest)}</span>`;
         rebidSec.classList.remove("hidden");
       }
       bindRebidActionListeners();
@@ -378,6 +359,10 @@ export default function decorate(block) {
     tick();
     countdownInterval = setInterval(tick, 1000);
 
+    // Pause the ticking timer while the tab isn't visible so it doesn't
+    // consume main-thread time / battery in the background, and resync
+    // immediately when the user returns — same displayed behavior, less
+    // wasted work.
     const handleVisibility = () => {
       if (document.hidden) {
         clearInterval(countdownInterval);
@@ -386,7 +371,7 @@ export default function decorate(block) {
         countdownInterval = setInterval(tick, 1000);
       }
     };
-    document.addEventListener('visibilitychange', handleVisibility, { passive: true });
+    document.addEventListener('visibilitychange', handleVisibility);
     window.addEventListener('pagehide', () => {
       clearInterval(countdownInterval);
       document.removeEventListener('visibilitychange', handleVisibility);
@@ -398,18 +383,14 @@ export default function decorate(block) {
     if (!container) return;
 
     if (!bids.length) {
-      container.innerHTML = `<div style="font-size:12px; color:#000000; padding:10px 0;">No transactional offers recorded yet.</div>`;
+      container.innerHTML = `<div style="font-size:13px; color:#000000; padding:10px 0;">No transactional offers recorded yet.</div>`;
       return;
     }
 
     const timeline = [...bids].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
     const fragment = document.createDocumentFragment();
-    const tLen = timeline.length;
-    const clientText = "You (Client)";
-    const tokenText = "Verified Bidder Token";
 
-    for (let i = 0; i < tLen; i++) {
-      const bid = timeline[i];
+    timeline.forEach(bid => {
       const entry = document.createElement('div');
       entry.className = 'timeline-item';
 
@@ -418,7 +399,7 @@ export default function decorate(block) {
 
       const user = document.createElement('div');
       user.className = 'timeline-user';
-      user.textContent = bid.user === session.email ? clientText : tokenText;
+      user.textContent = bid.user === session.email ? "You (Client)" : "Verified Bidder Token";
 
       const time = document.createElement('div');
       time.className = 'timeline-time';
@@ -434,95 +415,87 @@ export default function decorate(block) {
       entry.appendChild(left);
       entry.appendChild(amount);
       fragment.appendChild(entry);
-    }
+    });
 
     container.innerHTML = '';
     container.appendChild(fragment);
   }
 
-  function lazyLoadDependencies(callback) {
-    if (window.AWS) {
-      callback();
-      return;
-    }
-    const script = document.createElement('script');
-    script.src = 'https://sdk.amazonaws.com/js/aws-sdk-2.1450.0.min.js';
-    script.async = true;
-    script.id = 'aws-sdk-runtime';
-    script.onload = () => { if (typeof callback === 'function') callback(); };
-    document.body.appendChild(script);
-  }
+  // Note: this block used to run rebid/payment/decline logic through a
+  // local `lazyLoadDependencies()` helper that injected its own AWS SDK
+  // <script> tag from a different URL than scripts/aws-service.js — and
+  // never configured AWS.config/credentials on it, so it did nothing useful.
+  // The real, working lazy AWS initialization already happens transparently
+  // inside storage.js's saveProducts()/saveBids() (via aws-service.js's
+  // ensureAWSReady()) the first time either is actually called, so that
+  // dead/duplicate loader has been removed — one less broken network
+  // request path, and it's no longer possible for the two loaders to race
+  // or disagree about SDK state.
 
   function bindRebidActionListeners() {
-    document.getElementById("rebidBtn")?.addEventListener("click", () => {
-      lazyLoadDependencies(async () => {
-        const rebidInput = document.getElementById("rebidAmount");
-        const amount = Number(rebidInput?.value);
-        const currentHighest = bids.length ? Number(bids[0].amount) : Number(product.startingBid || product.price || 0);
+    document.getElementById("rebidBtn")?.addEventListener("click", async () => {
+      const rebidInput = document.getElementById("rebidAmount");
+      const amount = Number(rebidInput?.value);
+      const currentHighest = bids.length ? Number(bids[0].amount) : Number(product.startingBid || product.price || 0);
 
-        if (!amount || amount <= currentHighest) {
-          alert(`Your upgrade increments must transcend the active ceiling threshold of ₹${inrFormatter.format(currentHighest)}`);
-          return;
-        }
+      if (!amount || amount <= currentHighest) {
+        alert(`Your upgrade increments must transcend the active ceiling threshold of ₹${inrFormatter.format(currentHighest)}`);
+        return;
+      }
 
-        const allBids = typeof getBids === 'function' ? getBids() : [];
-        allBids.push({
-          productId: product.id,
-          productName: product.title,
-          amount: amount,
-          user: session.email,
-          timestamp: new Date().toISOString()
-        });
-
-        const products = typeof getProducts === 'function' ? getProducts() : [];
-        const idx = products.findIndex(x => String(x.id) === String(product.id));
-        if (idx !== -1) {
-          products[idx].currentBid = amount;
-          products[idx].bids = allBids.filter(b => String(b.productId) === String(product.id)).length;
-          if(typeof saveProducts === 'function') await saveProducts(products);
-        }
-
-        if (typeof saveBids === 'function') await saveBids(allBids);
-
-        if (cachedToastNode) {
-          cachedToastNode.textContent = `Success! Staged offer of ₹${inrFormatter.format(amount)} committed safely.`;
-          cachedToastNode.style.background = "#0f2414";
-          cachedToastNode.classList.add("show");
-        }
-
-        setTimeout(() => { location.reload(); }, 1200);
+      const allBids = typeof getBids === 'function' ? getBids() : [];
+      allBids.push({
+        productId: product.id,
+        productName: product.title,
+        amount: amount,
+        user: session.email,
+        timestamp: new Date().toISOString()
       });
+
+      const products = typeof getProducts === 'function' ? getProducts() : [];
+      const idx = products.findIndex(x => String(x.id) === String(product.id));
+      if (idx !== -1) {
+        products[idx].currentBid = amount;
+        products[idx].bids = allBids.filter(b => String(b.productId) === String(product.id)).length;
+        if (typeof saveProducts === 'function') await saveProducts(products);
+      }
+
+      if (typeof saveBids === 'function') await saveBids(allBids);
+
+      if (cachedToastNode) {
+        cachedToastNode.textContent = `Success! Staged offer of ₹${inrFormatter.format(amount)} committed safely.`;
+        cachedToastNode.style.background = "#0f2414";
+        cachedToastNode.classList.add("show");
+      }
+
+      setTimeout(() => { location.reload(); }, 1200);
     }, { passive: true });
   }
 
   function bindPaymentSelectionControls() {
     document.getElementById("payNowBtn")?.addEventListener("click", () => {
-      lazyLoadDependencies(() => {
-        const myBids = bids.filter(b => b.user.toLowerCase() === session.email.toLowerCase());
-        const winningBid = myBids.length ? Math.max(...myBids.map(b => Number(b.amount))) : Number(product.currentBid) || 0;
-        window.location.href = `checkout?productId=${encodeURIComponent(product.id)}&bid=${winningBid}`;
-      });
+      const myBids = bids.filter(b => b.user.toLowerCase() === session.email.toLowerCase());
+      const winningBid = myBids.length ? Math.max(...myBids.map(b => Number(b.amount))) : Number(product.currentBid) || 0;
+      window.location.href = `checkout?productId=${encodeURIComponent(product.id)}&bid=${winningBid}`;
     }, { passive: true });
 
-    document.getElementById("declineBtn")?.addEventListener("click", () => {
-      lazyLoadDependencies(async () => {
-        if (!confirm(authorText.confirmDecline)) return;
+    document.getElementById("declineBtn")?.addEventListener("click", async () => {
+      if (!confirm(authorText.confirmDecline)) return;
 
-        product.declinedBy = product.declinedBy || [];
-        if (!product.declinedBy.includes(session.email)) {
-          product.declinedBy.push(session.email);
-        }
-        product.winnerEmail = null;
-        product.paymentStatus = "pending";
+      product.declinedBy = product.declinedBy || [];
+      if (!product.declinedBy.includes(session.email)) {
+        product.declinedBy.push(session.email);
+      }
+      product.winnerEmail = null;
+      product.paymentStatus = "pending";
 
-        const products = typeof getProducts === 'function' ? getProducts() : [];
-        const idx = products.findIndex(p => String(p.id) === String(product.id));
-        if (idx !== -1) {
-          products[idx] = product;
-          if (typeof saveProducts === 'function') await saveProducts(products);
-        }
-        location.reload();
-      });
+      const products = typeof getProducts === 'function' ? getProducts() : [];
+      const idx = products.findIndex(p => String(p.id) === String(product.id));
+      if (idx !== -1) {
+        products[idx] = product;
+        if (typeof saveProducts === 'function') await saveProducts(products);
+      }
+      location.reload();
     }, { passive: true });
   }
 

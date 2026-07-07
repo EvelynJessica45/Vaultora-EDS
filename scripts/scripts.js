@@ -161,6 +161,14 @@ async function loadEager(doc) {
   preconnectHint.crossOrigin = 'anonymous';
   doc.head.append(preconnectHint);
 
+  // Fallback DNS resolution hint for browsers/situations where a full
+  // preconnect handshake doesn't happen (e.g. connection reused/dropped);
+  // cheap insurance alongside the preconnect above for the same host.
+  const dnsPrefetchHint = doc.createElement('link');
+  dnsPrefetchHint.rel = 'dns-prefetch';
+  dnsPrefetchHint.href = 'https://vaultora.s3.ap-south-1.amazonaws.com';
+  doc.head.append(dnsPrefetchHint);
+
   decorateTemplateAndTheme();
   const main = doc.querySelector('main');
   if (main) {
@@ -213,12 +221,15 @@ async function loadLazy(doc) {
 function loadDelayed() {
   const executionDelay = window.requestIdleCallback || ((cb) => window.setTimeout(cb, 60));
   executionDelay(() => {
-    import('./aws-service.js')
-      .then(async (awsModule) => {
-        await awsModule.initializeAWS();
-        const storageModule = await import('./storage.js');
-        await storageModule.initializeStore();
-      })
+    // Note: this used to also eagerly import('./aws-service.js') and call
+    // initializeAWS() here, which downloaded and executed the full AWS SDK
+    // (~380 KiB) on every single page load just so storage.js could read a
+    // JSON file. storage.js's initializeStore() now hydrates via a plain
+    // fetch internally (see aws-service.js), so the SDK is no longer needed
+    // on this always-run path at all — it's loaded lazily, later, only if
+    // the visitor actually performs a write (bid, payment, image upload).
+    import('./storage.js')
+      .then((storageModule) => storageModule.initializeStore())
       .catch(err => console.warn('Delayed background layer sync deferred:', err));
 
     import('./delayed.js').catch((err) => console.error(err));
