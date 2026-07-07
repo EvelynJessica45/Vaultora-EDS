@@ -89,13 +89,34 @@ export default function decorate(block) {
       return;
     }
 
+    // LCP PRELOAD INJECTION: Optimize above-the-fold image discovery instantly
+    const firstProduct = likedProducts[0];
+    if (firstProduct) {
+      let preloadSrc = firstProduct.images?.[0] || firstProduct.image || 'https://placehold.co/400x300/e8dcc8/5a4a2e?text=Vaultora';
+      if (preloadSrc.includes('media_') && !preloadSrc.includes('format=')) {
+        const separator = preloadSrc.includes('?') ? '&' : '?';
+        preloadSrc = `${preloadSrc}${separator}width=360&format=webp&optimize=medium`;
+      }
+      
+      // Look for an existing preload to avoid duplication
+      let existingPreload = document.querySelector(`link[rel="preload"][href="${preloadSrc}"]`);
+      if (!existingPreload) {
+        const preloadLink = document.createElement('link');
+        preloadLink.rel = 'preload';
+        preloadLink.as = 'image';
+        preloadLink.href = preloadSrc;
+        preloadLink.fetchPriority = 'high';
+        document.head.appendChild(preloadLink);
+      }
+    }
+
     const fragment = document.createDocumentFragment();
     const cardsToUpdate = [];
     const fallbackImg = 'https://placehold.co/400x300/e8dcc8/5a4a2e?text=Vaultora';
 
     let index = 0;
     function processBatch() {
-      const batchSize = 4; // Optimized execution chunk size for mobile processors
+      const batchSize = 4; 
       const limit = Math.min(index + batchSize, likedProducts.length);
 
       for (; index < limit; index++) {
@@ -110,7 +131,6 @@ export default function decorate(block) {
         const formattedPrice = Number(p.currentBid || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 });
         const isAboveFold = index < 2;
 
-        // IMAGE DELIVERY OPTIMIZATION: Inject automated responsive configuration
         let optimizedImageSrc = p.images?.[0] || p.image || fallbackImg;
         if (optimizedImageSrc.includes('media_') && !optimizedImageSrc.includes('format=')) {
           const separator = optimizedImageSrc.includes('?') ? '&' : '?';
@@ -122,6 +142,8 @@ export default function decorate(block) {
             <img class="auctionproducts-img-single"
                  src="${optimizedImageSrc}"
                  alt="${p.title}"
+                 width="220"
+                 height="220"
                  ${isAboveFold ? 'fetchpriority="high" loading="eager"' : 'loading="lazy"'}
                  onerror="this.onerror=null;this.src='${fallbackImg}'"/>
           </div>
