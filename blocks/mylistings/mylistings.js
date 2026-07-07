@@ -321,23 +321,23 @@ export default function decorate(block) {
         const product = allProducts.find(p => p && String(p.id) === String(productId));
 
         if (product) {
-          const allBids = getBids() || [];
-          const productBids = allBids
-            .filter(b => b && String(b.productId) === String(productId))
-            .sort((a, b) => Number(b.amount) - Number(a.amount));
+         const allBids = getBids() || [];
+const productBids = allBids
+  .filter(b => b && String(b.productId) === String(productId))
+  .sort((a, b) => Number(b.amount) - Number(a.amount));
 
-          product.endTime = new Date().toISOString();
+product.endTime = new Date().toISOString();
 
-          if (productBids.length > 0) {
-            product.auctionStatus = 'inactive'; 
-            product.winnerEmail = (productBids[0].user || "").toLowerCase();
-            product.currentBid = Number(productBids[0].amount);
-            product.paymentStatus = 'pending';
-          } else {
-            product.auctionStatus = 'ended'; 
-            product.winnerEmail = null;
-            product.paymentStatus = 'none';
-          }
+if (productBids.length > 0) {
+  product.auctionStatus = 'inactive'; 
+  product.winnerEmail = (productBids[0].user || "").toLowerCase();
+  product.currentBid = Number(productBids[0].amount);
+  product.paymentStatus = 'pending';
+} else {
+  product.auctionStatus = 'ended'; 
+  product.winnerEmail = null;
+  product.paymentStatus = 'none';
+}
 
           await saveProducts(allProducts);
         }
