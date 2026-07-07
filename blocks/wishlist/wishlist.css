@@ -1,11 +1,11 @@
 /* ==========================================================================
    WISHLIST BASE CANVAS
-   ========================================================================== */
+   ========================================================================= */
 .wishlist-dashboard {
   width: 100%;
   max-width: 1240px;
   margin: 0 auto;
-  padding: 10px;
+  padding: 12px;
   box-sizing: border-box;
 }
 
@@ -17,8 +17,8 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  border-bottom: 1px solid #eae7df;
-  margin-bottom: 2rem;
+  border-bottom: 1px solid #736f66; /* ACCESSIBILITY: High contrast boundary */
+  margin-bottom: clamp(1.25rem, 4vw, 2rem);
 }
 
 .wishlist-title {
@@ -41,37 +41,42 @@
   font-family: var(--body-font-family);
   font-size: var(--body-font-size-s);
   line-height: 1.4;
-  color: var(--text-muted);
+  color: #4a4a4a; /* ACCESSIBILITY: Enhanced legibility */
   margin: 0;
   font-weight: 400;
 }
 
 /* ==========================================================================
-   STRICT 5-COLUMN GRID SPECIFICATION
+   MOBILE-FIRST FLEXIBLE GRID DESIGN SPECIFICATION
    ========================================================================== */
 .wishlist-dashboard .auctionproducts-grid {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
-  gap: 0.85rem !important;
+  grid-template-columns: 1fr !important;
+  gap: 0.75rem !important;
   width: 100%;
 }
 
 /* ==========================================================================
-   RESTORED BASE CARD STYLING WITH COMPACT 5-CARD DIMENSIONS
+   RESTORED BASE CARD STYLING WITH COMPACT DIMENSIONS
    ========================================================================== */
 .wishlist-dashboard .auctionproducts-card {
   display: flex;
   flex-direction: column;
   background: #fff;
-  border: 1px solid #eae7df;
-  border-radius: 110px 110px 20px 20px !important;
+  border: 1px solid #949085; /* ACCESSIBILITY: Structured layout boundary contrast */
+  border-radius: 130px 130px 20px 20px !important;
   overflow: hidden;
   padding: 5px;
   min-width: 0;
-  max-width: 220px;
+  max-width: 260px;
   margin: 0 auto;
+  width: 100%;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.01);
   transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
+  content-visibility: auto;
+  contain-intrinsic-size: auto 340px;
+  transform: translateZ(0);
+  will-change: transform, box-shadow;
 }
 
 .wishlist-dashboard .auctionproducts-card:hover {
@@ -90,7 +95,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 110px 110px 0 0 !important;
+  border-radius: 130px 130px 0 0 !important;
   padding: 0;
 }
 
@@ -99,7 +104,7 @@
   height: 100%;
   object-fit: cover;
   display: block;
-  border-radius: 110px 110px 0 0 !important;
+  border-radius: 130px 130px 0 0 !important;
 }
 
 /* ==========================================================================
@@ -148,7 +153,7 @@
 .wishlist-dashboard .auctionproducts-bid-info {
   display: flex;
   align-items: center;
-  justify-content: space-between; /* Spreads label and timer nicely */
+  justify-content: space-between;
   gap: 0.4rem;
   margin-top: 0.1rem;
 }
@@ -159,12 +164,12 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: var(--text-muted);
+  color: #4a4a4a;
 }
 
 .wishlist-dashboard .auctionproducts-timer {
   font-family: var(--body-font-family);
-  font-size: 0.58rem; /* Scaled micro for 5-card row width thresholds */
+  font-size: 0.58rem;
   font-weight: 700;
   color: var(--theme-rust, #8f9874);
   background: var(--accent-blush-light, #fff5f2);
@@ -199,11 +204,11 @@
 .wishlist-dashboard .auctionproducts-bids-count {
   font-family: var(--body-font-family);
   font-size: 0.62rem;
-  color: var(--text-muted);
+  color: #4a4a4a;
 }
 
 /* ==========================================================================
-   BUTTON SPECIFICATIONS
+   BUTTON SPECIFICATIONS & TOUCH TARGET ENHANCEMENTS
    ========================================================================== */
 .wishlist-dashboard .auctionproducts-bid-btn {
   margin-top: 0.35rem !important;
@@ -215,7 +220,8 @@
   background: var(--nav-forest-dark);
   border: none;
   border-radius: 8px;
-  padding: 0.4rem 0.85rem !important;
+  padding: 0.5rem 1rem !important; /* Touch-optimized padding interaction bounds */
+  min-height: 32px;
   cursor: pointer;
   transition: background-color 0.2s ease, transform 0.15s ease;
 }
@@ -232,7 +238,7 @@
   width: 26px;
   height: 26px;
   border-radius: 50%;
-  border: 1px solid #f5eae6;
+  border: 1px solid #e0cdca;
   background: #fff;
   color: var(--accent-blush, #ff4d6d);
   display: flex;
@@ -243,10 +249,22 @@
   transition: transform 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
 }
 
+/* TOUCH ACCESSIBILITY INTERACTION EXPANSION (Invisible 44x44px target box wrapper) */
+.wishlist-dashboard .auctionproducts-fav::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 44px;
+  height: 44px;
+  transform: translate(-50%, -50%);
+}
+
 .wishlist-dashboard .auctionproducts-fav svg {
   width: 12px;
   height: 12px;
   transition: fill 0.2s ease, color 0.2s ease;
+  pointer-events: none;
 }
 
 .wishlist-dashboard .auctionproducts-fav:hover {
@@ -265,13 +283,13 @@
 }
 
 /* ==========================================================================
-   FALLBACK RESPONSIVE LAYOUT MATRIX
+   FALLBACK RESPONSIVE LAYOUT MATRIX (MOBILE-FIRST BREAKPOINTS)
    ========================================================================== */
 .wishlist-empty-msg {
   grid-column: 1 / -1;
   text-align: center;
   padding: 4rem 2rem;
-  color: var(--text-muted);
+  color: #4a4a4a;
   font-size: 0.95rem;
   border: 1px dashed var(--nav-circle-bg);
   border-radius: 14px;
@@ -279,43 +297,49 @@
   margin: 0;
 }
 
-@media (max-width: 1200px) {
+/* Viewport Scale: Upwards towards Small/Mid Handheld Devices */
+@media (min-width: 441px) {
+  .wishlist-dashboard .auctionproducts-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+  .wishlist-dashboard .auctionproducts-card {
+    max-width: 220px;
+    border-radius: 110px 110px 20px 20px !important;
+  }
+  .wishlist-dashboard .auctionproducts-media,
+  .wishlist-dashboard .auctionproducts-img-single {
+    border-radius: 110px 110px 0 0 !important;
+  }
+}
+
+/* Viewport Scale: Large Mobile & Small Tablets */
+@media (min-width: 769px) {
+  .wishlist-dashboard .auctionproducts-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 0.85rem !important;
+  }
+  .wishlist-dashboard {
+    padding: 10px;
+  }
+}
+
+/* Viewport Scale: Medium Tablets / Desktop Transitions */
+@media (min-width: 993px) {
   .wishlist-dashboard .auctionproducts-grid {
     grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
   }
 }
 
-@media (max-width: 992px) {
+/* Viewport Scale: Standard Desktop Tier */
+@media (min-width: 1201px) {
   .wishlist-dashboard .auctionproducts-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
   }
 }
 
-@media (max-width: 768px) {
-  .wishlist-dashboard .auctionproducts-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-    gap: 0.75rem !important;
-  }
-  .wishlist-dashboard {
-    padding: 0 10px 3rem;
-  }
-}
-
-@media (max-width: 440px) {
-  .wishlist-dashboard .auctionproducts-grid {
-    grid-template-columns: 1fr !important;
-  }
-  .wishlist-dashboard .auctionproducts-card {
-    max-width: 260px;
-    border-radius: 130px 130px 20px 20px !important;
-  }
-  .wishlist-dashboard .auctionproducts-media,
-  .wishlist-dashboard .auctionproducts-img-single {
-    border-radius: 130px 130px 0 0 !important;
-  }
-}
-
-/* Ensure this rule is active on the page to animate the toast */
+/* ==========================================================================
+   GLOBAL NOTIFICATION BUBBLES
+   ========================================================================== */
 .toast-bubble {
   position: fixed;
   bottom: 2rem;

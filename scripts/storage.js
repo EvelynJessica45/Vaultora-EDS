@@ -16,7 +16,6 @@ import {
 
 import { sendOutbidNotification } from './notification-service.js';
 
-// FIXED: Hardcoded absolute key tracking to guarantee alignment across separate blocks
 const TRU_SESSION_KEY = 'Vaultora_session';
 
 /* Strict single-layer parsing for safe variable lookups */
@@ -24,15 +23,8 @@ function lsGet(key) {
   const val = localStorage.getItem(key);
   if (!val) return null;
   try {
-    const firstParse = JSON.parse(val);
-    if (typeof firstParse === 'string') {
-      try {
-        return JSON.parse(firstParse);
-      } catch (innerErr) {
-        return firstParse;
-      }
-    }
-    return firstParse;
+    const parsed = JSON.parse(val);
+    return typeof parsed === 'string' ? JSON.parse(parsed) : parsed;
   } catch (e) { 
     return val; 
   }
@@ -44,25 +36,23 @@ function lsSet(key, value) {
     localStorage.removeItem(key);
     return;
   }
-  const cleanString = typeof value === 'object' ? JSON.stringify(value) : value;
-  localStorage.setItem(key, cleanString);
+  localStorage.setItem(key, typeof value === 'object' ? JSON.stringify(value) : value);
 }
 
 export async function initializeStore() {
   window.__storeReady = (async function resolveSyncHandshake() {
     try {
       const cloudState = await loadMarketplaceData();
-      for (const [key, value] of Object.entries(cloudState)) {
-        // FIXED: Protect both the dynamic key and the hardcoded session key from initialization resets
-        if (key === LS_SESSION || key === TRU_SESSION_KEY) continue;
-        if (value !== null && value !== undefined) {
-          const processedValue = typeof value === 'object' ? JSON.stringify(value) : value;
-          localStorage.setItem(key, processedValue);
+      if (cloudState) {
+        for (const [key, value] of Object.entries(cloudState)) {
+          if (key === LS_SESSION || key === TRU_SESSION_KEY) continue;
+          if (value !== null && value !== undefined) {
+            localStorage.setItem(key, typeof value === 'object' ? JSON.stringify(value) : value);
+          }
         }
       }
-      console.log('✅ S3 Cloud text structure unpacked successfully!');
     } catch (err) {
-      console.warn('⚠️ S3 unreadable (Using fallback cached storage schemas):', err.message);
+      // Gracefully handles structural caching transitions without raising runtime exceptions
       if (!localStorage.getItem(LS_USERS)) lsSet(LS_USERS, []);
       if (!localStorage.getItem(LS_PRODUCTS)) lsSet(LS_PRODUCTS, []);
       if (!localStorage.getItem(LS_BIDS)) lsSet(LS_BIDS, []);
@@ -70,7 +60,6 @@ export async function initializeStore() {
       if (!localStorage.getItem(LS_FAVORITES)) lsSet(LS_FAVORITES, {});
       if (!localStorage.getItem(LS_ORDERS)) lsSet(LS_ORDERS, []);
     } finally {
-      // FIXED: Dispatch the critical lifecycle token event so block entry points initialize safely
       document.dispatchEvent(new CustomEvent('store-ready'));
     }
   })();
@@ -83,23 +72,33 @@ export function getProducts() {
   const now = Date.now();
   let changed = false;
 
-  products.forEach(product => {
+  const len = products.length;
+  for (let i = 0; i < len; i++) {
+    const product = products[i];
     if (product && product.auctionStatus === "active" && product.endTime && new Date(product.endTime).getTime() <= now) {
       product.auctionStatus = "inactive";
       const allBids = lsGet(LS_BIDS) || [];
       const productBids = allBids.filter(b => String(b.productId) === String(product.id));
+      
       if (productBids.length > 0) {
         const initialPrice = Number(product.startingBid || product.price || 0);
-        const validOverBids = productBids.filter(b => Number(b.amount) >= initialPrice);
-        const underBids = productBids.filter(b => Number(b.amount) < initialPrice);
+        const validOverBids = [];
+        const underBids = [];
+
+        for (let j = 0; j < productBids.length; j++) {
+          const b = productBids[j];
+          if (Number(b.amount) >= initialPrice) {
+            validOverBids.push(b);
+          } else {
+            underBids.push(b);
+          }
+        }
 
         if (validOverBids.length > 0) {
           validOverBids.sort((a, b) => Number(b.amount) - Number(a.amount));
           product.winnerEmail = validOverBids[0].user;
-        } else {
-          underBids.sort((a, b) => {
-            return (initialPrice - Number(a.amount)) - (initialPrice - Number(b.amount));
-          });
+        } else if (underBids.length > 0) {
+          underBids.sort((a, b) => (initialPrice - Number(a.amount)) - (initialPrice - Number(b.amount)));
           product.winnerEmail = underBids[0].user;
         }
       } else {
@@ -110,7 +109,7 @@ export function getProducts() {
       product.declinedBy = [];
       changed = true;
     }
-  });
+  }
 
   if (changed) lsSet(LS_PRODUCTS, products);
   return products;
@@ -139,12 +138,14 @@ export async function saveBids(newBidsArray) {
     if (pastProductBids.length > 0) {
       const pastHighestLeader = pastProductBids[0];
       if (pastHighestLeader.user && freshNewBid.user && pastHighestLeader.user.toLowerCase() !== freshNewBid.user.toLowerCase()) {
-        sendOutbidNotification(
-          pastHighestLeader.user,
-          freshNewBid.productName || "Auction Item",
-          freshNewBid.amount,
-          freshNewBid.productId
-        ).catch(err => console.error("Outbid processing failure:", err));
+        setTimeout(() => {
+          sendOutbidNotification(
+            pastHighestLeader.user,
+            freshNewBid.productName || "Auction Item",
+            freshNewBid.amount,
+            freshNewBid.productId
+          ).catch(err => console.error("Outbid processing failure:", err));
+        }, 0);
       }
     }
   }
@@ -157,14 +158,12 @@ export function getUsers() { return lsGet(LS_USERS) || []; }
 export async function saveUsers(u) { lsSet(LS_USERS, u); await syncCloudPayload(); }
 export function getCategories() { return lsGet(LS_CATEGORIES) || []; }
 
-/* FIXED SESSION ENGINES: Forces single absolute key write states across local pipelines */
 export function getSession() { 
   return lsGet(TRU_SESSION_KEY); 
 }
 
 export function saveSession(user) { 
   lsSet(TRU_SESSION_KEY, user); 
-  // Safety mirror fallback for custom dynamic background endpoints
   if (LS_SESSION && LS_SESSION !== TRU_SESSION_KEY) {
     lsSet(LS_SESSION, user);
   }
@@ -180,7 +179,6 @@ export async function saveFavorites(f) { lsSet(LS_FAVORITES, f); await syncCloud
 export function getOrders() { return lsGet(LS_ORDERS) || []; }
 export async function saveOrders(o) { lsSet(LS_ORDERS, o); await syncCloudPayload(); }
 
-/* Safe, un-nested serialization payload assembly for cloud synchronization */
 async function syncCloudPayload() {
   const safeParse = (key) => {
     const item = localStorage.getItem(key);
@@ -210,6 +208,7 @@ export function setupQuickAddButtons(inputId, containerElement, fallbackCurrentV
   const wrap = document.createElement('div');
   wrap.className = 'quick-bid-wrapper';
   
+  const fragment = document.createDocumentFragment();
   values.forEach(val => {
     const btn = document.createElement('button');
     btn.type = 'button';
@@ -225,8 +224,10 @@ export function setupQuickAddButtons(inputId, containerElement, fallbackCurrentV
         inp.dispatchEvent(new Event('change'));
       }
     };
-    wrap.appendChild(btn);
+    fragment.appendChild(btn);
   });
+  
+  wrap.appendChild(fragment);
   containerElement.insertAdjacentElement('afterend', wrap);
 }
 
