@@ -297,7 +297,7 @@ export default function decorate(block) {
     });
   }
 
-  // Updated layout interception target referencing extensionless path strings character-for-character
+  // Updated click routing rule ensuring absolute context matching for a flat file root path
   container.onclick = function(e) {
     console.log("DEBUG: [container.onclick] Intercepted a click event down inside the list canvas wrapper.", e.target);
 
@@ -314,7 +314,8 @@ export default function decorate(block) {
       const targetProductId = itemCard.dataset.id;
       console.log(`DEBUG: [container.onclick] Product card matched successfully. Found attached product ID attribute: ${targetProductId}`);
       
-      const targetUrl = `my-listing-details?id=${targetProductId}`;
+      // Forces an absolute root pathname rewrite to cleanly target the standalone doc resource location
+      const targetUrl = `/my-listing-details?id=${targetProductId}`;
         
       console.log(`DEBUG: [container.onclick] Rerouting window path destination pointer over to clean URL -> "${targetUrl}"`);
       window.location.href = targetUrl;
