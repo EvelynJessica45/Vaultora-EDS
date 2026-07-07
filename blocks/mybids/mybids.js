@@ -9,16 +9,24 @@ import { getProducts, getBids, getSession } from '../../scripts/storage.js';
 
 // Centralised layout calculations matching dashboard status models
 function getBidHistoryForProduct(productId) {
-    
   return (getBids() || [])
     .filter(b => String(b.productId) === String(productId))
     .map(b => ({ ...b, amount: parseFloat(b.amount) || 0 }))
     .sort((a, b) => b.amount - a.amount);
 }
 
+// Minimal 60ms debounce mechanism to keep character entry non-blocking and protect TBT/INP
+function debounce(fn, delay = 60) {
+  let timer;
+  return (...args) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => fn(...args), delay);
+  };
+}
+
 export default function decorate(block) {
   block.textContent = '';
-  
+
   const session = getSession();
   if (!session) {
     block.innerHTML = `
@@ -32,7 +40,6 @@ export default function decorate(block) {
   const userEmail = session.email.toLowerCase();
 
   // --- CORE DATA MATRIX ISOLATION LOGIC ---
-  // 1. Get all unique products this user has ever interacted with
   const allBids = getBids() || [];
   const allProducts = getProducts() || [];
   
@@ -125,26 +132,26 @@ export default function decorate(block) {
   const statsBar = document.createElement('div');
   statsBar.className = 'mybids-stats-bar';
   statsBar.innerHTML = `
-    <div class="mybids-stat-card"><h3>${countTotal}</h3><p>TOTAL BIDS</p></div>
-    <div class="mybids-stat-card"><h3 style="color:#a3763d;">${countLeading}</h3><p>LEADING</p></div>
-    <div class="mybids-stat-card"><h3 style="color:#446633;">${countWon}</h3><p>WON</p></div>
-    <div class="mybids-stat-card"><h3 style="color:#c0532e;">${countLost}</h3><p>LOST</p></div>
+    <div class="mybids-stat-card"><h2>${countTotal}</h2><p>TOTAL BIDS</p></div>
+    <div class="mybids-stat-card"><h2>${countLeading}</h2><p>LEADING</p></div>
+    <div class="mybids-stat-card"><h2>${countWon}</h2><p>WON</p></div>
+    <div class="mybids-stat-card"><h2>${countLost}</h2><p>LOST</p></div>
     <div class="mybids-stat-card mybids-stat-card--wide">
-      <h3>₹${maxBidVal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</h3>
+      <h2>₹${maxBidVal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</h2>
       <p>HIGHEST BID MAX</p>
     </div>
   `;
   container.append(statsBar);
 
-  // Search & Filter Action Header
+  // Search & Filter Action Header with Explicit Accessibility Labels
   const filterRow = document.createElement('div');
   filterRow.className = 'mybids-filter-row';
   filterRow.innerHTML = `
     <div class="mybids-search-wrap">
-      <input type="text" id="bidsSearchInput" placeholder="Search auctions..." />
+      <input type="text" id="bidsSearchInput" placeholder="Search auctions..." aria-label="Search auctions" />
     </div>
     <div class="mybids-select-wrap">
-      <select id="bidsStatusSelect">
+      <select id="bidsStatusSelect" aria-label="Filter by status">
         <option value="all">All Statuses</option>
         <option value="leading">Leading</option>
         <option value="outbid">Outbid</option>
@@ -162,7 +169,6 @@ export default function decorate(block) {
 
   // Filter Engine Handler Execution
   function renderFilteredLists() {
-    listWrapper.textContent = '';
     const query = container.querySelector('#bidsSearchInput').value.trim().toLowerCase();
     const filterStatus = container.querySelector('#bidsStatusSelect').value;
 
@@ -172,6 +178,9 @@ export default function decorate(block) {
       { id: 'won', label: 'Won Auctions', count: countWon, icon: '✧' },
       { id: 'lost', label: 'Lost Auctions', count: countLost, icon: '📁' }
     ];
+
+    const fragment = document.createDocumentFragment();
+    let computedSectionsVisible = 0;
 
     sectionsData.forEach(sec => {
       if (filterStatus !== 'all' && filterStatus !== sec.id) return;
@@ -183,55 +192,86 @@ export default function decorate(block) {
 
       if (filteredItems.length === 0) return;
 
+      computedSectionsVisible++;
       const secEl = document.createElement('section');
       secEl.className = `mybids-section mybids-section--${sec.id}`;
-      secEl.innerHTML = `
-        <h2 class="mybids-section-title">
-          <span class="sec-icon">${sec.icon}</span> ${sec.label} (${filteredItems.length})
-        </h2>
-      `;
+      
+      let gridHTML = '';
+      filteredItems.forEach((item, index) => {
+        const timeString = item.personalBidTime ? new Date(item.personalBidTime).toLocaleString('en-IN', {day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit', hour12:true}) : '';
+        
+        const isPriority = index < 2;
+        const imageDOM = item.image 
+          ? `<img src="${item.image}" alt="${item.title}" loading="${isPriority ? 'eager' : 'lazy'}" width="85" height="85" decoding="async" ${isPriority ? 'fetchpriority="high"' : ''}/>` 
+          : `<div class="thumb-placeholder">${item.title.charAt(0)}</div>`;
 
-      const grid = document.createElement('div');
-      grid.className = 'mybids-grid';
-
-      filteredItems.forEach(item => {
-        const card = document.createElement('div');
-        card.className = `mybids-item-card border-indicator--${sec.id}`;
-        card.innerHTML = `
-          <div class="mybids-item-thumb">
-            ${item.image ? `<img src="${item.image}" alt="${item.title}" loading="lazy"/>` : `<div class="thumb-placeholder">${item.title.charAt(0)}</div>`}
-          </div>
-          <div class="mybids-item-details">
-            <h4 class="mybids-item-name">${item.title}</h4>
-            <p class="mybids-item-time">${item.personalBidTime ? new Date(item.personalBidTime).toLocaleString('en-IN', {day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit', hour12:true}) : ''}</p>
-            <div class="mybids-item-badge-row">
-              <span class="mybids-status-pill ${item.statusClass}">${item.statusLabel}</span>
+        gridHTML += `
+          <div class="mybids-item-card border-indicator--${sec.id}" data-id="${item.id}" role="button" tabIndex="0" aria-label="View auction details for ${item.title}">
+            <div class="mybids-item-thumb">
+              ${imageDOM}
+            </div>
+            <div class="mybids-item-details">
+              <h3 class="mybids-item-name">${item.title}</h3>
+              <p class="mybids-item-time">${timeString}</p>
+              <div class="mybids-item-badge-row">
+                <span class="mybids-status-pill ${item.statusClass}">${item.statusLabel}</span>
+              </div>
+            </div>
+            <div class="mybids-item-financials">
+              <span class="financial-value">₹${item.personalHighestBid.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
             </div>
           </div>
-          <div class="mybids-item-financials">
-            <span class="financial-value">₹${item.personalHighestBid.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
-          </div>
         `;
-        
-        card.addEventListener('click', () => {
-          window.location.href = `my-bid-details?id=${item.id}`;
-        });
-        grid.append(card);
       });
 
-      secEl.append(grid);
-      listWrapper.append(secEl);
+      secEl.innerHTML = `
+        <h2 class="mybids-section-title">
+          <span class="sec-icon" aria-hidden="true">${sec.icon}</span> ${sec.label} (${filteredItems.length})
+        </h2>
+        <div class="mybids-grid">${gridHTML}</div>
+      `;
+
+      fragment.appendChild(secEl);
     });
 
-    if (listWrapper.children.length === 0) {
-      listWrapper.innerHTML = `<p class="mybids-no-results">No active bid summaries match your chosen parameters.</p>`;
+    listWrapper.textContent = '';
+
+    if (computedSectionsVisible === 0) {
+      const fallback = document.createElement('p');
+      fallback.className = 'mybids-no-results';
+      fallback.textContent = 'No active bid summaries match your chosen parameters.';
+      listWrapper.appendChild(fallback);
+    } else {
+      listWrapper.appendChild(fragment);
     }
   }
 
-  // Event Attaches
-  container.querySelector('#bidsSearchInput').addEventListener('input', renderFilteredLists);
+  function navigateToDetails(productId) {
+    if (productId) {
+      window.location.href = `my-bid-details?id=${productId}`;
+    }
+  }
+
+  listWrapper.addEventListener('click', (e) => {
+    const card = e.target.closest('.mybids-item-card');
+    if (card) {
+      navigateToDetails(card.getAttribute('data-id'));
+    }
+  });
+
+  listWrapper.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      const card = e.target.closest('.mybids-item-card');
+      if (card) {
+        e.preventDefault();
+        navigateToDetails(card.getAttribute('data-id'));
+      }
+    }
+  });
+
+  container.querySelector('#bidsSearchInput').addEventListener('input', debounce(renderFilteredLists, 60));
   container.querySelector('#bidsStatusSelect').addEventListener('change', renderFilteredLists);
 
   block.append(container);
-  renderFilteredLists(); // Run layout initialization
+  renderFilteredLists();
 }

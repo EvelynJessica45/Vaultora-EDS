@@ -64,18 +64,35 @@ export async function initializeStore() {
   await window.__storeReady;
 }
 
+let productsCache = null;
+let productsCacheTime = 0;
+
 export function getProducts() {
-  const products = lsGet(LS_PRODUCTS) || [];
   const now = Date.now();
+  if (productsCache && (now - productsCacheTime < 2500)) {
+    return productsCache;
+  }
+
+  const products = lsGet(LS_PRODUCTS) || [];
   let changed = false;
+  const allBids = lsGet(LS_BIDS) || [];
+  
+  const bidsLookup = {};
+  const bidsLen = allBids.length;
+  for (let k = 0; k < bidsLen; k++) {
+    const bid = allBids[k];
+    if (bid && bid.productId) {
+      if (!bidsLookup[bid.productId]) bidsLookup[bid.productId] = [];
+      bidsLookup[bid.productId].push(bid);
+    }
+  }
 
   const len = products.length;
   for (let i = 0; i < len; i++) {
     const product = products[i];
     if (product && product.auctionStatus === "active" && product.endTime && new Date(product.endTime).getTime() <= now) {
       product.auctionStatus = "inactive";
-      const allBids = lsGet(LS_BIDS) || [];
-      const productBids = allBids.filter(b => String(b.productId) === String(product.id));
+      const productBids = bidsLookup[product.id] || [];
       
       if (productBids.length > 0) {
         const initialPrice = Number(product.startingBid || product.price || 0);
@@ -109,10 +126,14 @@ export function getProducts() {
   }
 
   if (changed) lsSet(LS_PRODUCTS, products);
+  productsCache = products;
+  productsCacheTime = now;
   return products;
 }
 
 export async function saveProducts(p) {
+  productsCache = p;
+  productsCacheTime = Date.now();
   lsSet(LS_PRODUCTS, p);
   await syncCloudPayload();
 }

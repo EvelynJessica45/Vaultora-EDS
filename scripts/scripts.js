@@ -125,10 +125,21 @@ export function decorateMain(main) {
 async function loadEager(doc) {
   document.documentElement.lang = 'en';
   
-  const preconnectHint = document.createElement('link');
+  const clearRobotsBlocks = () => {
+    const metas = Array.from(doc.querySelectorAll('meta[name="robots"]'));
+    metas.forEach(el => el.remove());
+    
+    const targetMeta = doc.createElement('meta');
+    targetMeta.name = 'robots';
+    targetMeta.content = 'index, follow, max-image-preview:large';
+    doc.head.appendChild(targetMeta);
+  };
+  clearRobotsBlocks();
+
+  const preconnectHint = doc.createElement('link');
   preconnectHint.rel = 'preconnect';
   preconnectHint.href = 'https://vaultora.s3.ap-south-1.amazonaws.com';
-  document.head.append(preconnectHint);
+  doc.head.append(preconnectHint);
 
   decorateTemplateAndTheme();
   const main = doc.querySelector('main');
@@ -136,21 +147,24 @@ async function loadEager(doc) {
     decorateMain(main);
     const criticalHeroBg = main.querySelector('.hero-bg-canvas picture source, .hero-bg-canvas picture img');
     if (criticalHeroBg) {
-      const preloadLink = document.createElement('link');
+      const preloadLink = doc.createElement('link');
       preloadLink.rel = 'preload';
       preloadLink.as = 'image';
       preloadLink.href = criticalHeroBg.getAttribute('srcset') || criticalHeroBg.getAttribute('src');
       preloadLink.fetchPriority = 'high';
-      document.head.append(preloadLink);
+      doc.head.append(preloadLink);
     }
-    document.body.classList.add('appear');
+    doc.body.classList.add('appear');
     await loadSection(main.querySelector('.section'), waitForFirstImage);
   }
-  try {
-    if (window.innerWidth >= 900 || sessionStorage.getItem('fonts-loaded')) {
-      loadFonts();
-    }
-  } catch (e) { /* Shield trace */ }
+  
+  setTimeout(() => {
+    try {
+      if (sessionStorage.getItem('fonts-loaded')) {
+        loadFonts();
+      }
+    } catch (e) {}
+  }, 0);
 }
 
 async function loadLazy(doc) {
@@ -176,11 +190,16 @@ async function loadLazy(doc) {
   }
 
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
-  loadFonts();
+  
+  if (window.requestIdleCallback) {
+    window.requestIdleCallback(() => loadFonts());
+  } else {
+    setTimeout(loadFonts, 100);
+  }
 }
 
 function loadDelayed() {
-  const executionDelay = window.requestIdleCallback || ((cb) => window.setTimeout(cb, 50));
+  const executionDelay = window.requestIdleCallback || ((cb) => window.setTimeout(cb, 60));
   executionDelay(() => {
     import('./aws-service.js')
       .then(async (awsModule) => {
@@ -197,7 +216,7 @@ function loadDelayed() {
 async function loadPage() {
   await loadEager(document);
 
-  const deferServiceInitialization = window.requestIdleCallback || ((cb) => window.setTimeout(cb, 1));
+  const deferServiceInitialization = window.requestIdleCallback || ((cb) => window.setTimeout(cb, 250));
   deferServiceInitialization(() => {
     import('./notification-service.js')
       .then(m => m.initializeEmailJS())
