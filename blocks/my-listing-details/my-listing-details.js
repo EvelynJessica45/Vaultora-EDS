@@ -29,6 +29,15 @@ export default function decorate(block) {
   // Clear the placeholder authoring content
   block.innerHTML = '';
 
+  // Ensure Adobe EDS wrapper container hierarchy handles luxury grid layouts cleanly
+  const parentSection = block.closest('.my-listing-details-wrapper');
+  if (!parentSection && block.parentNode) {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'my-listing-details-wrapper';
+    block.parentNode.insertBefore(wrapper, block);
+    wrapper.appendChild(block);
+  }
+
   // Setup layout architecture scaffolding frames with layout-shift prevention
   const container = document.createElement('div');
   container.className = 'my-listing-details-container';
@@ -62,6 +71,15 @@ export default function decorate(block) {
   container.appendChild(scaffoldSplitWrap);
   block.appendChild(container);
 
+  // High-performance single central click listener for dynamic pagination elements
+  rightPanel.onclick = function(e) {
+    const targetToggleButton = e.target.closest('.toggle-bidders-btn');
+    if (targetToggleButton) {
+      showingAllBidders = !showingAllBidders;
+      renderSellerListingDetailsLoop();
+    }
+  };
+
   // Core execution loop routine
   function renderSellerListingDetailsLoop() {
     const params = new URLSearchParams(window.location.search);
@@ -70,8 +88,8 @@ export default function decorate(block) {
     // --- BYPASS SETUP FOR LOCAL TESTING ---
     let session = typeof getSession === 'function' ? getSession() : null;
 
-    if (!session && window.location.hostname === 'localhost') {
-      session = { name: "Evelyn Jessica", email: "evelynjessica0906@gmail.com" };
+    if (!session) {
+      session = JSON.parse(localStorage.getItem('Vaultora_session'));
     }
     // --------------------------------------
 
@@ -95,7 +113,13 @@ export default function decorate(block) {
     }
 
     const product = products.find(p => p && String(p.id) === String(productId));
-    const allBids = typeof getBids === 'function' ? getBids() : [];
+    
+    // Direct robust check for bids fallback parameters
+    let allBids = typeof getBids === 'function' ? getBids() : [];
+    if (!allBids || allBids.length === 0) {
+      const rawLocalBids = localStorage.getItem('Vaultora_bids');
+      if (rawLocalBids) allBids = JSON.parse(rawLocalBids);
+    }
 
     const rawOrders = localStorage.getItem('Vaultora_orders');
     const systemOrders = rawOrders ? JSON.parse(rawOrders) : [];
@@ -261,10 +285,6 @@ export default function decorate(block) {
         toggleBtn.type = 'button';
         toggleBtn.setAttribute('aria-expanded', showingAllBidders ? 'true' : 'false');
         toggleBtn.textContent = showingAllBidders ? 'Show Less ↑' : `Show More (${executionSortedBids.length - rowLimitThreshold} Hidden) ↓`;
-        toggleBtn.addEventListener('click', () => {
-          showingAllBidders = !showingAllBidders;
-          renderSellerListingDetailsLoop();
-        });
 
         listHTML += `<div id="toggleBtnAnchor"></div>`;
         setTimeout(() => {
@@ -313,8 +333,10 @@ export default function decorate(block) {
     const peakHigh = Math.max(...chronologicalAmounts);
     const floorLow = Math.min(...chronologicalAmounts);
 
-    document.getElementById('graphHighLabel').textContent = `Peak: ₹${peakHigh.toLocaleString('en-IN')}`;
-    document.getElementById('graphLowLabel').textContent = `Floor: ₹${floorLow.toLocaleString('en-IN')}`;
+    const highLabel = document.getElementById('graphHighLabel');
+    const lowLabel = document.getElementById('graphLowLabel');
+    if (highLabel) highLabel.textContent = `Peak: ₹${peakHigh.toLocaleString('en-IN')}`;
+    if (lowLabel) lowLabel.textContent = `Floor: ₹${floorLow.toLocaleString('en-IN')}`;
 
     const padding = 25;
     const graphW = canvas.width - (padding * 2);
@@ -369,7 +391,7 @@ export default function decorate(block) {
   }
 
   // Trigger setup loops safely ONLY after the storage handshake resolves completely
- (async () => {
+  (async () => {
     console.log("DEBUG [Details Page]: Checking store hydration status...");
     const storeTimeout = new Promise((resolve) => setTimeout(resolve, 100));
     await Promise.race([window.__storeReady || Promise.resolve(), storeTimeout]);
@@ -381,7 +403,8 @@ export default function decorate(block) {
       console.warn("DEBUG [Details Page]: Unauthorized access state. Kicking back to /register");
       window.location.replace('/register');
     } else {
-      console.log("DEBUG [Details Page]: Verification complete. Allowing block decorate pipeline to run seamlessly.");
+      console.log("DEBUG [Details Page]: Verification complete. Executing loop render layout engine.");
+      renderSellerListingDetailsLoop();
     }
   })();
 }
