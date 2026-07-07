@@ -1,96 +1,252 @@
 /* ==========================================================================
    DASHBOARD ROOT PLATFORM CORE
+   Design tokens live on the block itself so the whole component reasons
+   from one palette/scale instead of scattered magic numbers.
    ========================================================================== */
 .my-listing-details-wrapper {
   width: 100% !important;
   max-width: 1440px;
-  margin: 2.5rem auto;
+  margin: 2rem auto;
   padding: 0 1.5rem;
   box-sizing: border-box;
 }
 
 .my-listing-details,
 [data-block-name="my-listing-details"] {
+  --vd-bg: #fdfdfc;
+  --vd-surface: #ffffff;
+  --vd-surface-soft: #fafaf9;
+  --vd-ink: #121212;
+  --vd-ink-soft: #595959;
+  --vd-ink-faint: #8a8a86;
+  --vd-primary: #1a3020;
+  --vd-primary-soft: rgba(26, 48, 32, 0.06);
+  --vd-accent: #8c6227;
+  --vd-accent-soft: rgba(140, 98, 39, 0.07);
+  --vd-accent-line: rgba(140, 98, 39, 0.35);
+  --vd-rust: #b23c00;
+  --vd-rust-soft: rgba(178, 60, 0, 0.07);
+  --vd-live: #1f8f4d;
+  --vd-live-soft: rgba(31, 143, 77, 0.09);
+  --vd-line: rgba(43, 33, 24, 0.08);
+  --vd-line-soft: rgba(43, 33, 24, 0.05);
+  --vd-radius-lg: 18px;
+  --vd-radius-md: 12px;
+  --vd-radius-sm: 8px;
+  --vd-shadow-card: 0 10px 30px rgba(42, 41, 38, 0.04);
+  --vd-shadow-card-hover: 0 14px 36px rgba(42, 41, 38, 0.07);
+  --vd-font-display: 'Playfair Display', serif;
+  --vd-font-body: 'DM Sans', sans-serif;
+  --vd-font-mono: 'IBM Plex Mono', 'SFMono-Regular', Consolas, monospace;
+
   width: 100%;
   display: flex !important;
   flex-direction: row;
   gap: 32px;
   align-items: flex-start;
-  background-color: #fcfbfa; /* Warm minimal gallery canvas */
-  font-family: 'DM Sans', sans-serif;
-  color: #1a1a1a;
+  background-color: var(--vd-bg);
+  font-family: var(--vd-font-body);
+  color: var(--vd-ink);
   box-sizing: border-box;
+  content-visibility: auto;
+  contain-intrinsic-size: 1000px;
+}
+
+.my-listing-details *,
+.my-listing-details *::before,
+.my-listing-details *::after {
+  box-sizing: border-box;
+}
+
+/* Header Dashboard Bar */
+.my-listing-details .details-dashboard-header {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 2.25rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--vd-line-soft);
+}
+
+.my-listing-details .dashboard-eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--vd-accent);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.my-listing-details .dashboard-eyebrow::before {
+  content: '';
+  width: 16px;
+  height: 1px;
+  background: var(--vd-accent-line);
+  display: inline-block;
+}
+
+.my-listing-details .dashboard-main-title {
+  margin: 0;
+  font-family: var(--vd-font-display);
+  font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+  color: var(--vd-primary);
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.my-listing-details .dashboard-main-title em {
+  font-style: italic;
+  font-family: var(--vd-font-display);
+  color: var(--vd-accent);
+}
+
+.my-listing-details .dashboard-meta-subtitle {
+  font-size: 0.85rem;
+  color: var(--vd-ink-soft);
+  margin: 0;
+}
+
+/* Layout Split Frames */
+.my-listing-details .details-scaffold-layout {
+  display: grid;
+  grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);
+  width: 100%;
+  gap: 32px;
+  align-items: flex-start;
 }
 
 /* ==========================================================================
    LEFT PANEL FRAME: PRODUCT IDENTITY CARD
    ========================================================================== */
 .my-listing-details .listing-identity-panel {
-  width: 32%;
-  flex-shrink: 0;
-  background: #ffffff;
-  border: 1px solid rgba(43, 33, 24, 0.06);
-  border-radius: 12px;
-  padding: 1.5rem;
+  width: 100%;
+  min-width: 0;
+  background: var(--vd-surface);
+  border: 1px solid var(--vd-line-soft);
+  border-radius: var(--vd-radius-lg);
+  padding: 1.75rem;
   box-sizing: border-box;
-  box-shadow: 0 4px 20px rgba(43, 33, 24, 0.02);
+  box-shadow: var(--vd-shadow-card);
   position: sticky;
   top: 30px;
 }
 
 .my-listing-details .media-frame {
   width: 100%;
-  height: 280px;
-  border-radius: 8px;
+  height: auto;
+  border-radius: var(--vd-radius-md);
   overflow: hidden;
   background-color: #f5f3ef;
-  margin-bottom: 1.2rem;
+  margin-bottom: 1.5rem;
+  aspect-ratio: 4 / 3;
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.02);
 }
 
 .my-listing-details .media-frame img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  display: block;
+}
+
+.my-listing-details .identity-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 0.9rem;
 }
 
 .my-listing-details .asset-category-badge {
   font-size: 10px;
   font-weight: 700;
-  letter-spacing: 2px;
+  letter-spacing: 1.6px;
   text-transform: uppercase;
-  color: #b9925a; /* Luxury Gold Accent */
-  margin-bottom: 0.5rem;
+  color: var(--vd-accent);
+  background: var(--vd-accent-soft);
+  padding: 4px 10px;
+  border-radius: 4px;
   display: inline-block;
 }
 
-.my-listing-details h1.asset-title {
-  font-family: 'Playfair Display', serif;
+.my-listing-details h2.asset-title {
+  font-family: var(--vd-font-display);
   font-weight: 600;
-  font-size: 1.8rem;
-  line-height: 1.2;
-  color: #121212;
-  margin: 0 0 0.4rem 0;
+  font-size: clamp(1.4rem, 2.5vw, 1.75rem);
+  line-height: 1.3;
+  color: var(--vd-ink);
+  margin: 0 0 1rem 0;
 }
 
-.my-listing-details .asset-id-label {
-  font-size: 11px;
-  color: #888888;
-  font-family: monospace;
-  margin-bottom: 1.2rem;
-  display: block;
+/* Signature element: an auction "lot ticket" stub, standing in for the
+   plain ID label. A punched hole + a dashed tear-line nod to a physical
+   paddle/lot tag, which is what this whole dashboard is tracking. */
+.my-listing-details .lot-ticket {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  background: var(--vd-surface-soft);
+  border: 1px solid var(--vd-line);
+  border-radius: var(--vd-radius-sm);
+  overflow: hidden;
+  margin-bottom: 1.4rem;
+}
+
+.my-listing-details .lot-ticket::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 68px;
+  width: 12px;
+  height: 12px;
+  margin-left: -6px;
+  background: var(--vd-surface);
+  border: 1px solid var(--vd-line);
+  border-radius: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
+}
+
+.my-listing-details .lot-ticket-label {
+  flex-shrink: 0;
+  width: 68px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--vd-ink-faint);
+  border-right: 1px dashed var(--vd-line);
+  padding: 10px 4px;
+}
+
+.my-listing-details .lot-ticket-value {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  padding: 10px 14px;
+  font-family: var(--vd-font-mono);
+  font-size: 12.5px;
+  letter-spacing: 0.3px;
+  color: var(--vd-ink);
 }
 
 .my-listing-details .asset-divider {
   width: 100%;
   height: 1px;
-  background: rgba(43, 33, 24, 0.08);
+  background: var(--vd-line);
   margin: 1.2rem 0;
 }
 
 .my-listing-details .asset-description-box p {
   font-size: 13.5px;
-  line-height: 1.6;
-  color: #555555;
+  line-height: 1.65;
+  color: #444444;
   margin: 0;
 }
 
@@ -99,10 +255,11 @@
    ========================================================================== */
 .my-listing-details .performance-metrics-panel {
   flex-grow: 1;
-  width: 68%;
+  width: 100%;
+  min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 28px;
 }
 
 /* Financial Micro-Grid */
@@ -113,76 +270,166 @@
 }
 
 .my-listing-details .ticker-card {
-  background: #ffffff;
-  border: 1px solid rgba(43, 33, 24, 0.06);
-  border-radius: 8px;
-  padding: 1.2rem;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.01);
+  position: relative;
+  background: var(--vd-surface);
+  border: 1px solid var(--vd-line-soft);
+  border-radius: var(--vd-radius-md);
+  padding: 1.15rem 1.25rem 1.25rem;
+  box-shadow: 0 4px 20px rgba(42, 41, 38, 0.02);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.my-listing-details .ticker-card:hover {
+  border-color: var(--vd-accent-line);
+  box-shadow: var(--vd-shadow-card-hover);
+  transform: translateY(-2px);
+}
+
+.my-listing-details .ticker-icon {
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 7px;
+  margin-bottom: 0.65rem;
+  background: var(--vd-primary-soft);
+  color: var(--vd-primary);
+}
+
+.my-listing-details .ticker-icon svg { width: 15px; height: 15px; }
+
+.my-listing-details .ticker-card[data-metric="status"] .ticker-icon {
+  background: var(--vd-live-soft);
+  color: var(--vd-live);
+}
+.my-listing-details .ticker-card[data-metric="bids"] .ticker-icon {
+  background: var(--vd-accent-soft);
+  color: var(--vd-accent);
 }
 
 .my-listing-details .ticker-label {
   font-size: 10.5px;
   font-weight: 600;
   letter-spacing: 1px;
-  color: #777777;
+  color: var(--vd-ink-soft);
   text-transform: uppercase;
   margin-bottom: 0.4rem;
   display: block;
 }
 
 .my-listing-details .ticker-value {
-  font-size: 1.4rem;
-  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.15rem, 2.5vw, 1.45rem);
+  font-family: var(--vd-font-display);
   font-weight: 600;
-  color: #1a3020; /* Luxury Forest Green value metric */
+  color: var(--vd-primary);
 }
 
-.my-listing-details #m-status {
-  font-family: 'DM Sans', sans-serif;
-  font-size: 12px;
+.my-listing-details .status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--vd-font-body);
+  font-size: 13px;
   font-weight: 700;
+  color: var(--vd-ink);
+}
+
+.my-listing-details .status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--vd-ink-faint);
+  flex-shrink: 0;
+}
+
+.my-listing-details .status-pill[data-live="true"] .status-dot {
+  background: var(--vd-live);
+  animation: vd-pulse 2s ease-out infinite;
+}
+
+.my-listing-details .status-pill[data-live="true"] { color: var(--vd-live); }
+.my-listing-details .status-pill[data-live="false"] { color: var(--vd-ink-soft); }
+
+@keyframes vd-pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(31, 143, 77, 0.45); }
+  70%  { box-shadow: 0 0 0 7px rgba(31, 143, 77, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(31, 143, 77, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .my-listing-details .status-pill[data-live="true"] .status-dot { animation: none; }
 }
 
 /* ==========================================================================
-   CHART & SPARKLINE DATA VISUALIZER
+   SHARED SECTION CARD SHELL
    ========================================================================== */
 .my-listing-details .dashboard-section-card {
-  background: #ffffff;
-  border: 1px solid rgba(43, 33, 24, 0.06);
-  border-radius: 12px;
-  padding: 1.5rem;
-  box-shadow: 0 4px 20px rgba(43, 33, 24, 0.02);
+  background: var(--vd-surface);
+  border: 1px solid var(--vd-line-soft);
+  border-radius: var(--vd-radius-lg);
+  padding: 1.75rem;
+  box-shadow: var(--vd-shadow-card);
 }
 
 .my-listing-details .card-header-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.2rem;
+  gap: 16px;
+  margin-bottom: 1.5rem;
 }
 
-.my-listing-details .card-header-row h2 {
-  font-family: 'Playfair Display', serif;
+.my-listing-details .card-header-row h3 {
+  font-family: var(--vd-font-display);
   font-weight: 600;
-  font-size: 1.35rem;
+  font-size: 1.2rem;
+  color: var(--vd-primary);
   margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
+.my-listing-details .card-header-row h3::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--vd-accent);
+  flex-shrink: 0;
+}
+
+.my-listing-details .card-header-count {
+  font-family: var(--vd-font-body);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--vd-ink-faint);
+  background: var(--vd-surface-soft);
+  border: 1px solid var(--vd-line-soft);
+  padding: 3px 9px;
+  border-radius: 20px;
+}
+
+/* ==========================================================================
+   CHART & SPARKLINE DATA VISUALIZER
+   ========================================================================== */
 .my-listing-details .chart-extremes-legend {
   display: flex;
-  gap: 16px;
+  gap: 10px;
   font-size: 11px;
   font-weight: 600;
+  flex-shrink: 0;
 }
 
-.my-listing-details .extreme-peak { color: #e65100; }
-.my-listing-details .extreme-floor { color: #46513f; }
+.my-listing-details .extreme-peak { color: var(--vd-rust); background: var(--vd-rust-soft); padding: 3px 9px; border-radius: 20px; white-space: nowrap; }
+.my-listing-details .extreme-floor { color: var(--vd-primary); background: var(--vd-primary-soft); padding: 3px 9px; border-radius: 20px; white-space: nowrap; }
 
 .my-listing-details .canvas-graph-container {
   width: 100%;
-  background: #fafaf9;
-  border-radius: 6px;
-  padding: 10px;
+  background: var(--vd-surface-soft);
+  border-radius: 10px;
+  padding: 14px;
   box-sizing: border-box;
 }
 
@@ -190,6 +437,7 @@
   width: 100%;
   height: 180px;
   display: block;
+  aspect-ratio: 35 / 9;
 }
 
 /* ==========================================================================
@@ -199,73 +447,132 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem 1.2rem;
-  background: #ffffff;
-  border-radius: 8px;
-  margin-bottom: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
-  transition: transform 0.3s ease;
+  gap: 14px;
+  padding: 1rem 1.25rem;
+  background: var(--vd-surface);
+  border-radius: var(--vd-radius-sm);
+  margin-bottom: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.01);
+  border: 1px solid var(--vd-line-soft);
+  border-left: 3px solid var(--vd-line);
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.2s ease, background 0.2s ease;
+  will-change: transform;
 }
 
 .my-listing-details .bid-item:hover {
   transform: translateX(4px);
+  border-color: var(--vd-accent-line);
 }
 
-.my-listing-details .bid-user-profile h3 {
+.my-listing-details .bid-item.is-leading {
+  border-left-color: var(--vd-live);
+  background: var(--vd-live-soft);
+}
+
+.my-listing-details .bid-item:last-child { margin-bottom: 0; }
+
+.my-listing-details .bid-user-cell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.my-listing-details .bid-avatar {
+  flex-shrink: 0;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--vd-font-display);
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--vd-surface);
+  background: var(--vd-primary);
+}
+
+.my-listing-details .bid-item.is-leading .bid-avatar {
+  background: var(--vd-live);
+}
+
+.my-listing-details .bid-user-profile { min-width: 0; }
+
+.my-listing-details .bid-user-profile h4 {
   font-size: 14.5px;
   font-weight: 600;
+  color: var(--vd-ink);
   margin: 0 0 0.2rem 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .my-listing-details .bid-timestamp {
-  font-size: 11px;
-  color: #888888;
+  font-size: 11.5px;
+  color: var(--vd-ink-soft);
   display: block;
+  margin-bottom: 0.3rem;
 }
 
 .my-listing-details .rank-indicator-tag {
-  font-size: 9px;
+  font-size: 9.5px;
   font-weight: 700;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.6px;
   text-transform: uppercase;
-  margin-top: 0.4rem;
   display: inline-block;
+  padding: 2px 8px;
+  border-radius: 20px;
+  background: var(--vd-line-soft);
+  color: var(--vd-ink-soft);
+}
+
+.my-listing-details .bid-item.is-leading .rank-indicator-tag {
+  background: rgba(31, 143, 77, 0.14);
+  color: var(--vd-live);
+}
+
+.my-listing-details .bid-financial-side {
+  text-align: right;
+  flex-shrink: 0;
 }
 
 .my-listing-details .bid-financial-side .bid-amt {
-  font-family: 'Playfair Display', serif;
+  font-family: var(--vd-font-display);
   font-weight: 600;
   font-size: 1.3rem;
-  color: #1a3020;
+  color: var(--vd-primary);
 }
 
 .my-listing-details .toggle-bidders-btn {
-  font-family: 'DM Sans', sans-serif;
+  font-family: var(--vd-font-body);
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 1px;
   text-transform: uppercase;
-  color: #b9925a;
+  color: var(--vd-accent);
   background: transparent;
-  border: 1px solid rgba(185, 146, 90, 0.3);
-  padding: 8px 16px;
-  border-radius: 4px;
+  border: 1px solid var(--vd-accent-line);
+  padding: 10px 20px;
+  border-radius: 6px;
   cursor: pointer;
-  transition: all 0.3s ease;
-  margin: 0.5rem auto 0 auto;
+  transition: all 0.2s ease;
+  margin: 1.1rem auto 0 auto;
   display: block;
+  min-height: 44px;
 }
 
 .my-listing-details .toggle-bidders-btn:hover {
-  background: #b9925a;
-  color: #ffffff;
-  border-color: #b9925a;
+  background: var(--vd-accent);
+  color: var(--vd-surface);
+  border-color: var(--vd-accent);
 }
 
 .my-listing-details .plain-empty-box-notice {
   text-align: center;
-  padding: 3rem;
-  color: #777777;
+  padding: 3rem 1.5rem;
+  color: var(--vd-ink-soft);
   font-style: italic;
   font-size: 14px;
 }
@@ -280,54 +587,89 @@
 }
 
 .my-listing-details .invoice-reference-badge {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 700;
   letter-spacing: 1px;
   text-transform: uppercase;
-  background: #1a3020;
-  color: #ffffff;
-  padding: 4px 10px;
-  border-radius: 4px;
+  background: var(--vd-primary);
+  color: var(--vd-surface);
+  padding: 6px 12px;
+  border-radius: 6px;
   display: inline-block;
+  font-family: var(--vd-font-mono);
 }
 
 .my-listing-details .item-prop-row {
   display: flex;
   justify-content: space-between;
-  padding-bottom: 10px;
-  border-bottom: 1px dashed rgba(43, 33, 24, 0.08);
-  font-size: 13.5px;
+  gap: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px dashed var(--vd-line);
+  font-size: 14px;
+}
+
+.my-listing-details .item-prop-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
 }
 
 .my-listing-details .item-prop-lbl {
-  color: #777777;
+  color: var(--vd-ink-soft);
   font-weight: 500;
 }
 
 .my-listing-details .item-prop-val {
-  color: #121212;
+  color: var(--vd-ink);
   font-weight: 600;
+  text-align: right;
+}
+
+/* ==========================================================================
+   ACCESSIBILITY: VISIBLE KEYBOARD FOCUS
+   ========================================================================== */
+.my-listing-details button:focus-visible {
+  outline: 2px solid var(--vd-accent);
+  outline-offset: 2px;
 }
 
 /* ==========================================================================
    MOBILE RESPONSIVITY BREAKPOINTS
    ========================================================================== */
 @media (max-width: 1024px) {
-  .my-listing-details,
-  [data-block-name="my-listing-details"] {
-    flex-direction: column;
+  .my-listing-details .details-scaffold-layout {
+    grid-template-columns: 1fr;
   }
   .my-listing-details .listing-identity-panel {
-    width: 100%;
     position: static;
-  }
-  .my-listing-details .performance-metrics-panel {
-    width: 100%;
   }
 }
 
 @media (max-width: 768px) {
   .my-listing-details .metrics-ticker-tape {
     grid-template-columns: repeat(2, 1fr);
+  }
+  .my-listing-details .dashboard-section-card,
+  .my-listing-details .listing-identity-panel {
+    padding: 1.35rem;
+  }
+}
+
+@media (max-width: 560px) {
+  .my-listing-details .bid-item {
+    flex-wrap: wrap;
+  }
+  .my-listing-details .bid-financial-side {
+    width: 100%;
+    text-align: left;
+    padding-left: 50px;
+  }
+  .my-listing-details .card-header-row {
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 480px) {
+  .my-listing-details .metrics-ticker-tape {
+    grid-template-columns: repeat(1, 1fr);
   }
 }
