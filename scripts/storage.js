@@ -16,28 +16,48 @@ import {
 
 import { sendOutbidNotification } from './notification-service.js';
 
+// FIXED: Hardcoded absolute key tracking to guarantee alignment across separate blocks
+const TRU_SESSION_KEY = 'Vaultora_session';
+
+/* Strict single-layer parsing for safe variable lookups */
 function lsGet(key) {
   const val = localStorage.getItem(key);
   if (!val) return null;
   try {
-    const parsed = JSON.parse(val);
-    return typeof parsed === "string" ? JSON.parse(parsed) : parsed;
-  } catch (e) { return null; }
+    const firstParse = JSON.parse(val);
+    if (typeof firstParse === 'string') {
+      try {
+        return JSON.parse(firstParse);
+      } catch (innerErr) {
+        return firstParse;
+      }
+    }
+    return firstParse;
+  } catch (e) { 
+    return val; 
+  }
 }
 
+/* Ensure clean single-layer serialization across storage paths */
 function lsSet(key, value) {
-  localStorage.setItem(key, JSON.stringify(value));
+  if (value === null || value === undefined) {
+    localStorage.removeItem(key);
+    return;
+  }
+  const cleanString = typeof value === 'object' ? JSON.stringify(value) : value;
+  localStorage.setItem(key, cleanString);
 }
 
 export async function initializeStore() {
-  // CRITICAL PARITY LOCK: Assign window promise fence so login components defer processing safely
   window.__storeReady = (async function resolveSyncHandshake() {
     try {
       const cloudState = await loadMarketplaceData();
       for (const [key, value] of Object.entries(cloudState)) {
-        if (key === LS_SESSION) continue;
-        if (value) {
-          localStorage.setItem(key, typeof value === 'object' ? JSON.stringify(value) : value);
+        // FIXED: Protect both the dynamic key and the hardcoded session key from initialization resets
+        if (key === LS_SESSION || key === TRU_SESSION_KEY) continue;
+        if (value !== null && value !== undefined) {
+          const processedValue = typeof value === 'object' ? JSON.stringify(value) : value;
+          localStorage.setItem(key, processedValue);
         }
       }
       console.log('✅ S3 Cloud text structure unpacked successfully!');
@@ -49,6 +69,9 @@ export async function initializeStore() {
       if (!localStorage.getItem(LS_CATEGORIES)) lsSet(LS_CATEGORIES, ["Clay & Ceramics", "Pottery", "Woodworking", "Organic Cotton", "Vintage"]);
       if (!localStorage.getItem(LS_FAVORITES)) lsSet(LS_FAVORITES, {});
       if (!localStorage.getItem(LS_ORDERS)) lsSet(LS_ORDERS, []);
+    } finally {
+      // FIXED: Dispatch the critical lifecycle token event so block entry points initialize safely
+      document.dispatchEvent(new CustomEvent('store-ready'));
     }
   })();
   
@@ -63,10 +86,8 @@ export function getProducts() {
   products.forEach(product => {
     if (product && product.auctionStatus === "active" && product.endTime && new Date(product.endTime).getTime() <= now) {
       product.auctionStatus = "inactive";
-      //test
       const allBids = lsGet(LS_BIDS) || [];
-// Change this line inside getProducts() for complete data safety:
-const productBids = allBids.filter(b => String(b.productId) === String(product.id));
+      const productBids = allBids.filter(b => String(b.productId) === String(product.id));
       if (productBids.length > 0) {
         const initialPrice = Number(product.startingBid || product.price || 0);
         const validOverBids = productBids.filter(b => Number(b.amount) >= initialPrice);
@@ -104,11 +125,9 @@ export function getBids() { return lsGet(LS_BIDS) || []; }
 
 export async function saveBids(newBidsArray) {
   const currentBidsInStorage = lsGet(LS_BIDS) || [];
-  
-  // SANITIZATION LAYER: Ensure every single bid amount is a true mathematical number
   const sanitizedBidsArray = newBidsArray.map(bid => ({
     ...bid,
-    amount: parseFloat(bid.amount) || 0 // Converts string representations like "1200" directly into numbers
+    amount: parseFloat(bid.amount) || 0
   }));
   
   if (sanitizedBidsArray.length > currentBidsInStorage.length) {
@@ -130,7 +149,6 @@ export async function saveBids(newBidsArray) {
     }
   }
   
-  // Save the numbers instead of string text blocks
   lsSet(LS_BIDS, sanitizedBidsArray);
   await syncCloudPayload();
 }
@@ -138,19 +156,43 @@ export async function saveBids(newBidsArray) {
 export function getUsers() { return lsGet(LS_USERS) || []; }
 export async function saveUsers(u) { lsSet(LS_USERS, u); await syncCloudPayload(); }
 export function getCategories() { return lsGet(LS_CATEGORIES) || []; }
-export function getSession() { return lsGet(LS_SESSION); }
-export function saveSession(user) { lsSet(LS_SESSION, user); }
-export function clearSession() { localStorage.removeItem(LS_SESSION); }
+
+/* FIXED SESSION ENGINES: Forces single absolute key write states across local pipelines */
+export function getSession() { 
+  return lsGet(TRU_SESSION_KEY); 
+}
+
+export function saveSession(user) { 
+  lsSet(TRU_SESSION_KEY, user); 
+  // Safety mirror fallback for custom dynamic background endpoints
+  if (LS_SESSION && LS_SESSION !== TRU_SESSION_KEY) {
+    lsSet(LS_SESSION, user);
+  }
+}
+
+export function clearSession() { 
+  localStorage.removeItem(TRU_SESSION_KEY); 
+  if (LS_SESSION) localStorage.removeItem(LS_SESSION); 
+}
+
 export function getFavorites() { return lsGet(LS_FAVORITES) || {}; }
 export async function saveFavorites(f) { lsSet(LS_FAVORITES, f); await syncCloudPayload(); }
 export function getOrders() { return lsGet(LS_ORDERS) || []; }
 export async function saveOrders(o) { lsSet(LS_ORDERS, o); await syncCloudPayload(); }
 
+/* Safe, un-nested serialization payload assembly for cloud synchronization */
 async function syncCloudPayload() {
   const safeParse = (key) => {
     const item = localStorage.getItem(key);
-    return item ? JSON.parse(item) : [];
+    if (!item) return [];
+    try {
+      const parsed = JSON.parse(item);
+      return typeof parsed === "string" ? JSON.parse(parsed) : parsed;
+    } catch (e) {
+      return [];
+    }
   };
+  
   const payload = {
     Vaultora_products:   safeParse(LS_PRODUCTS),
     Vaultora_categories: localStorage.getItem(LS_CATEGORIES) ? safeParse(LS_CATEGORIES) : ["Clay & Ceramics", "Pottery", "Woodworking", "Organic Cotton", "Vintage"],

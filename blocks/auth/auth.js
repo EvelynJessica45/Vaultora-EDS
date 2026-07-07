@@ -40,8 +40,10 @@ function setIcon(el, name) {
  * @returns {string} Cleaned, sanitized string
  */
 function sanitizeInput(input) {
-  if (typeof input !== 'string') return '';
-  return input.replace(/[<>]/g, '').trim();
+  if (!input) return '';
+  return input.replace(/[&<>"']/g, function(m) {
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m];
+  });
 }
 
 /**
@@ -100,8 +102,6 @@ export default async function decorate(block) {
   const rows = [...block.children];
   if (!rows || rows.length === 0) return;
 
-  /* FIXED: AEM Edge Delivery Services stacks properties inside sequential row arrays.
-     Rows[0] holds form data, Rows[1] holds the authored background picture layout. */
   const cells = [...rows[0].children];
   const mediaCell = rows[1] ? rows[1].querySelector('picture') : null;
 
@@ -121,7 +121,6 @@ export default async function decorate(block) {
 
   const fragment = document.createDocumentFragment();
 
-  /* ── PERFORMANCE INJECTED NESTED STACKING BACKGROUND LAYER ── */
   if (mediaCell) {
     const bgWrapper = document.createElement('div');
     bgWrapper.className = 'bg-layer-wrapper';
@@ -131,7 +130,7 @@ export default async function decorate(block) {
       fallbackImg.className = 'bg-fallback-asset';
       fallbackImg.setAttribute('decoding', 'async');
       fallbackImg.setAttribute('fetchpriority', 'high');
-      fallbackImg.removeAttribute('loading'); // Immediate frame processing priority
+      fallbackImg.removeAttribute('loading');
     }
     bgWrapper.appendChild(mediaCell);
     fragment.appendChild(bgWrapper);
@@ -312,12 +311,16 @@ export default async function decorate(block) {
     });
   };
 
+  /* HOTFIX 1: Synchronize browser address bar routing history state when flipping form views */
   container.querySelectorAll('.trigger-to-register').forEach(el => {
     el.addEventListener('click', (e) => {
       e.preventDefault();
       resetFormFields();
       window.requestAnimationFrame(() => {
         container.classList.add('active');
+        if (!window.location.pathname.includes('register')) {
+          window.history.pushState({}, document.title, window.location.origin + '/register');
+        }
       });
     }, { passive: false });
   });
@@ -328,6 +331,9 @@ export default async function decorate(block) {
       resetFormFields();
       window.requestAnimationFrame(() => {
         container.classList.remove('active');
+        if (window.location.pathname.includes('register')) {
+          window.history.pushState({}, document.title, window.location.origin + '/dashboard');
+        }
       });
     }, { passive: false });
   });
@@ -344,8 +350,6 @@ export default async function decorate(block) {
     document.addEventListener('store-ready', runInit, { once: true });
   }
 
-  /* FIXED: Appending container natively ensures background and layout elements 
-     render on the exact same context stack across desktop and mobile slowdown emulations */
   fragment.appendChild(container);
   block.appendChild(fragment);
 }
@@ -385,19 +389,24 @@ function initAuthValidation(container) {
     });
   }
 
+  /* HOTFIX 2: Live-query icon wrappers inside the click closure to survive asynchronous decorateIcons re-renders */
   const wireEyeToggle = (inputSelector, buttonSelector) => {
     const input = container.querySelector(inputSelector);
     const btn = container.querySelector(buttonSelector);
-    const iconWrap = btn ? btn.querySelector('.auth-icon') : null;
 
-    if (!input || !btn || !iconWrap) return;
+    if (!input || !btn) return;
 
     btn.addEventListener('click', (e) => {
       e.preventDefault();
+      e.stopPropagation();
       const isHidden = input.type === "password";
       
       input.type = isHidden ? "text" : "password";
-      setIcon(iconWrap, isHidden ? 'show' : 'hide');
+      
+      const liveIconWrap = btn.querySelector('.auth-icon');
+      if (liveIconWrap) {
+        setIcon(liveIconWrap, isHidden ? 'show' : 'hide');
+      }
       btn.setAttribute('aria-label', isHidden ? 'Hide password' : 'Show password');
     }, { passive: false });
   };
@@ -406,7 +415,6 @@ function initAuthValidation(container) {
   wireEyeToggle("#regPassword", "#toggleRegPasswordBtn");
   wireEyeToggle("#regConfirmPassword", "#toggleConfirmPasswordBtn");
 
-  /* ---------- FORGOT PASSWORD LINK FUNCTIONALITY ---------- */
   const forgotLink = container.querySelector('.forgot-password-link');
   forgotLink?.addEventListener('click', async (e) => {
     e.preventDefault();
@@ -585,54 +593,67 @@ function initAuthValidation(container) {
 
   /* ---------- LOGIN HANDLING ---------- */
   const loginForm = container.querySelector('.form-box.login form');
+  const loginSubmitBtn = loginForm?.querySelector('button[type="submit"]');
+
   loginForm?.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const email = sanitizeInput(container.querySelector('#loginEmail')?.value);
-    const pwd = loginPasswordInput ? loginPasswordInput.value : '';
+    
+    if (loginSubmitBtn) loginSubmitBtn.disabled = true;
 
-    if (!email || !pwd) {
-      showCustomModal('Entry Incomplete', 'Please provide both account registration email and password vectors to request entry.', true);
-      return;
-    }
+    try {
+      const email = sanitizeInput(container.querySelector('#loginEmail')?.value);
+      const pwd = loginPasswordInput ? loginPasswordInput.value : '';
 
-    const users = getUsers() || [];
-    const match = users.find(u => u.email && u.email.toLowerCase() === email.toLowerCase() && u.password === pwd);
-
-    if (!match) {
-      if (loginPasswordInput) {
-        loginPasswordInput.style.borderColor = '#d64545';
-        loginPasswordInput.value = '';
-        loginPasswordInput.placeholder = 'Invalid credentials entered';
+      if (!email || !pwd) {
+        showCustomModal('Entry Incomplete', 'Please provide both account registration email and password vectors to request entry.', true);
+        if (loginSubmitBtn) loginSubmitBtn.disabled = false;
+        return;
       }
 
-      showCustomModal('Access Denied', 'The provided credential mapping does not correspond to any registered collector parameters.', true);
+      const users = getUsers() || [];
+      const match = users.find(u => u.email && u.email.toLowerCase() === email.toLowerCase() && u.password === pwd);
 
-      setTimeout(() => {
+      if (!match) {
         if (loginPasswordInput) {
-          loginPasswordInput.style.borderColor = '';
-          loginPasswordInput.placeholder = 'Password';
+          loginPasswordInput.style.borderColor = '#d64545';
+          loginPasswordInput.value = '';
+          loginPasswordInput.placeholder = 'Invalid credentials entered';
         }
-      }, 3000);
-      return;
+
+        showCustomModal('Access Denied', 'The provided credential mapping does not correspond to any registered collector parameters.', true);
+
+        setTimeout(() => {
+          if (loginPasswordInput) {
+            loginPasswordInput.style.borderColor = '';
+            loginPasswordInput.placeholder = 'Password';
+          }
+        }, 3000);
+        if (loginSubmitBtn) loginSubmitBtn.disabled = false;
+        return;
+      }
+
+      if (!match.verified) {
+        showCustomModal('Verification Needed', 'Please complete verification using the account confirmation link inside your inbox first.', true);
+        if (loginSubmitBtn) loginSubmitBtn.disabled = false;
+        return;
+      }
+
+      const sessionPayload = {
+        name: match.name || 'User',
+        email: match.email,
+        verified: match.verified,
+        avatarUrl: match.avatarUrl || "",
+        role: match.role || "buyer"
+      };
+
+      saveSession(sessionPayload);
+      await showCustomModal('Access Granted', `Welcome back, ${sessionPayload.name}. Synchronizing dashboard credentials...`);
+
+      window.location.href = sessionPayload.role === 'seller' ? '/seller-dashboard' : '/dashboard';
+    } catch (err) {
+      console.error('Login loop breakdown:', err);
+      if (loginSubmitBtn) loginSubmitBtn.disabled = false;
     }
-
-    if (!match.verified) {
-      showCustomModal('Verification Needed', 'Please complete verification using the account confirmation link inside your inbox first.', true);
-      return;
-    }
-
-    const sessionPayload = {
-      name: match.name || 'User',
-      email: match.email,
-      verified: match.verified,
-      avatarUrl: match.avatarUrl || "",
-      role: match.role || "buyer"
-    };
-
-    saveSession(sessionPayload);
-    await showCustomModal('Access Granted', `Welcome back, ${sessionPayload.name}. Synchronizing dashboard credentials...`);
-
-    window.location.href = sessionPayload.role === 'seller' ? '/seller-dashboard' : '/dashboard';
   }, { passive: false });
 }
 
