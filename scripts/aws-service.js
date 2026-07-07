@@ -22,9 +22,9 @@ function loadScriptDependency(src, id) {
     const script = document.createElement('script');
     script.id = id;
     script.src = src;
-    script.async = true;
+    script.defer = true;
     script.onload = resolve;
-    script.onerror = reject;
+    script.onerror = (err) => reject(err);
     document.head.appendChild(script);
   });
 }
@@ -34,20 +34,21 @@ export async function initializeAWS() {
     console.log('🔄 Requesting guest tokens from AWS Cognito...');
     await loadScriptDependency('https://sdk.amazonaws.com/js/aws-sdk-2.1450.0.min.js', 'aws-sdk-script');
     
-    AWS.config.region = S3_REGION;
-    AWS.config.credentials = new AWS.CognitoIdentityCredentials({
-      IdentityPoolId: COGNITO_POOL_ID
-    });
-    
-    await AWS.config.credentials.getPromise();
-    s3Instance = new AWS.S3({
-      region: S3_REGION,
-      params: { Bucket: BUCKET_NAME }
-    });
-    console.log('🔑 AWS Security tokens obtained safely.');
+    if (typeof AWS !== 'undefined') {
+      AWS.config.region = S3_REGION;
+      AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+        IdentityPoolId: COGNITO_POOL_ID
+      });
+      
+      await AWS.config.credentials.getPromise();
+      s3Instance = new AWS.S3({
+        region: S3_REGION,
+        params: { Bucket: BUCKET_NAME }
+      });
+      console.log('🔑 AWS Security tokens obtained safely.');
+    }
   } catch (err) {
-    console.error('❌ AWS initialization layer failed:', err.message);
-    throw err;
+    console.error('❌ AWS initialization layer failed:', err.message || err);
   }
 }
 
@@ -59,11 +60,15 @@ export async function loadMarketplaceData() {
 
 export async function syncMarketplaceData(payload) {
   if (!s3Instance) return;
-  await s3Instance.putObject({
-    Key: 'asset_text/marketplace_state.json',
-    Body: JSON.stringify(payload, null, 2),
-    ContentType: 'application/json'
-  }).promise();
+  try {
+    await s3Instance.putObject({
+      Key: 'asset_text/marketplace_state.json',
+      Body: JSON.stringify(payload, null, 2),
+      ContentType: 'application/json'
+    }).promise();
+  } catch (err) {
+    console.error('❌ Failed syncing state to remote mirror:', err);
+  }
 }
 
 export async function uploadImageToS3(file, productId, index) {

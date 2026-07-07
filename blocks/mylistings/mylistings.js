@@ -7,22 +7,16 @@
 import { getProducts, getBids, getSession, saveProducts } from '../../scripts/storage.js';
 
 const SVGS = {
-  active: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`,
-  pending: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`,
-  completed: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`,
-  ended: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`,
+  active: `<svg width="15" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`,
+  pending: `<svg width="15" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`,
+  completed: `<svg width="15" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`,
+  ended: `<svg width="15" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`,
   badgeDot: `<svg width="6" height="6" viewBox="0 0 8 8" fill="currentColor"><circle cx="4" cy="4" r="3"/></svg>`,
   powerOff: `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path><line x1="12" y1="2" x2="12" y2="12"></line></svg>`
 };
 
 export default function decorate(block) {
   block.textContent = '';
-
-  const session = getSession();
-  if (!session) {
-    window.location.replace('register');
-    return;
-  }
 
   const dashboard = document.createElement('div');
   dashboard.className = 'mylistings-dashboard';
@@ -60,11 +54,11 @@ export default function decorate(block) {
   filterRow.className = 'mylistings-filter-row';
   filterRow.innerHTML = `
     <div class="mylistings-search-wrap">
-      <input type="search" id="listingSearchInput" placeholder="Search listed products..." autocomplete="off" />
-      <button type="button" class="btn-clear-search" id="clearSearchBtn">✕</button>
+      <input type="search" id="listingSearchInput" placeholder="Search listed products..." autocomplete="off" aria-label="Search listed products" />
+      <button type="button" class="btn-clear-search" id="clearSearchBtn" aria-label="Clear search">✕</button>
     </div>
     <div class="mylistings-select-wrap">
-      <select id="statusFilterSelector">
+      <select id="statusFilterSelector" aria-label="Filter listings by status">
         <option value="all">Show All Sections</option>
         <option value="active">Active Auctions Only</option>
         <option value="pending">Payment Pending Only</option>
@@ -75,57 +69,62 @@ export default function decorate(block) {
   `;
   dashboard.append(filterRow);
 
- const container = document.createElement('div');
-container.className = 'mylistings-sections-container';
-container.id = 'dynamicCategorizedContainer';
-container.innerHTML = `<div class="mylistings-grid">${Array.from({ length: 4 }).map(() => `
-  <div class="mylistings-skeleton-card">
-    <div class="mylistings-skeleton-thumb"></div>
-    <div class="mylistings-skeleton-lines">
-      <div class="mylistings-skeleton-line"></div>
-      <div class="mylistings-skeleton-line short"></div>
-      <div class="mylistings-skeleton-line" style="width:40%"></div>
-    </div>
-  </div>`).join('')}</div>`;
-dashboard.append(container);
-block.append(dashboard);
+  const container = document.createElement('div');
+  container.className = 'mylistings-sections-container';
+  container.id = 'dynamicCategorizedContainer';
+  container.innerHTML = `<div class="mylistings-grid">${Array.from({ length: 4 }).map(() => `
+    <div class="mylistings-skeleton-card">
+      <div class="mylistings-skeleton-thumb"></div>
+      <div class="mylistings-skeleton-lines">
+        <div class="mylistings-skeleton-line" style="width: 80%"></div>
+        <div class="mylistings-skeleton-line" style="width: 50%"></div>
+        <div class="mylistings-skeleton-line" style="width: 30%"></div>
+      </div>
+    </div>`).join('')}</div>`;
+  dashboard.append(container);
   block.append(dashboard);
 
- function animateCount(el, target) {
-  if (!el) return;
-  const start = Number(el.textContent) || 0;
-  if (start === target) return;
-  const duration = 500;
-  const startTime = performance.now();
+  function animateCount(el, target) {
+    if (!el) return;
+    const start = Number(el.textContent) || 0;
+    if (start === target) return;
+    const duration = 400;
+    const startTime = performance.now();
 
-  function step(now) {
-    const progress = Math.min((now - startTime) / duration, 1);
-    const eased = 1 - Math.pow(1 - progress, 3); // ease-out cubic
-    el.textContent = Math.round(start + (target - start) * eased);
-    if (progress < 1) requestAnimationFrame(step);
-    else {
-      el.closest('.mylistings-stat-card')?.classList.add('is-updated');
-      setTimeout(() => el.closest('.mylistings-stat-card')?.classList.remove('is-updated'), 400);
+    function step(now) {
+      const progress = Math.min((now - startTime) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3); 
+      el.textContent = Math.round(start + (target - start) * eased);
+      if (progress < 1) requestAnimationFrame(step);
+      else {
+        const parentCard = el.closest('.mylistings-stat-card');
+        if (parentCard) {
+          parentCard.classList.add('is-updated');
+          setTimeout(() => parentCard.classList.remove('is-updated'), 300);
+        }
+      }
     }
+    requestAnimationFrame(step);
   }
-  requestAnimationFrame(step);
-}
 
-function calculateAndPopulateMetrics(myProducts) {
-  let activeCount = 0;
-  let endedCount = 0;
+  function calculateAndPopulateMetrics(myProducts) {
+    let activeCount = 0;
+    let endedCount = 0;
 
-  myProducts.forEach(p => {
-    if (p.auctionStatus === 'active') activeCount++;
-    else endedCount++;
-  });
+    myProducts.forEach(p => {
+      if (p.auctionStatus === 'active') activeCount++;
+      else endedCount++;
+    });
 
-  animateCount(dashboard.querySelector('#metric-total'), myProducts.length);
-  animateCount(dashboard.querySelector('#metric-active'), activeCount);
-  animateCount(dashboard.querySelector('#metric-ended'), endedCount);
-}
+    animateCount(dashboard.querySelector('#metric-total'), myProducts.length);
+    animateCount(dashboard.querySelector('#metric-active'), activeCount);
+    animateCount(dashboard.querySelector('#metric-ended'), endedCount);
+  }
 
   function renderMyListings() {
+    const session = getSession();
+    if (!session) return;
+
     const searchQuery = dashboard.querySelector('#listingSearchInput')?.value.toLowerCase() || '';
     const chosenFilter = dashboard.querySelector('#statusFilterSelector')?.value || 'all';
 
@@ -139,10 +138,8 @@ function calculateAndPopulateMetrics(myProducts) {
 
     calculateAndPopulateMetrics(myProducts);
 
-    // Apply basic text query filtering baseline first
     const textFiltered = myProducts.filter(p => (p.title || '').toLowerCase().includes(searchQuery));
 
-    // ── FIXED: INITIALIZE 4 ENTIRELY SEPARATE SECTIONS ──
     const structuralGroups = {
       active: { title: "Active Live Auctions", icon: SVGS.active, items: [] },
       pending: { title: "Payment Pending Auctions", icon: SVGS.pending, items: [] },
@@ -150,7 +147,6 @@ function calculateAndPopulateMetrics(myProducts) {
       no_bids: { title: "Ended Auctions (No Bids)", icon: SVGS.ended, items: [] }
     };
 
-    // Sort items into their absolute structural buckets matching database states
     textFiltered.slice().reverse().forEach(p => {
       const isLive = p.auctionStatus === 'active';
       if (isLive) {
@@ -166,16 +162,14 @@ function calculateAndPopulateMetrics(myProducts) {
       }
     });
 
-    // Handle Dropdown Filter updates across the newly formed 4 sections
     if (chosenFilter !== 'all') {
       Object.keys(structuralGroups).forEach(key => {
         if (key !== chosenFilter) {
-          structuralGroups[key].items = []; // Empties non-selected tracks completely
+          structuralGroups[key].items = []; 
         }
       });
     }
 
-    // Calculate dynamic display length counters
     const totalVisible = Object.values(structuralGroups).reduce((acc, g) => acc + g.items.length, 0);
 
     const subTitleText = dashboard.querySelector('#listingsSubtitle');
@@ -184,17 +178,16 @@ function calculateAndPopulateMetrics(myProducts) {
     }
 
     if (totalVisible === 0) {
-     container.innerHTML = `
-  <div class="mylistings-no-results">
-    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M3 7l3-4h12l3 4"/><line x1="9" y1="11" x2="15" y2="11"/></svg>
-    <p>No listings found matching your exact filter parameters.</p>
-  </div>`;
-return;
+      container.innerHTML = `
+        <div class="mylistings-no-results">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom: 1rem;"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M3 7l3-4h12l3 4"/><line x1="9" y1="11" x2="15" y2="11"/></svg>
+          <p>No listings found matching your exact filter parameters.</p>
+        </div>`;
+      return;
     }
 
     let HTMLBuffer = '';
 
-    // Render loop processing the 4 individual segment templates
     for (const key in structuralGroups) {
       const group = structuralGroups[key];
       if (group.items.length === 0) continue;
@@ -206,7 +199,7 @@ return;
             <span>${group.title} (${group.items.length})</span>
           </h2>
           <div class="mylistings-grid">
-            ${group.items.map(p => {
+            ${group.items.map((p, idx) => {
               const isLive = p.auctionStatus === 'active';
               
               let statusText = "Live & Active";
@@ -236,9 +229,9 @@ return;
               ` : '';
 
               return `
-                <div class="mylistings-item-card ${indicatorClass}" data-id="${p.id}">
+                <div class="mylistings-item-card ${indicatorClass}" data-id="${p.id}" style="--i: ${idx % 15};">
                   <div class="mylistings-item-thumb">
-                    <img src="${p.images?.[0] || p.image || 'https://placehold.co/100x100/e8dcc8/5a4a2e?text=Vaultora'}" alt="${p.title}" loading="lazy" width="85" height="85" />
+                    <img src="${p.images?.[0] || p.image || 'https://placehold.co/100x100/e8dcc8/5a4a2e?text=Vaultora'}" alt="${p.title}" loading="lazy" decoding="async" width="84" height="84" />
                   </div>
                   <div class="mylistings-item-details">
                     <h3 class="mylistings-item-name">${p.title}</h3>
@@ -249,7 +242,7 @@ return;
                   </div>
                   <div class="mylistings-item-financials">
                     <span class="financial-value">₹${Number(p.currentBid || p.startingBid || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-                    <span style="font-size: 0.7rem; color: var(--text-muted);">${!isLive ? 'Final Value' : 'Current Value'}</span>
+                    <span style="font-size: 0.7rem; color: #666666;">${!isLive ? 'Final Value' : 'Current Value'}</span>
                     ${actionButtonElement}
                   </div>
                 </div>
@@ -266,84 +259,84 @@ return;
     });
   }
 
-function attachInteractionListeners() {
-  container.querySelectorAll('.mylistings-item-card').forEach((card, idx) => {
-    card.style.setProperty('--i', idx % 12); // cap stagger so late cards aren't delayed too long
-
-    card.addEventListener('click', () => {
-      // FIX: Changed from 'my-listing-details.html' to pure AEM router directory format
-      window.location.href = `my-listing-details?id=${card.dataset.id}`;
+  function attachInteractionListeners() {
+    container.querySelectorAll('.mylistings-item-card').forEach((card) => {
+      card.addEventListener('click', () => {
+        window.location.href = `my-listing-details?id=${card.dataset.id}`;
+      });
     });
 
-    // Subtle tilt-on-hover, respects reduced motion
-    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      card.addEventListener('mousemove', (e) => {
-        const rect = card.getBoundingClientRect();
-        const px = (e.clientX - rect.left) / rect.width - 0.5;
-        const py = (e.clientY - rect.top) / rect.height - 0.5;
-        card.style.setProperty('--rx', `${px * 4}deg`);
-        card.style.setProperty('--ry', `${py * -4}deg`);
+    container.querySelectorAll('.btn-end-auction-early').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        triggerEarlyTermination(e, btn.dataset.id);
       });
-      card.addEventListener('mouseleave', () => {
-        card.style.setProperty('--rx', '0deg');
-        card.style.setProperty('--ry', '0deg');
-      });
-    }
-  });
-
-  container.querySelectorAll('.btn-end-auction-early').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      triggerEarlyTermination(e, btn.dataset.id);
     });
-  });
-}
+  }
 
   function triggerEarlyTermination(event, productId) {
+    const existingModals = document.querySelectorAll('.modal-overlay');
+    existingModals.forEach(modal => modal.remove());
+
     const overlay = document.createElement('div');
-    overlay.className = 'modal-overlay open';
+    overlay.className = 'modal-overlay';
     overlay.innerHTML = `
       <div class="modal-card">
-        <h3>Terminate Auction?</h3>
-        <p style="font-size:0.85rem; line-height:1.45; color:var(--text-muted); margin-bottom:1.5rem;">
-          Are you sure you want to end this auction immediately? Bidding will freeze and the highest current offer will be processed instantly.
-        </p>
+        <h3>Terminate Auction Lot?</h3>
+        <p>Are you sure you want to end this auction immediately? Bidding will freeze and the status matrices will map strictly to your database history configurations.</p>
         <div class="modal-actions">
           <button type="button" class="btn-modal-cancel" id="btnCancelTerm">Cancel</button>
-          <button type="button" class="btn-modal-submit" id="btnConfirmTerm" style="background:#ff3333;">Terminate</button>
+          <button type="button" class="btn-modal-submit" id="btnConfirmTerm" style="background:#d32f2f; color: #ffffff;">Terminate</button>
         </div>
       </div>`;
 
     document.body.appendChild(overlay);
+    
+    requestAnimationFrame(() => {
+      overlay.classList.add('open');
+    });
 
-    overlay.querySelector('#btnCancelTerm').addEventListener('click', () => overlay.remove());
+    overlay.querySelector('#btnCancelTerm').addEventListener('click', () => {
+      overlay.classList.remove('open');
+      setTimeout(() => overlay.remove(), 300);
+    });
+    
     overlay.querySelector('#btnConfirmTerm').addEventListener('click', async () => {
-      overlay.remove();
-      const allProducts = getProducts() || [];
-      const product = allProducts.find(p => p && String(p.id) === String(productId));
+      try {
+        const allProducts = getProducts() || [];
+        const product = allProducts.find(p => p && String(p.id) === String(productId));
 
-      if (!product) return;
+        if (product) {
+          const allBids = getBids() || [];
+          const productBids = allBids
+            .filter(b => b && String(b.productId) === String(productId))
+            .sort((a, b) => Number(b.amount) - Number(a.amount));
 
-      const allBids = getBids() || [];
-      const productBids = allBids
-        .filter(b => String(b.productId) === String(productId))
-        .sort((a, b) => Number(b.amount) - Number(a.amount));
+          product.endTime = new Date().toISOString();
 
-      product.auctionStatus = 'ended';
-      product.endTime = new Date().toISOString();
+          // STATE MATRIX HARMONIZATION CONFIGS
+          if (productBids.length > 0) {
+            product.auctionStatus = 'inactive'; 
+            product.winnerEmail = (productBids[0].user || "").toLowerCase();
+            product.currentBid = Number(productBids[0].amount);
+            product.paymentStatus = 'pending';
+          } else {
+            product.auctionStatus = 'ended'; 
+            product.winnerEmail = null;
+            product.paymentStatus = 'none';
+          }
 
-      if (productBids.length > 0) {
-        product.winnerEmail = (productBids[0].user || "").toLowerCase();
-        product.currentBid = Number(productBids[0].amount);
-        product.paymentStatus = 'pending';
-      } else {
-        product.winnerEmail = null;
-        product.paymentStatus = 'none';
+          await saveProducts(allProducts);
+        }
+      } catch (err) {
+        console.error("Failed executing transaction termination hook:", err);
+      } finally {
+        overlay.classList.remove('open');
+        setTimeout(() => {
+          overlay.remove();
+          renderMyListings();
+        }, 300);
       }
-
-      await saveProducts(allProducts);
-      
-      renderMyListings();
     });
   }
 
@@ -371,7 +364,6 @@ function attachInteractionListeners() {
     filterSelect.addEventListener('change', renderMyListings);
   }
 
-  // Metric Console anchor clicks route seamlessly to the four new specific sections
   dashboard.querySelectorAll('.mylistings-stat-card').forEach(card => {
     card.addEventListener('click', () => {
       if (card.id === 'card-total') {
@@ -379,7 +371,6 @@ function attachInteractionListeners() {
       } else if (card.id === 'card-active') {
         dashboard.querySelector('#listing-group-active')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
       } else if (card.id === 'card-ended') {
-        // Automatically scrolls down to the first available ended structural section category
         const firstEndedSec = dashboard.querySelector('#listing-group-pending') || 
                               dashboard.querySelector('#listing-group-completed') || 
                               dashboard.querySelector('#listing-group-no_bids');
@@ -388,5 +379,13 @@ function attachInteractionListeners() {
     });
   });
 
-  renderMyListings();
+  (async () => {
+    await (window.__storeReady || Promise.resolve());
+    const initialSessionCheck = getSession();
+    if (!initialSessionCheck) {
+      window.location.replace('/register');
+    } else {
+      renderMyListings();
+    }
+  })();
 }

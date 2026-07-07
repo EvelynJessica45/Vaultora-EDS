@@ -8,8 +8,9 @@ function injectEmailScript() {
     const script = document.createElement('script');
     script.id = 'emailjs-sdk-script';
     script.src = "https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js";
+    script.defer = true;
     script.onload = resolve;
-    script.onerror = reject;
+    script.onerror = (err) => reject(err);
     document.head.appendChild(script);
   });
 }
@@ -17,14 +18,14 @@ function injectEmailScript() {
 export async function initializeEmailJS() {
   try {
     await injectEmailScript();
-    if (window.emailjs) {
+    if (typeof window !== 'undefined' && window.emailjs) {
       window.emailjs.init({
         publicKey: "9eRdcRMl6OK3jBlXL"
       });
       console.log("📨 Centralized Notification Engine Online.");
     }
   } catch (err) {
-    console.error("❌ Notification service failed initialization pass:", err);
+    console.warn("⚠️ Notification service failed initialization pass (Network offline or script blocked):", err.message || err);
   }
 }
 
@@ -39,9 +40,12 @@ export async function sendOutbidNotification(previousBidderEmail, productName, n
     rebid_url: rebidUrl
   };
 
-  return window.emailjs.send('service_ru15szl', 'template_cx0fg4b', templateParams);
+  try {
+    return await window.emailjs.send('service_ru15szl', 'template_cx0fg4b', templateParams);
+  } catch (err) {
+    console.error("❌ Send outbid notification failed:", err);
+  }
 }
-      //test
 
 export async function sendVerificationEmail(name, email, token) {
   if (!window.emailjs) return console.warn("⚠️ EmailJS SDK offline.");
@@ -53,7 +57,11 @@ export async function sendVerificationEmail(name, email, token) {
     verify_link: verifyLink
   };
 
-  return window.emailjs.send('service_wviwj9n', 'template_7r9agem', templateParams);
+  try {
+    return await window.emailjs.send('service_wviwj9n', 'template_7r9agem', templateParams);
+  } catch (err) {
+    console.error("❌ Send verification email failed:", err);
+  }
 }
 
 window.sendOutbidNotification = sendOutbidNotification;

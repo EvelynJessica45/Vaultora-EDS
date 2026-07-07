@@ -14,9 +14,14 @@ import {
   buildBlock,
 } from './aem.js';
 
-// Optimize Font Loading: Render fonts asynchronously with high performance targets to avoid render blocks
 async function loadFonts() {
   try {
+    const fontPreload = document.createElement('link');
+    fontPreload.rel = 'preload';
+    fontPreload.as = 'style';
+    fontPreload.href = `${window.hlx.codeBasePath}/styles/fonts.css`;
+    document.head.appendChild(fontPreload);
+
     const fontLink = document.createElement('link');
     fontLink.rel = 'stylesheet';
     fontLink.href = `${window.hlx.codeBasePath}/styles/fonts.css`;
@@ -132,7 +137,6 @@ export function decorateMain(main) {
 async function loadEager(doc) {
   document.documentElement.lang = 'en';
   
-  // FIX SEO: Force static header configurations and bypass local indexing block overrides safely
   const clearRobotsBlocks = () => {
     const metas = Array.from(doc.querySelectorAll('meta[name="robots"]'));
     metas.forEach(el => el.remove());
@@ -151,7 +155,6 @@ async function loadEager(doc) {
   };
   clearRobotsBlocks();
 
-  // Optimise LCP assets via explicit cross-origin resource hints
   const preconnectHint = doc.createElement('link');
   preconnectHint.rel = 'preconnect';
   preconnectHint.href = 'https://vaultora.s3.ap-south-1.amazonaws.com';
@@ -229,7 +232,7 @@ async function loadPage() {
   deferServiceInitialization(() => {
     import('./notification-service.js')
       .then(m => m.initializeEmailJS())
-      .catch(err => console.warn(err));
+      .catch(err => console.warn('Deferred notification initialization skipped:', err));
   });
 
   await loadLazy(document);
