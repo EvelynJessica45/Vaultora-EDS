@@ -20,9 +20,9 @@ export default async function decorate(block) {
   const isImmersive = !isMarquee && !isFashion && !isElectronics && !isWine && !isGallery && 
                       (classList.contains('category-immersive') || classList.contains('immersive') || hasImmersiveText);
 
-  if (isImmersive) classList.add('category-immersive');
-  if (isElectronics) classList.add('gridelectronics');
-  if (isGallery) classList.add('gridgallery');
+  // if (isImmersive) classList.add('category-immersive');
+  // if (isElectronics) classList.add('gridelectronics');
+  // if (isGallery) classList.add('gridgallery');
 
   // Optimization 2: Yield execution to the main thread to protect initial TBT and FCP
   await new Promise((resolve) => {
