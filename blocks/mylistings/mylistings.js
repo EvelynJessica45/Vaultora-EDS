@@ -284,9 +284,12 @@ export default function decorate(block) {
       return;
     }
 
-    const itemCard = e.target.closest('.mylistings-item-card');
+   const itemCard = e.target.closest('.mylistings-item-card');
     if (itemCard) {
-      window.location.href = `my-listing-details?id=${itemCard.dataset.id}`;
+      const targetUrl = window.location.hostname.includes('localhost') 
+        ? `my-listing-details?id=${itemCard.dataset.id}`
+        : `my-listing-details.html?id=${itemCard.dataset.id}`;
+      window.location.href = targetUrl;
     }
   };
 
@@ -379,11 +382,14 @@ export default function decorate(block) {
   if (filterSelect) {
     filterSelect.addEventListener('change', renderMyListings);
   }
+(async () => {
+    const storeTimeout = new Promise((resolve) => setTimeout(resolve, 100));
+    await Promise.race([window.__storeReady || Promise.resolve(), storeTimeout]);
 
-  (async () => {
-    await (window.__storeReady || Promise.resolve());
-    const initialSessionCheck = getSession();
+    const initialSessionCheck = getSession() || JSON.parse(localStorage.getItem('Vaultora_session'));
+
     if (!initialSessionCheck) {
+      console.warn("Vaultora Auth: No active session found. Redirecting to register.");
       window.location.replace('/register');
     } else {
       renderMyListings();
