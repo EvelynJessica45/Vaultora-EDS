@@ -220,7 +220,7 @@
   
   .gridgallery .gallery-matrix-mesh {
     grid-template-columns: 1fr !important;
-    grid-template-rows: repeat(9, 150px) !important; /* Preserves explicit card container heights */
+    grid-template-rows: repeat(9, 150px) !important; /* Preservess explicit card container heights */
     width: 100% !important;
   }
   

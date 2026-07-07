@@ -2,7 +2,7 @@ import { createOptimizedPicture } from '../../scripts/aem.js';
 import renderCarousal from '../ui/ui-carousal.js';
 
 export default async function decorate(block) {
-  // Optimization 1: Use textContent for fast-path matching without forced reflows
+  // Optimization 1: Use textContent for fast-path matching without forced reflowss
   const blockText = block.textContent.toLowerCase();
   const classList = block.classList;
 
