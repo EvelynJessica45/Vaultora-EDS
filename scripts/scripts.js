@@ -124,6 +124,12 @@ export function decorateMain(main) {
 
 async function loadEager(doc) {
   document.documentElement.lang = 'en';
+  
+  const preconnectHint = document.createElement('link');
+  preconnectHint.rel = 'preconnect';
+  preconnectHint.href = 'https://vaultora.s3.ap-south-1.amazonaws.com';
+  document.head.append(preconnectHint);
+
   decorateTemplateAndTheme();
   const main = doc.querySelector('main');
   if (main) {
@@ -176,7 +182,6 @@ async function loadLazy(doc) {
 function loadDelayed() {
   const executionDelay = window.requestIdleCallback || ((cb) => window.setTimeout(cb, 50));
   executionDelay(() => {
-    // UNUSED JS REMOVAL: Lazy-load heavy dynamic sync infrastructure in idle patterns safely
     import('./aws-service.js')
       .then(async (awsModule) => {
         await awsModule.initializeAWS();

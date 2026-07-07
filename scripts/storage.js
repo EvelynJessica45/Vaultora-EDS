@@ -18,7 +18,6 @@ import { sendOutbidNotification } from './notification-service.js';
 
 const TRU_SESSION_KEY = 'Vaultora_session';
 
-/* Strict single-layer parsing for safe variable lookups */
 function lsGet(key) {
   const val = localStorage.getItem(key);
   if (!val) return null;
@@ -30,7 +29,6 @@ function lsGet(key) {
   }
 }
 
-/* Ensure clean single-layer serialization across storage paths */
 function lsSet(key, value) {
   if (value === null || value === undefined) {
     localStorage.removeItem(key);
@@ -52,7 +50,6 @@ export async function initializeStore() {
         }
       }
     } catch (err) {
-      // Gracefully handles structural caching transitions without raising runtime exceptions
       if (!localStorage.getItem(LS_USERS)) lsSet(LS_USERS, []);
       if (!localStorage.getItem(LS_PRODUCTS)) lsSet(LS_PRODUCTS, []);
       if (!localStorage.getItem(LS_BIDS)) lsSet(LS_BIDS, []);
@@ -99,7 +96,7 @@ export function getProducts() {
           product.winnerEmail = validOverBids[0].user;
         } else if (underBids.length > 0) {
           underBids.sort((a, b) => (initialPrice - Number(a.amount)) - (initialPrice - Number(b.amount)));
-          product.winnerEmail = underBids[0].user;
+          underBids[0].user;
         }
       } else {
         product.winnerEmail = null;

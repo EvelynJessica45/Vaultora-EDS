@@ -36,31 +36,56 @@ function formatPrice(n) {
   return '₹' + Number(n || 0).toLocaleString('en-IN', { minimumFractionDigits: 0 });
 }
 
+function getOptimizedImageUrl(url, width = 300) {
+  if (!url) return '';
+  if (url.includes('localhost') || url.includes('hlx.page') || url.includes('hlx.live')) {
+    const separator = url.includes('?') ? '&' : '?';
+    return `${url}${separator}width=${width}&format=webply&optimize=medium`;
+  }
+  if (url.includes('images.unsplash.com')) {
+    return url.split('?')[0] + `?w=${width}&auto=format&fit=crop&q=75`;
+  }
+  return url;
+}
+
 function applyAvatar(url) {
-  const el   = document.getElementById('largeAvatar');
-  const init = document.getElementById('avatarInitial');
-  if (!el) return;
+  const imgElement = document.getElementById('largeAvatar');
+  const initElement = document.getElementById('avatarInitial');
+  if (!imgElement) return;
+  
   if (url) {
-    el.style.backgroundImage = `url('${encodeURI(url)}')`;
-    if (init) init.style.display = 'none';
+    imgElement.src = getOptimizedImageUrl(encodeURI(url), 120);
+    imgElement.style.display = 'block';
+    if (initElement) initElement.style.display = 'none';
   } else {
-    el.style.backgroundImage = 'none';
-    if (init) init.style.display = '';
+    imgElement.src = '';
+    imgElement.style.display = 'none';
+    if (initElement) initElement.style.display = 'block';
+  }
+}
+
+/* Fix SEO 61 Defect: Inject Document Metadata programmatically via Block Lifecycle Entry */
+function injectRequiredMetadata() {
+  if (!document.querySelector('meta[name="description"]')) {
+    const descMeta = document.createElement('meta');
+    descMeta.name = "description";
+    descMeta.content = "Vaultora premium user workspace ledger panel overviewing collection portfolios and current active inventory assets.";
+    document.head.appendChild(descMeta);
   }
 }
 
 export default function decorate(block) {
-  // Guard Execution Checks
+  // Execute metadata injection instantaneously
+  injectRequiredMetadata();
+
   const session = typeof getSession === 'function' ? getSession() : null;
   if (!session && window.location.hostname !== 'localhost') {
     window.location.replace('register');
     return;
   }
   
-  // Clean dynamic init
   block.innerHTML = '';
   
-  // Scaffolding Layout Framework Panels
   const leftPanel = document.createElement('div');
   leftPanel.className = 'profile-identity-panel';
   
@@ -70,7 +95,6 @@ export default function decorate(block) {
   block.appendChild(leftPanel);
   block.appendChild(rightPanel);
 
-  // Generate Profile Toast Element Container Box
   if (!document.getElementById('toast')) {
     const toastNode = document.createElement('div');
     toastNode.id = 'toast';
@@ -78,24 +102,30 @@ export default function decorate(block) {
     document.body.appendChild(toastNode);
   }
 
-  // Draw Left Profile Identity Card Frame
+  const activeSession = typeof getSession === 'function' ? getSession() : { name: "Local Dev Test", email: "dev@vaultora.local" };
+  const usersList = typeof getUsers === 'function' ? getUsers() : [];
+  const foundUser = usersList.find(x => x.email?.toLowerCase() === String(activeSession?.email || '').toLowerCase());
+  const initialAvatarUrl = foundUser?.avatarUrl || foundUser?.imageProfile || '';
+  const initialOptimizedAvatar = initialAvatarUrl ? getOptimizedImageUrl(initialAvatarUrl, 120) : '';
+
   leftPanel.innerHTML = `
     <div class="avatar-circle-wrapper">
-      <div id="largeAvatar"></div>
-      <div id="avatarInitial">-</div>
+      <img id="largeAvatar" alt="Profile Display Avatar Image Asset" width="120" height="120" 
+        ${initialOptimizedAvatar ? `src="${initialOptimizedAvatar}" style="display:block;" fetchpriority="high"` : 'style="display:none;" decoding="async"'}>
+      <div id="avatarInitial" aria-hidden="true" ${initialOptimizedAvatar ? 'style="display:none;"' : ''}>-</div>
     </div>
     <div class="avatar-control-row">
-      <button type="button" class="btn-avatar-action" id="btnEditAvatar">Update</button>
+      <button type="button" class="btn-avatar-action" id="btnEditAvatar" aria-haspopup="dialog" aria-expanded="false">Update</button>
       <button type="button" class="btn-avatar-action" id="btnRemoveAvatar">Remove</button>
     </div>
     
-    <div id="uploadFlowContainer">
-      <div class="avatar-dropzone" id="avatarDropZone">
+    <div id="uploadFlowContainer" role="dialog" aria-label="Avatar Configuration Dialog">
+      <div class="avatar-dropzone" id="avatarDropZone" tabindex="0" role="button" aria-describedby="avatarFileLabel">
         Drop file or click to choose local image asset.
         <div id="avatarFileLabel" style="font-size:10px; color:#b9925a; margin-top:6px; font-weight:600;">No file staged</div>
       </div>
-      <input type="file" id="avatarFileInput" accept="image/*" style="display:none;" />
-      <input type="text" id="avatarUrlInput" class="url-input-field" placeholder="Or enter remote absolute asset URL..." />
+      <input type="file" id="avatarFileInput" accept="image/*" style="display:none;" aria-hidden="true" />
+      <input type="text" id="avatarUrlInput" class="url-input-field" placeholder="Or enter remote absolute asset URL..." aria-label="Remote Image Asset Absolute URL Pointer" />
       <div class="flow-action-row">
         <button type="button" class="btn-flow-control" id="btnCancelAvatarFlow">Cancel</button>
         <button type="button" class="btn-flow-control" id="btnSaveAvatar" disabled>Commit Photo</button>
@@ -107,7 +137,6 @@ export default function decorate(block) {
     <span class="verification-badge" id="uVerified">—</span>
   `;
 
-  // Draw Right Performance Dashboard Tracks Framework
   rightPanel.innerHTML = `
     <div class="stats-ticker-tape">
       <div class="stat-ticker-card"><h3 id="statListings">0</h3><p>Active Inventory</p></div>
@@ -127,42 +156,49 @@ export default function decorate(block) {
     </div>
   `;
 
+  const nodes = {
+    uName: document.getElementById('uName'),
+    uEmail: document.getElementById('uEmail'),
+    uVerified: document.getElementById('uVerified'),
+    avatarInitial: document.getElementById('avatarInitial'),
+    profileBids: document.getElementById('profileBids'),
+    btnShowMoreBids: document.getElementById('btnShowMoreBids'),
+    btnShowLessBids: document.getElementById('btnShowLessBids'),
+    uploadFlowContainer: document.getElementById('uploadFlowContainer'),
+    avatarFileInput: document.getElementById('avatarFileInput'),
+    avatarUrlInput: document.getElementById('avatarUrlInput'),
+    avatarFileLabel: document.getElementById('avatarFileLabel'),
+    btnSaveAvatar: document.getElementById('btnSaveAvatar'),
+    btnEditAvatar: document.getElementById('btnEditAvatar'),
+    statListings: document.getElementById('statListings'),
+    statWinningBids: document.getElementById('statWinningBids'),
+    statBids: document.getElementById('statBids')
+  };
+
   function initUser() {
-    const activeSession = typeof getSession === 'function' ? getSession() : { name: "Local Dev Test", email: "dev@vaultora.local" };
-    const email = activeSession?.email;
-    const users = typeof getUsers === 'function' ? getUsers() : [];
-    const u = users.find(x => x.email?.toLowerCase() === String(email || '').toLowerCase());
+    const name = foundUser?.name ?? activeSession?.name ?? 'Vaultora Member';
+    const verified = foundUser?.verified ?? true;
 
-    const name = u?.name ?? activeSession?.name ?? 'Vaultora Member';
-    const verified = u?.verified ?? true;
-    const avatarUrl = u?.avatarUrl || u?.imageProfile || '';
+    if (nodes.uName) nodes.uName.textContent = safeText(name);
+    if (nodes.uEmail) nodes.uEmail.textContent = safeText(activeSession?.email);
+    if (nodes.uVerified) nodes.uVerified.textContent = verified ? '✓ Certified Member' : 'Unverified Profile';
+    if (nodes.avatarInitial && name) nodes.avatarInitial.textContent = name.charAt(0).toUpperCase();
 
-    const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = safeText(val); };
-    set('uName', name);
-    set('uEmail', email);
-    set('uVerified', verified ? '✓ Certified Member' : 'Unverified Profile');
-
-    const initEl = document.getElementById('avatarInitial');
-    if (initEl && name) initEl.textContent = name.charAt(0).toUpperCase();
-
-    applyAvatar(avatarUrl);
-    return { u, email, name };
+    return { email: activeSession?.email, name };
   }
 
   function renderBids() {
-    const container = document.getElementById('profileBids');
-    const btnMore   = document.getElementById('btnShowMoreBids');
-    const btnLess   = document.getElementById('btnShowLessBids');
-    if (!container) return;
+    if (!nodes.profileBids) return;
 
     const source   = globalBidsArray.length > 0 ? globalBidsArray : DEMO_BIDS;
     const slice    = source.slice(0, bidsShownCount);
     const products = typeof getProducts === 'function' ? getProducts() : [];
     const productMap = new Map(products.map(p => [String(p.id), p]));
 
-    container.innerHTML = slice.map(bid => {
+    nodes.profileBids.innerHTML = slice.map(bid => {
       const p      = productMap.get(String(bid.productId));
-      const img    = bid._img || p?.images?.[0] || p?.img || p?.image || 'https://images.unsplash.com/photo-1544816155-12df9643f363?w=300';
+      const rawImg = bid._img || p?.images?.[0] || p?.img || p?.image || 'https://images.unsplash.com/photo-1544816155-12df9643f363?w=300';
+      const img    = getOptimizedImageUrl(rawImg, 105); // Downscale structural thumbnails exactly to match 105px display size footprint perfectly
       const title  = bid.productName || p?.title || 'Asset Class item';
       const seller = bid._seller || p?.seller || p?.sellerEmail || 'Vaultora Partner';
       const price  = formatPrice(bid.amount);
@@ -170,7 +206,7 @@ export default function decorate(block) {
 
       return `
         <div class="auction-card">
-          <img src="${img}" class="auction-card-img" alt="${title}" loading="lazy"/>
+          <img src="${img}" class="auction-card-img" alt="${title}" width="70" height="70" decoding="async" loading="lazy"/>
           <div class="auction-card-body">
             <div class="auction-card-title">${title}</div>
             <div class="auction-card-seller">${seller}</div>
@@ -183,78 +219,94 @@ export default function decorate(block) {
     }).join('');
 
     const total = source.length;
-    if (btnMore) btnMore.style.display = bidsShownCount < total ? 'inline-block' : 'none';
-    if (btnLess) btnLess.style.display = bidsShownCount > 4     ? 'inline-block' : 'none';
+    if (nodes.btnShowMoreBids) nodes.btnShowMoreBids.style.display = bidsShownCount < total ? 'inline-block' : 'none';
+    if (nodes.btnShowLessBids) nodes.btnShowLessBids.style.display = bidsShownCount > 4     ? 'inline-block' : 'none';
   }
 
   function closeUploadFlow() {
-    const flowContainer = document.getElementById('uploadFlowContainer');
-    if (flowContainer) flowContainer.classList.remove('active');
+    if (nodes.uploadFlowContainer) nodes.uploadFlowContainer.classList.remove('active');
+    if (nodes.btnEditAvatar) nodes.btnEditAvatar.setAttribute('aria-expanded', 'false');
     selectedAvatarFile = null;
-    const fileInput = document.getElementById('avatarFileInput');
-    if (fileInput) fileInput.value = '';
-    const urlInput = document.getElementById('avatarUrlInput');
-    if (urlInput) urlInput.value = '';
-    document.getElementById('avatarFileLabel').textContent = 'No file staged';
-    document.getElementById('btnSaveAvatar').disabled = true;
+    if (nodes.avatarFileInput) nodes.avatarFileInput.value = '';
+    if (nodes.avatarUrlInput) nodes.avatarUrlInput.value = '';
+    if (nodes.avatarFileLabel) nodes.avatarFileLabel.textContent = 'No file staged';
+    if (nodes.btnSaveAvatar) nodes.btnSaveAvatar.disabled = true;
   }
 
   function openUploadFlow() {
-    const flowContainer = document.getElementById('uploadFlowContainer');
-    if (flowContainer) flowContainer.classList.add('active');
+    if (nodes.uploadFlowContainer) nodes.uploadFlowContainer.classList.add('active');
+    if (nodes.btnEditAvatar) nodes.btnEditAvatar.setAttribute('aria-expanded', 'true');
   }
 
   function handleAvatarFileChange(e) {
     const file = e.target.files[0];
-    const labelEl = document.getElementById('avatarFileLabel');
-    const uploadBtn = document.getElementById('btnSaveAvatar');
-
     if (!file) {
       selectedAvatarFile = null;
-      labelEl.textContent = 'No file staged';
-      uploadBtn.disabled = !document.getElementById('avatarUrlInput').value.trim();
+      if (nodes.avatarFileLabel) nodes.avatarFileLabel.textContent = 'No file staged';
+      if (nodes.btnSaveAvatar) nodes.btnSaveAvatar.disabled = !nodes.avatarUrlInput?.value.trim();
       return;
     }
-
     if (!file.type.startsWith('image/')) {
       showToast('Staged file must resolve to a valid binary image configuration.', false);
       return;
     }
-
     selectedAvatarFile = file;
-    labelEl.textContent = `${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
-    uploadBtn.disabled = false;
+    if (nodes.avatarFileLabel) {
+      nodes.avatarFileLabel.textContent = `${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
+    }
+    if (nodes.btnSaveAvatar) nodes.btnSaveAvatar.disabled = false;
+  }
+
+  async function downscaleAndCompressBlob(file, maxDimension = 240) {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.src = URL.createObjectURL(file);
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let width = img.width;
+        let height = img.height;
+        if (width > height) {
+          if (width > maxDimension) { height *= maxDimension / width; width = maxDimension; }
+        } else {
+          if (height > maxDimension) { width *= maxDimension / height; height = maxDimension; }
+        }
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+        canvas.toBlob((blob) => resolve(blob), 'image/webp', 0.82);
+      };
+    });
   }
 
   async function commitProfilePhotoChange() {
-    const uploadBtn = document.getElementById('btnSaveAvatar');
-    const urlInput = document.getElementById('avatarUrlInput');
-    const enteredUrl = urlInput?.value?.trim();
-
-    const activeSession = typeof getSession === 'function' ? getSession() : { email: "dev@vaultora.local" };
+    const enteredUrl = nodes.avatarUrlInput?.value?.trim();
     const email = activeSession?.email;
     if (!email) { showToast('Active profile auth tokens not found.', false); return; }
 
     const users = typeof getUsers === 'function' ? getUsers() : [];
     const idx = users.findIndex(x => x.email?.toLowerCase() === String(email).toLowerCase());
     
-    if (uploadBtn) { uploadBtn.disabled = true; uploadBtn.textContent = 'Syncing...'; }
+    if (nodes.btnSaveAvatar) { 
+      nodes.btnSaveAvatar.disabled = true; 
+      nodes.btnSaveAvatar.textContent = 'Syncing...'; 
+    }
 
     try {
       let targetImageUrl = "";
-
       if (selectedAvatarFile) {
+        const processedBlob = await downscaleAndCompressBlob(selectedAvatarFile, 240);
+        
         if (typeof AWS !== 'undefined' && AWS.config?.credentials) {
           await AWS.config.credentials.getPromise();
         }
-        const ext = selectedAvatarFile.name.split('.').pop();
-        const s3Key = `asset_data/user_profile_${Date.now()}.${ext}`;
+        const s3Key = `asset_data/user_profile_${Date.now()}.webp`;
         
         const uploadParams = {
           Bucket: typeof BUCKET_NAME !== 'undefined' ? BUCKET_NAME : 'vaultora',
           Key: s3Key,
-          Body: selectedAvatarFile,
-          ContentType: selectedAvatarFile.type
+          Body: processedBlob,
+          ContentType: 'image/webp'
         };
 
         const s3Instance = new AWS.S3();
@@ -264,7 +316,10 @@ export default function decorate(block) {
         targetImageUrl = enteredUrl;
       } else {
         showToast('Supply an image file asset object map parameter.', false);
-        if (uploadBtn) { uploadBtn.disabled = false; uploadBtn.textContent = 'Commit Photo'; }
+        if (nodes.btnSaveAvatar) { 
+          nodes.btnSaveAvatar.disabled = false; 
+          nodes.btnSaveAvatar.textContent = 'Commit Photo'; 
+        }
         return;
       }
 
@@ -283,17 +338,15 @@ export default function decorate(block) {
       applyAvatar(targetImageUrl);
       closeUploadFlow();
       showToast('Profile visual maps committed successfully!', true);
-
     } catch (err) {
       console.error(err);
       showToast('Network file sync timeout fallback triggered.', false);
     } finally {
-      if (uploadBtn) { uploadBtn.textContent = 'Commit Photo'; }
+      if (nodes.btnSaveAvatar) { nodes.btnSaveAvatar.textContent = 'Commit Photo'; }
     }
   }
 
   async function removeProfilePhoto() {
-    const activeSession = typeof getSession === 'function' ? getSession() : { email: "dev@vaultora.local" };
     const email = activeSession?.email;
     const users = typeof getUsers === 'function' ? getUsers() : [];
     const idx = users.findIndex(x => x.email?.toLowerCase() === String(email || '').toLowerCase());
@@ -314,66 +367,70 @@ export default function decorate(block) {
     closeUploadFlow();
   }
 
-  // Bind Listeners
-  document.getElementById('btnEditAvatar')?.addEventListener('click', openUploadFlow);
+  nodes.btnEditAvatar?.addEventListener('click', openUploadFlow);
   document.getElementById('btnRemoveAvatar')?.addEventListener('click', removeProfilePhoto);
   document.getElementById('btnCancelAvatarFlow')?.addEventListener('click', closeUploadFlow);
   
   const dropZone = document.getElementById('avatarDropZone');
-  const fileInput = document.getElementById('avatarFileInput');
-  if (dropZone && fileInput) {
-    dropZone.addEventListener('click', () => fileInput.click());
+  if (dropZone && nodes.avatarFileInput) {
+    dropZone.addEventListener('click', () => nodes.avatarFileInput.click());
+    dropZone.addEventListener('keydown', (e) => {
+      if (e.key === ' ' || e.key === 'Enter') {
+        e.preventDefault();
+        nodes.avatarFileInput.click();
+      }
+    });
   }
 
-  fileInput?.addEventListener('change', handleAvatarFileChange);
-  
-  const urlInput = document.getElementById('avatarUrlInput');
-  urlInput?.addEventListener('input', () => {
-    const saveBtn = document.getElementById('btnSaveAvatar');
-    if (saveBtn) saveBtn.disabled = !(selectedAvatarFile || urlInput.value.trim());
+  nodes.avatarFileInput?.addEventListener('change', handleAvatarFileChange);
+  nodes.avatarUrlInput?.addEventListener('input', () => {
+    if (nodes.btnSaveAvatar) nodes.btnSaveAvatar.disabled = !(selectedAvatarFile || nodes.avatarUrlInput.value.trim());
   });
 
-  document.getElementById('btnSaveAvatar')?.addEventListener('click', commitProfilePhotoChange);
-  document.getElementById('btnShowMoreBids')?.addEventListener('click', () => { bidsShownCount += BIDS_STEP; renderBids(); });
-  document.getElementById('btnShowLessBids')?.addEventListener('click', () => { bidsShownCount = Math.max(4, bidsShownCount - BIDS_STEP); renderBids(); });
+  nodes.btnSaveAvatar?.addEventListener('click', commitProfilePhotoChange);
+  nodes.btnShowMoreBids?.addEventListener('click', () => { bidsShownCount += BIDS_STEP; renderBids(); });
+  nodes.btnShowLessBids?.addEventListener('click', () => { bidsShownCount = Math.max(4, bidsShownCount - BIDS_STEP); renderBids(); });
 
-  // Load Operational Framework Computations
   const userSetup = initUser();
   const email = userSetup.email;
   const name = userSetup.name;
 
-  const allProducts = typeof getProducts === 'function' ? getProducts() : [];
-  const allBids     = typeof getBids     === 'function' ? getBids()     : [];
+  // Fix Layout Recalculation Thrashing: Encapsulate all database lookups within requestAnimationFrame blocks
+  window.requestAnimationFrame(() => {
+    const allProducts = typeof getProducts === 'function' ? getProducts() : [];
+    const allBids     = typeof getBids     === 'function' ? getBids()     : [];
 
-  const myBids = allBids.filter(b => b?.user && email && b.user.toLowerCase() === email.toLowerCase());
-  const uniqueBidMap = new Map();
-  myBids.forEach(b => {
-    const existing = uniqueBidMap.get(b.productId);
-    if (!existing || Number(b.amount) > Number(existing.amount)) {
-      uniqueBidMap.set(b.productId, b);
-    }
+    const myBids = allBids.filter(b => b?.user && email && b.user.toLowerCase() === email.toLowerCase());
+    const uniqueBidMap = new Map();
+    myBids.forEach(b => {
+      const existing = uniqueBidMap.get(b.productId);
+      if (!existing || Number(b.amount) > Number(existing.amount)) {
+        uniqueBidMap.set(b.productId, b);
+      }
+    });
+
+    globalBidsArray = [...uniqueBidMap.values()].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+    const myListings = allProducts.filter(p => {
+      if (p?.sellerEmail && email) return p.sellerEmail.toLowerCase() === email.toLowerCase();
+      if (p?.seller && name) return p.seller === name;
+      return false;
+    });
+
+    const winningBids = allProducts.filter(p => {
+      const productBids = allBids.filter(b => String(b.productId) === String(p.id));
+      if (!productBids.length) return false;
+      const topBid = productBids.reduce((max, b) => (b.amount > max.amount ? b : max), productBids[0]);
+      return topBid.user && email && topBid.user.toLowerCase() === email.toLowerCase();
+    });
+
+    if (nodes.statListings) nodes.statListings.textContent = String(myListings.length);
+    if (nodes.statWinningBids) nodes.statWinningBids.textContent = String(winningBids.length);
+    if (nodes.statBids) nodes.statBids.textContent = String(globalBidsArray.length);
+
+    // Yield control over to micro-task render queues seamlessly
+    setTimeout(() => {
+      renderBids();
+    }, 0);
   });
-
-  globalBidsArray = [...uniqueBidMap.values()].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-
-  const myListings = allProducts.filter(p => {
-    if (p?.sellerEmail && email) return p.sellerEmail.toLowerCase() === email.toLowerCase();
-    if (p?.seller && name) return p.seller === name;
-    return false;
-  });
-
-  const winningBids = allProducts.filter(p => {
-    const productBids = allBids.filter(b => String(b.productId) === String(p.id));
-    if (!productBids.length) return false;
-    const topBid = productBids.reduce((max, b) => (b.amount > max.amount ? b : max), productBids[0]);
-    return topBid.user && email && topBid.user.toLowerCase() === email.toLowerCase();
-  });
-
-  const setNum = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = String(val); };
-  setNum('statListings',    myListings.length);
-  setNum('statWinningBids', winningBids.length);
-  setNum('statBids',        globalBidsArray.length);
-
-  // Render initialization content view maps
-  renderBids();
 }
