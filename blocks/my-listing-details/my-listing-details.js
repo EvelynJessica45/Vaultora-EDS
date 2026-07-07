@@ -370,19 +370,18 @@ export default function decorate(block) {
   // Trigger setup loops safely ONLY after the storage handshake resolves completely
  (async () => {
     console.log("DEBUG [Details Page]: Checking store hydration status...");
-    // Wait for the storage layer or time out safely after 100ms
     const storeTimeout = new Promise((resolve) => setTimeout(resolve, 100));
     await Promise.race([window.__storeReady || Promise.resolve(), storeTimeout]);
 
-    // Robust check against both the utility abstraction and explicit localStorage keys
-    const initialSessionCheck = getSession() || JSON.parse(localStorage.getItem('Vaultora_session'));
+    // Bypasses the missing utility by directly querying the window's storage engine
+    const initialSessionCheck = JSON.parse(localStorage.getItem('Vaultora_session'));
     console.log("DEBUG [Details Page]: Session resolved state:", initialSessionCheck);
 
     if (!initialSessionCheck) {
       console.warn("DEBUG [Details Page]: Unauthorized access state. Kicking back to /register");
       window.location.replace('/register');
     } else {
-      // Your existing details layout render call goes here, for example:
+      // Make sure this matches your exact details render function call name
       renderListingDetails(); 
     }
   })();
