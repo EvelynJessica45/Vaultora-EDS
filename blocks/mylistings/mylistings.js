@@ -7,22 +7,20 @@
 import { getProducts, getBids, getSession, saveProducts } from '../../scripts/storage.js';
 
 const SVGS = {
-  active: `<svg width="15" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`,
-  pending: `<svg width="15" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`,
-  completed: `<svg width="15" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`,
-  ended: `<svg width="15" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`,
-  badgeDot: `<svg width="6" height="6" viewBox="0 0 8 8" fill="currentColor"><circle cx="4" cy="4" r="3"/></svg>`,
-  powerOff: `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path><line x1="12" y1="2" x2="12" y2="12"></line></svg>`
+  active: `<svg width="15" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`,
+  pending: `<svg width="15" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`,
+  completed: `<svg width="15" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>`,
+  ended: `<svg width="15" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`,
+  badgeDot: `<svg width="6" height="6" viewBox="0 0 8 8" fill="currentColor" aria-hidden="true"><circle cx="4" cy="4" r="3"/></svg>`,
+  powerOff: `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path><line x1="12" y1="2" x2="12" y2="12"></line></svg>`
 };
 
 export default function decorate(block) {
-  console.log("DEBUG: [decorate] Initializing mylistings block entry point.");
   block.textContent = '';
 
   const dashboard = document.createElement('div');
   dashboard.className = 'mylistings-dashboard';
 
-  // Header Section
   const header = document.createElement('div');
   header.className = 'mylistings-header';
   header.innerHTML = `
@@ -31,7 +29,6 @@ export default function decorate(block) {
   `;
   dashboard.append(header);
 
-  // Metrics Summary Panel Bar
   const statsBar = document.createElement('div');
   statsBar.className = 'mylistings-stats-bar';
   statsBar.innerHTML = `
@@ -50,7 +47,6 @@ export default function decorate(block) {
   `;
   dashboard.append(statsBar);
 
-  // Controls Filter Selector Menu Row
   const filterRow = document.createElement('div');
   filterRow.className = 'mylistings-filter-row';
   filterRow.innerHTML = `
@@ -85,7 +81,6 @@ export default function decorate(block) {
   dashboard.append(container);
   block.append(dashboard);
 
-  // Optimized Event Delegation for Stats Cards Click Routing
   statsBar.addEventListener('click', (e) => {
     const card = e.target.closest('.mylistings-stat-card');
     if (!card) return;
@@ -141,19 +136,12 @@ export default function decorate(block) {
 
   function renderMyListings() {
     const session = getSession();
-    console.log("DEBUG: [renderMyListings] Active identity payload:", session);
-
-    if (!session) {
-      console.error("DEBUG: [renderMyListings] Aborted rendering because session returned falsy value.");
-      return;
-    }
+    if (!session) return;
 
     const searchQuery = dashboard.querySelector('#listingSearchInput')?.value.toLowerCase() || '';
     const chosenFilter = dashboard.querySelector('#statusFilterSelector')?.value || 'all';
 
     const allProducts = getProducts() || [];
-    console.log(`DEBUG: [renderMyListings] Total catalog records found in storage.js: ${allProducts.length}`);
-
     const myProducts = allProducts.filter(p => {
       if (!p) return false;
       
@@ -162,16 +150,9 @@ export default function decorate(block) {
       const sessionName = session.name ? session.name.toLowerCase() : '';
       const productName = p.seller ? p.seller.toLowerCase() : '';
       
-      const emailMatches = productEmail && sessionEmail && (productEmail === sessionEmail);
-      const nameMatches = productName && sessionName && (productName === sessionName);
-
-      if (emailMatches || nameMatches) {
-        return true;
-      }
-      return false;
+      return (productEmail && sessionEmail && productEmail === sessionEmail) || 
+             (productName && sessionName && productName === sessionName);
     });
-
-    console.log(`DEBUG: [renderMyListings] Filtered owner specific records ('myProducts'): ${myProducts.length}`, myProducts);
 
     calculateAndPopulateMetrics(myProducts);
 
@@ -185,8 +166,7 @@ export default function decorate(block) {
     };
 
     textFiltered.slice().reverse().forEach(p => {
-      const isLive = p.auctionStatus === 'active';
-      if (isLive) {
+      if (p.auctionStatus === 'active') {
         structuralGroups.active.items.push(p);
       } else {
         if (p.paymentStatus === "completed") {
@@ -201,9 +181,7 @@ export default function decorate(block) {
 
     if (chosenFilter !== 'all') {
       Object.keys(structuralGroups).forEach(key => {
-        if (key !== chosenFilter) {
-          structuralGroups[key].items = []; 
-        }
+        if (key !== chosenFilter) structuralGroups[key].items = []; 
       });
     }
 
@@ -215,10 +193,9 @@ export default function decorate(block) {
     }
 
     if (totalVisible === 0) {
-      console.log("DEBUG: [renderMyListings] Total visible items is 0. Displaying fallback layout panel.");
       container.innerHTML = `
         <div class="mylistings-no-results">
-          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom: 1rem;"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M3 7l3-4h12l3 4"/><line x1="9" y1="11" x2="15" y2="11"/></svg>
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom: 1rem;" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M3 7l3-4h12l3 4"/><line x1="9" y1="11" x2="15" y2="11"/></svg>
           <p>No listings found matching your exact filter parameters.</p>
         </div>`;
       return;
@@ -293,17 +270,12 @@ export default function decorate(block) {
 
     requestAnimationFrame(() => {
       container.innerHTML = HTMLBuffer;
-      console.log("DEBUG: [renderMyListings] Injected card layouts into the main view container.");
     });
   }
 
-  // Updated click routing rule ensuring absolute context matching for a flat file root path
   container.onclick = function(e) {
-    console.log("DEBUG: [container.onclick] Intercepted a click event down inside the list canvas wrapper.", e.target);
-
     const earlyTerminationButton = e.target.closest('.btn-end-auction-early');
     if (earlyTerminationButton) {
-      console.log("DEBUG: [container.onclick] Early termination trigger recognized. Product ID:", earlyTerminationButton.dataset.id);
       e.stopPropagation();
       triggerEarlyTermination(e, earlyTerminationButton.dataset.id);
       return;
@@ -312,15 +284,7 @@ export default function decorate(block) {
     const itemCard = e.target.closest('.mylistings-item-card');
     if (itemCard) {
       const targetProductId = itemCard.dataset.id;
-      console.log(`DEBUG: [container.onclick] Product card matched successfully. Found attached product ID attribute: ${targetProductId}`);
-      
-      // Forces an absolute root pathname rewrite to cleanly target the standalone doc resource location
-      const targetUrl = `/my-listing-details?id=${targetProductId}`;
-        
-      console.log(`DEBUG: [container.onclick] Rerouting window path destination pointer over to clean URL -> "${targetUrl}"`);
-      window.location.href = targetUrl;
-    } else {
-      console.log("DEBUG: [container.onclick] Click registered inside container canvas layout grid, but no card structure was matched.");
+      window.location.href = `/my-listing-details?id=${targetProductId}`;
     }
   };
 
@@ -364,7 +328,6 @@ export default function decorate(block) {
 
           product.endTime = new Date().toISOString();
 
-          // STATE MATRIX HARMONIZATION CONFIGS
           if (productBids.length > 0) {
             product.auctionStatus = 'inactive'; 
             product.winnerEmail = (productBids[0].user || "").toLowerCase();
@@ -415,18 +378,13 @@ export default function decorate(block) {
   }
 
   (async () => {
-    console.log("DEBUG: [Lifecycle IIFE] Execution kicked off. Testing for window.__storeReady hydration sync state.");
     const storeTimeout = new Promise((resolve) => setTimeout(resolve, 100));
     await Promise.race([window.__storeReady || Promise.resolve(), storeTimeout]);
 
     const initialSessionCheck = getSession() || JSON.parse(localStorage.getItem('Vaultora_session'));
-    console.log("DEBUG: [Lifecycle IIFE] Complete Identity Check output object state:", initialSessionCheck);
-
     if (!initialSessionCheck) {
-      console.warn("DEBUG: [Lifecycle IIFE] Vaultora Auth: No active user session discovered. Routing window to '/register'.");
       window.location.replace('/register');
     } else {
-      console.log("DEBUG: [Lifecycle IIFE] Identity passed initialization validation checks. Triggering secondary data filter layout engine.");
       renderMyListings();
     }
   })();

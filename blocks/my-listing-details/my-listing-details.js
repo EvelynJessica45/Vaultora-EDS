@@ -1,17 +1,13 @@
 import { getProducts, getBids, getSession } from '../../scripts/storage.js';
 let showingAllBidders = false;
 
-// Small inline icon set (stroke-based, single color via currentColor so it
-// always matches the ticker card's accent token).
 const ICONS = {
-  status: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>',
-  reserve: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>',
-  ceiling: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8M21 7v6M21 7h-6"/></svg>',
-  bids: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+  status: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>',
+  reserve: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>',
+  ceiling: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8M21 7v6M21 7h-6"/></svg>',
+  bids: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
 };
 
-// Escape user-authored strings before they're dropped into innerHTML, so a
-// stray "<" or "&" in a title/description/name can't break the layout.
 function escapeHtml(value) {
   return String(value ?? '').replace(/[&<>"']/g, (ch) => ({
     '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
@@ -26,10 +22,8 @@ function initialsFor(name) {
 }
 
 export default function decorate(block) {
-  // Clear the placeholder authoring content
   block.innerHTML = '';
 
-  // Ensure Adobe EDS wrapper container hierarchy handles luxury grid layouts cleanly
   const parentSection = block.closest('.my-listing-details-wrapper');
   if (!parentSection && block.parentNode) {
     const wrapper = document.createElement('div');
@@ -38,12 +32,10 @@ export default function decorate(block) {
     wrapper.appendChild(block);
   }
 
-  // Setup layout architecture scaffolding frames with layout-shift prevention
   const container = document.createElement('div');
   container.className = 'my-listing-details-container';
   container.style.width = '100%';
 
-  // Top Title Bar Scaffolding to remove plain/bland presentation layers
   const topHeaderBar = document.createElement('div');
   topHeaderBar.className = 'details-dashboard-header';
   topHeaderBar.innerHTML = `
@@ -53,15 +45,12 @@ export default function decorate(block) {
   `;
   container.appendChild(topHeaderBar);
 
-  // Core Scaffold Outer Split Wrapper Frame
   const scaffoldSplitWrap = document.createElement('div');
   scaffoldSplitWrap.className = 'details-scaffold-layout';
 
-  // Create Left Panel Node Frame
   const leftPanel = document.createElement('div');
   leftPanel.className = 'listing-identity-panel';
 
-  // Create Right Panel Node Frame
   const rightPanel = document.createElement('div');
   rightPanel.className = 'performance-metrics-panel';
   rightPanel.setAttribute('aria-live', 'polite');
@@ -71,35 +60,28 @@ export default function decorate(block) {
   container.appendChild(scaffoldSplitWrap);
   block.appendChild(container);
 
-  // High-performance single central click listener for dynamic pagination elements
-  rightPanel.onclick = function(e) {
+  rightPanel.addEventListener('click', function(e) {
     const targetToggleButton = e.target.closest('.toggle-bidders-btn');
     if (targetToggleButton) {
       showingAllBidders = !showingAllBidders;
       renderSellerListingDetailsLoop();
     }
-  };
+  });
 
-  // Core execution loop routine
   function renderSellerListingDetailsLoop() {
     const params = new URLSearchParams(window.location.search);
     const productId = params.get('id');
 
-    // --- BYPASS SETUP FOR LOCAL TESTING ---
     let session = typeof getSession === 'function' ? getSession() : null;
-
     if (!session) {
       session = JSON.parse(localStorage.getItem('Vaultora_session'));
     }
-    // --------------------------------------
 
-    // Route authentication check validations smoothly
     if (!session) {
       window.location.replace('/register');
       return;
     }
 
-    // Defensive Fallback Layer: Query framework memory, fall back to storage parsing if cache is blank
     let products = typeof getProducts === 'function' ? getProducts() : [];
     if (!products || products.length === 0) {
       try {
@@ -114,7 +96,6 @@ export default function decorate(block) {
 
     const product = products.find(p => p && String(p.id) === String(productId));
     
-    // Direct robust check for bids fallback parameters
     let allBids = typeof getBids === 'function' ? getBids() : [];
     if (!allBids || allBids.length === 0) {
       const rawLocalBids = localStorage.getItem('Vaultora_bids');
@@ -124,7 +105,6 @@ export default function decorate(block) {
     const rawOrders = localStorage.getItem('Vaultora_orders');
     const systemOrders = rawOrders ? JSON.parse(rawOrders) : [];
 
-    // Fallback handler if parameters miss match criteria endpoints
     if (!product) {
       leftPanel.innerHTML = `<h2 class="asset-title">Asset Entry Error</h2>`;
       rightPanel.innerHTML = `
@@ -136,13 +116,11 @@ export default function decorate(block) {
       return;
     }
 
-    // Dynamic Title Update to personalize presentation frame context
     const subtitleEl = document.getElementById('dashboardSubtitleHeader');
     if (subtitleEl) {
       subtitleEl.textContent = `Reviewing item performance records for "${product.title || product.id}"`;
     }
 
-    // 1. Build and Inject Left Side Profile Frame with async image decoding to eliminate frame drops
     const imageSource = product.images?.[0] || product.image || 'https://placehold.co/400x300/e8dcc8/5a4a2e?text=Vaultora';
     leftPanel.innerHTML = `
       <div class="media-frame">
@@ -162,7 +140,6 @@ export default function decorate(block) {
       </div>
     `;
 
-    // Extract financials metrics data profiles
     const filteredItemBids = allBids.filter(b => b && String(b.productId) === String(product.id));
     const isLive = product.auctionStatus === 'active';
     const statusText = isLive ? "Live Active" : "Ended";
@@ -170,7 +147,6 @@ export default function decorate(block) {
     const formattedStart = `₹${Number(product.startingBid || product.price || 0).toLocaleString('en-IN', {minimumFractionDigits: 2})}`;
     const formattedCurrent = `₹${Number(product.currentBid || product.startingBid || 0).toLocaleString('en-IN', {minimumFractionDigits: 2})}`;
 
-    // 2. Assemble Financial Metrics Ticker Tape Blocks
     let performanceHTML = `
       <div class="metrics-ticker-tape">
         <div class="ticker-card" data-metric="status">
@@ -196,7 +172,6 @@ export default function decorate(block) {
       </div>
     `;
 
-    // 3. Assemble Chart Panel Frame
     if (filteredItemBids.length > 0) {
       performanceHTML += `
         <div class="dashboard-section-card" id="graphPanelWrapper">
@@ -214,7 +189,6 @@ export default function decorate(block) {
       `;
     }
 
-    // 4. Assemble Live Bidders Ledger list loop tracking tables
     performanceHTML += `
       <div class="dashboard-section-card">
         <div class="card-header-row">
@@ -225,7 +199,6 @@ export default function decorate(block) {
       </div>
     `;
 
-    // 5. Assemble Logistics box targets
     performanceHTML += `
       <div class="dashboard-section-card" id="shippingLogisticsBox" style="display: none;">
         <div class="card-header-row">
@@ -237,7 +210,6 @@ export default function decorate(block) {
 
     rightPanel.innerHTML = performanceHTML;
 
-    // Manage Nested Asynchronous DOM Mutations inside layout pipeline animation frames safely
     requestAnimationFrame(() => {
       const listContainer = document.getElementById('biddersActivityList');
       if (!listContainer) return;
@@ -247,7 +219,6 @@ export default function decorate(block) {
         return;
       }
 
-      // Initialize analytics sparkline rendering vectors
       renderBidsSparklineGraph(filteredItemBids, Number(product.startingBid || product.price || 0));
 
       const executionSortedBids = [...filteredItemBids].sort((a, b) => Number(b.amount) - Number(a.amount));
@@ -278,24 +249,23 @@ export default function decorate(block) {
         `;
       }).join('');
 
-      // Add pagination toggle expand buttons if lists transcend threshold benchmarks
       if (executionSortedBids.length > rowLimitThreshold) {
-        const toggleBtn = document.createElement('button');
-        toggleBtn.className = 'toggle-bidders-btn';
-        toggleBtn.type = 'button';
-        toggleBtn.setAttribute('aria-expanded', showingAllBidders ? 'true' : 'false');
-        toggleBtn.textContent = showingAllBidders ? 'Show Less ↑' : `Show More (${executionSortedBids.length - rowLimitThreshold} Hidden) ↓`;
-
         listHTML += `<div id="toggleBtnAnchor"></div>`;
         setTimeout(() => {
           const anchor = document.getElementById('toggleBtnAnchor');
-          if(anchor) anchor.replaceWith(toggleBtn);
+          if (anchor) {
+            const toggleBtn = document.createElement('button');
+            toggleBtn.className = 'toggle-bidders-btn';
+            toggleBtn.type = 'button';
+            toggleBtn.setAttribute('aria-expanded', showingAllBidders ? 'true' : 'false');
+            toggleBtn.textContent = showingAllBidders ? 'Show Less ↑' : `Show More (${executionSortedBids.length - rowLimitThreshold} Hidden) ↓`;
+            anchor.replaceWith(toggleBtn);
+          }
         }, 0);
       }
 
       listContainer.innerHTML = listHTML;
 
-      // Mount logistical processing fields if matches evaluate true entries
       const matchingOrderRecord = systemOrders.find(o => o && String(o.productId) === String(product.id));
       const shippingBox = document.getElementById('shippingLogisticsBox');
 
@@ -318,7 +288,6 @@ export default function decorate(block) {
     });
   }
 
-  // Analytics Sparkline Render Logic Mapping Core Mathematical Scalers
   function renderBidsSparklineGraph(bidsList, startingPrice) {
     const canvas = document.getElementById('bidsSparklineCanvas');
     if (!canvas) return;
@@ -390,20 +359,14 @@ export default function decorate(block) {
     });
   }
 
-  // Trigger setup loops safely ONLY after the storage handshake resolves completely
   (async () => {
-    console.log("DEBUG [Details Page]: Checking store hydration status...");
     const storeTimeout = new Promise((resolve) => setTimeout(resolve, 100));
     await Promise.race([window.__storeReady || Promise.resolve(), storeTimeout]);
 
     const initialSessionCheck = JSON.parse(localStorage.getItem('Vaultora_session'));
-    console.log("DEBUG [Details Page]: Session resolved state:", initialSessionCheck);
-
     if (!initialSessionCheck) {
-      console.warn("DEBUG [Details Page]: Unauthorized access state. Kicking back to /register");
       window.location.replace('/register');
     } else {
-      console.log("DEBUG [Details Page]: Verification complete. Executing loop render layout engine.");
       renderSellerListingDetailsLoop();
     }
   })();

@@ -1,7 +1,6 @@
 /* ==========================================================================
    MY LISTINGS LUXURY DASHBOARD FLUSH STRUCTURES
    ========================================================================== */
-
 .mylistings-dashboard {
   width: 100%;
   max-width: 1240px;
@@ -26,7 +25,7 @@
   margin: 0;
   font-family: 'Playfair Display', serif;
   font-size: clamp(1.8rem, 4vw, 2.5rem);
-  color: #1a3020; /* Luxury Forest Green */
+  color: #1a3020;
   font-weight: 500;
   letter-spacing: -0.01em;
   line-height: 1.2;
@@ -35,7 +34,7 @@
 .mylistings-title em {
   font-style: italic;
   font-family: 'Playfair Display', serif;
-  color: #8c6227; /* Deep Luxury Gold Accent */
+  color: #8c6227;
 }
 
 .mylistings-title::after {
@@ -254,7 +253,7 @@
 .mylistings-section {
   width: 100%;
   content-visibility: auto;
-  contain-intrinsic-size: 400px;
+  contain-intrinsic-size: auto 400px;
 }
 
 .mylistings-section-title {
@@ -316,7 +315,6 @@
   box-shadow: 0 10px 30px rgba(140, 98, 39, 0.06);
 }
 
-/* Side Borders indicators */
 .border-indicator--leading { border-left: 5px solid #b9925a !important; }
 .border-indicator--won     { border-left: 5px solid #2e7d32 !important; }
 .border-indicator--outbid  { border-left: 5px solid #ef6c00 !important; }
@@ -535,10 +533,6 @@
   border-color: rgba(43, 33, 24, 0.2);
 }
 
-.btn-modal-submit {
-  border: none;
-}
-
 /* ==========================================================================
    ANIMATION ENHANCEMENTS
    ========================================================================== */
@@ -606,7 +600,6 @@
   100% { background-position: 0% 50%; }
 }
 
-/* Hide the browser's native clear search button */
 .mylistings-search-wrap input::-webkit-search-decoration,
 .mylistings-search-wrap input::-webkit-search-cancel-button,
 .mylistings-search-wrap input::-webkit-search-results-button,
