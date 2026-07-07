@@ -297,7 +297,7 @@ export default function decorate(block) {
     });
   }
 
-  // Optimized Event Delegation Strategy mapping context paths strictly on the root container element
+  // Updated layout interception target referencing extensionless path strings character-for-character
   container.onclick = function(e) {
     console.log("DEBUG: [container.onclick] Intercepted a click event down inside the list canvas wrapper.", e.target);
 
@@ -314,14 +314,9 @@ export default function decorate(block) {
       const targetProductId = itemCard.dataset.id;
       console.log(`DEBUG: [container.onclick] Product card matched successfully. Found attached product ID attribute: ${targetProductId}`);
       
-      const hostIsLocal = window.location.hostname.includes('localhost');
-      const targetUrl = hostIsLocal 
-        ? `my-listing-details?id=${targetProductId}`
-        : `my-listing-details.html?id=${targetProductId}`;
+      const targetUrl = `my-listing-details?id=${targetProductId}`;
         
-      console.log(`DEBUG: [container.onclick] Evaluation environment - Hostname: ${window.location.hostname} | Local Environment Check: ${hostIsLocal}`);
-      console.log(`DEBUG: [container.onclick] Rerouting window path destination pointer over to -> "${targetUrl}"`);
-      
+      console.log(`DEBUG: [container.onclick] Rerouting window path destination pointer over to clean URL -> "${targetUrl}"`);
       window.location.href = targetUrl;
     } else {
       console.log("DEBUG: [container.onclick] Click registered inside container canvas layout grid, but no card structure was matched.");
