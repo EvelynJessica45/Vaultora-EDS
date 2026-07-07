@@ -84,6 +84,23 @@ export default function decorate(block) {
   dashboard.append(container);
   block.append(dashboard);
 
+  // Optimized Event Delegation for Stats Cards Click Routing
+  statsBar.addEventListener('click', (e) => {
+    const card = e.target.closest('.mylistings-stat-card');
+    if (!card) return;
+    
+    if (card.id === 'card-total') {
+      dashboard.querySelector('.mylistings-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else if (card.id === 'card-active') {
+      dashboard.querySelector('#listing-group-active')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else if (card.id === 'card-ended') {
+      const firstEndedSec = dashboard.querySelector('#listing-group-pending') || 
+                            dashboard.querySelector('#listing-group-completed') || 
+                            dashboard.querySelector('#listing-group-no_bids');
+      firstEndedSec?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+
   function animateCount(el, target) {
     if (!el) return;
     const start = Number(el.textContent) || 0;
@@ -255,24 +272,23 @@ export default function decorate(block) {
 
     requestAnimationFrame(() => {
       container.innerHTML = HTMLBuffer;
-      attachInteractionListeners();
     });
   }
 
-  function attachInteractionListeners() {
-    container.querySelectorAll('.mylistings-item-card').forEach((card) => {
-      card.addEventListener('click', () => {
-        window.location.href = `my-listing-details?id=${card.dataset.id}`;
-      });
-    });
+  // Optimized Event Delegation Strategy mapping context paths strictly on the root container element
+  container.onclick = function(e) {
+    const earlyTerminationButton = e.target.closest('.btn-end-auction-early');
+    if (earlyTerminationButton) {
+      e.stopPropagation();
+      triggerEarlyTermination(e, earlyTerminationButton.dataset.id);
+      return;
+    }
 
-    container.querySelectorAll('.btn-end-auction-early').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        triggerEarlyTermination(e, btn.dataset.id);
-      });
-    });
-  }
+    const itemCard = e.target.closest('.mylistings-item-card');
+    if (itemCard) {
+      window.location.href = `my-listing-details?id=${itemCard.dataset.id}`;
+    }
+  };
 
   function triggerEarlyTermination(event, productId) {
     const existingModals = document.querySelectorAll('.modal-overlay');
@@ -363,21 +379,6 @@ export default function decorate(block) {
   if (filterSelect) {
     filterSelect.addEventListener('change', renderMyListings);
   }
-
-  dashboard.querySelectorAll('.mylistings-stat-card').forEach(card => {
-    card.addEventListener('click', () => {
-      if (card.id === 'card-total') {
-        dashboard.querySelector('.mylistings-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      } else if (card.id === 'card-active') {
-        dashboard.querySelector('#listing-group-active')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      } else if (card.id === 'card-ended') {
-        const firstEndedSec = dashboard.querySelector('#listing-group-pending') || 
-                              dashboard.querySelector('#listing-group-completed') || 
-                              dashboard.querySelector('#listing-group-no_bids');
-        firstEndedSec?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    });
-  });
 
   (async () => {
     await (window.__storeReady || Promise.resolve());

@@ -605,6 +605,7 @@
   0%   { background-position: 100% 50%; }
   100% { background-position: 0% 50%; }
 }
+
 /* Hide the browser's native clear search button */
 .mylistings-search-wrap input::-webkit-search-decoration,
 .mylistings-search-wrap input::-webkit-search-cancel-button,
