@@ -112,23 +112,26 @@ function decorateButtons(main) {
  * Monolithic Profile Cards Interceptor Routing Engine
  * Re-maps 5 user workspace block profiles onto the core cards asset pair bundle.
  */
+/**
+ * Updated Cards Interceptor Routing Engine
+ * Re-maps all profile and bidding block assets to the monolithic cards block.
+ */
 function redirectCardsBlocks(main) {
   if (!main) return;
-  const targetCardsBlocks = ['mybids', 'my-bid-details', 'mylistings', 'my-listing-details', 'orders'];
+  // Added 'profile' to the target array
+  const targetCardsBlocks = ['mybids', 'my-bid-details', 'mylistings', 'my-listing-details', 'orders', 'profile'];
   
-  main.querySelectorAll('div[data-block-name], div.mybids, div.my-bid-details, div.mylistings, div.my-listing-details, div.orders').forEach((block) => {
+  main.querySelectorAll('div[data-block-name]').forEach((block) => {
     const blockName = block.getAttribute('data-block-name');
-    const matchedClass = targetCardsBlocks.find(cls => block.classList.contains(cls));
-    const finalMatchName = blockName || matchedClass;
-
-    if (targetCardsBlocks.includes(finalMatchName)) {
+    
+    if (targetCardsBlocks.includes(blockName)) {
       block.setAttribute('data-block-name', 'cards');
-      
       block.className = 'cards block';
-      block.classList.add(finalMatchName);
+      block.classList.add(blockName);
     }
   });
 }
+// Ensure redirectCardsBlocks(main) is called in decorateMain, loadEager, and loadLazy
 function redirectCustomCardsBlocks(main) {
   if (!main) return;
   // Define your variants here
@@ -148,6 +151,49 @@ function redirectCustomCardsBlocks(main) {
     }
   });
 }
+
+/**
+ * Columns Interceptor Routing Engine
+ * Maps column variants to the monolithic columns block bundle.
+ */
+function redirectColumnBlocks(main) {
+  if (!main) return;
+  // Add your column-based variants here
+  const targetColumnVariants = ['about', 'detail'];
+  
+  main.querySelectorAll('div[data-block-name]').forEach((block) => {
+    const blockName = block.getAttribute('data-block-name');
+    
+    // Check if the current block is one of our column-based variants
+    if (targetColumnVariants.includes(blockName)) {
+      // 1. Pivot routing to the core columns block
+      block.setAttribute('data-block-name', 'columns');
+      
+      // 2. Preserve variant identity for the controller
+      block.className = 'columns block';
+      block.classList.add(blockName);
+    }
+  });
+}
+
+function redirectFormsBlocks(main) {
+  if (!main) return;
+  const targetFormVariants = ['checkout', 'seller-dashboard'];
+  
+  main.querySelectorAll('div[data-block-name]').forEach((block) => {
+    const blockName = block.getAttribute('data-block-name');
+    
+    if (targetFormVariants.includes(blockName)) {
+      // 1. Pivot routing to core forms block
+      block.setAttribute('data-block-name', 'forms');
+      
+      // 2. Keep the variant identity active in classes
+      block.className = 'forms block';
+      block.classList.add(blockName);
+    }
+  });
+}
+
 function redirectCategoryBlocks(main) {
   if (!main) return;
   const targetCategoryBlocks = ['category-immersive', 'carousal-fashion', 'gridelectronics', 'carousal-wine', 'gridgallery'];

@@ -1,0 +1,222 @@
+/* ==========================================================================
+   Vaultora "About" — editorial redesign
+   Signature motif: a verification "seal" ring + hairline "tag" chip, used
+   throughout as a stand-in for the auction house's authentication process.
+   Typography: Playfair Display (display, used sparingly + in italic for
+   accent words) paired with Inter (body/labels). Inter is not currently
+   loaded elsewhere in this project — add it once, globally, e.g. in
+   styles.css:
+     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+   ========================================================================== */
+:root {
+  --paper: #f8f6f0;
+  --ink: #17140f;
+  --ink-soft: #5c5648;
+  --forest: #232d1c;
+  --gold: #b6905b;
+  --gold-bright: #d8b482;
+  --clay: #bd5a2c;
+  --line: rgba(23, 20, 15, 0.14);
+  --line-on-dark: rgba(248, 246, 240, 0.18);
+}
+
+.about h1, .about h2, .about h3 { font-family: 'Playfair Display', serif; }
+.about, .about p, .about span, .about a, .about button {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.about .eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: .6rem;
+  font-size: .68rem;
+  font-weight: 700;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--gold-bright);
+}
+.about .eyebrow::before { content: ''; width: 22px; height: 1px; background: var(--gold-bright); display: inline-block; }
+.about .eyebrow.on-light { color: #8a6a3d; }
+.about .eyebrow.on-light::before { background: #8a6a3d; }
+
+/* ==========================================================================
+   Shared "tag" chip — floats on a corner of an image like a condition-report
+   or provenance label.
+   ========================================================================== */
+.about .v-tag {
+  position: absolute;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  padding: .6rem .9rem;
+  font-size: .7rem;
+  line-height: 1.3;
+  box-shadow: 0 12px 30px rgba(23, 20, 15, .1);
+  z-index: 2;
+}
+.about .v-tag b { display: block; font-family: 'Playfair Display', serif; font-size: .95rem; font-weight: 500; color: var(--ink); }
+.about .v-tag span { color: var(--ink-soft); letter-spacing: .04em; text-transform: uppercase; font-size: .6rem; }
+
+.about .v-seal-ring { transform-origin: 50% 50%; animation: v-seal-rotate 60s linear infinite; }
+@keyframes v-seal-rotate { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .about .v-seal-ring { animation: none; } }
+
+/* ==========================================================================
+   1. HERO
+   ========================================================================== */
+.about:not(.philosophy):not(.team):not(.services):not(.cta) { background: var(--paper); }
+
+.v-hero {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2.5rem;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: clamp(3rem, 7vw, 5.5rem) 20px;
+  align-items: center;
+}
+@media (min-width: 860px) { .v-hero { grid-template-columns: 1.1fr .9fr; gap: 3rem; } }
+
+.v-hero-copy h1 {
+  font-weight: 500;
+  font-size: clamp(2.4rem, 5vw, 4rem);
+  line-height: 1.08;
+  letter-spacing: -.01em;
+  color: var(--ink);
+  margin: 1rem 0 1.3rem;
+}
+.v-hero-copy h1 em { font-style: italic; color: var(--gold); font-weight: 400; }
+.v-hero-copy p { font-size: 1.05rem; line-height: 1.65; color: var(--ink-soft); max-width: 44ch; margin: 0 0 2.1rem; }
+
+.v-hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+.v-btn {
+  font-size: .78rem; font-weight: 700; text-transform: uppercase; letter-spacing: .1em;
+  padding: 1rem 1.9rem; text-decoration: none; display: inline-block; border-radius: 2px;
+  transition: all .3s cubic-bezier(.16, 1, .3, 1);
+}
+.v-btn-primary { background: var(--forest); color: var(--paper); border: 1px solid var(--forest); }
+.v-btn-primary:hover { background: var(--ink); border-color: var(--ink); }
+.v-btn-ghost { background: transparent; color: var(--ink); border: 1px solid var(--ink); }
+.v-btn-ghost:hover { background: rgba(23, 20, 15, .05); }
+
+.v-hero-visual { position: relative; }
+.v-hero-frame { position: relative; width: 100%; }
+.v-hero-frame img {
+  width: 100%; height: auto; max-height: 460px; object-fit: cover;
+  border-radius: 4px; box-shadow: 0 20px 45px rgba(23, 20, 15, .12);
+}
+.v-hero-frame .v-seal {
+  position: absolute; top: -18px; right: -18px; width: 96px; height: 96px;
+  filter: drop-shadow(0 8px 18px rgba(23, 20, 15, .25));
+}
+.v-hero-frame .v-seal circle:nth-child(2) { fill: var(--forest); }
+.v-hero-visual .v-tag { bottom: -18px; left: 4%; }
+
+/* ==========================================================================
+   2. PHILOSOPHY
+   ========================================================================== */
+.v-phil {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 3rem;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: clamp(3.5rem, 7vw, 6rem) 20px;
+  align-items: center;
+}
+@media (min-width: 860px) { .v-phil { grid-template-columns: .85fr 1.15fr; gap: 4rem; } }
+
+.v-phil-gallery { position: relative; display: grid; grid-template-columns: 1.3fr 1fr; gap: 1rem; align-items: end; }
+.v-phil-main img, .v-phil-thumb img {
+  width: 100%; height: 100%; object-fit: cover; border-radius: 4px; display: block;
+}
+.v-phil-main { aspect-ratio: .82; box-shadow: 0 20px 45px rgba(23, 20, 15, .1); }
+.v-phil-thumb { aspect-ratio: .7; transform: translateY(14%); box-shadow: 0 16px 32px rgba(23, 20, 15, .1); }
+.v-phil-gallery .v-tag { bottom: -6%; left: -6%; }
+
+.v-phil-copy h2 { font-weight: 500; font-size: clamp(2rem, 4vw, 2.9rem); line-height: 1.15; margin: 1rem 0 1.1rem; color: var(--ink); }
+.v-phil-approach { font-size: 1.08rem; font-style: italic; color: var(--ink); line-height: 1.55; margin: 0; }
+.v-phil-rule { width: 44px; height: 1px; background: var(--line); margin: 1.6rem 0; }
+.v-phil-body { font-size: .98rem; line-height: 1.7; color: var(--ink-soft); margin: 0; max-width: 52ch; }
+
+/* ==========================================================================
+   3. TEAM ("The Council")
+   ========================================================================== */
+.v-council-inner { max-width: 1240px; margin: 0 auto; padding: clamp(3.5rem, 7vw, 6rem) 20px; }
+.about.team { background: var(--forest); color: var(--paper); }
+.v-council-head { max-width: 640px; margin-bottom: 3rem; }
+.v-council-head h2 { font-weight: 500; font-size: clamp(2rem, 4vw, 2.7rem); margin: 1rem 0 0; line-height: 1.15; color: var(--paper); }
+
+.v-council-grid {
+  display: grid; grid-template-columns: 1fr; gap: 1px;
+  background: var(--line-on-dark); border: 1px solid var(--line-on-dark); margin-bottom: 1px;
+}
+@media (min-width: 720px) { .v-council-grid { grid-template-columns: 1fr 1fr; } }
+
+.v-principal { background: var(--forest); padding: 2rem; display: flex; gap: 1.3rem; align-items: center; }
+.v-principal-photo {
+  flex-shrink: 0; width: 72px; height: 72px; border-radius: 50%; overflow: hidden;
+  border: 1px solid var(--gold-bright);
+}
+.v-principal-photo img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(1) contrast(1.05); transition: filter .4s ease; }
+.v-principal:hover .v-principal-photo img { filter: grayscale(0) contrast(1); }
+.v-principal-meta h3 { font-weight: 500; font-size: 1.2rem; margin: 0 0 .25rem; color: var(--paper); }
+.v-principal-meta .v-role { display: block; font-size: .64rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--gold-bright); }
+
+.v-council-teaser { display: flex; align-items: center; gap: 1.5rem; margin-top: 2.5rem; }
+.v-council-teaser-img { flex-shrink: 0; width: 88px; height: 110px; border-radius: 4px; overflow: hidden; }
+.v-council-teaser-img img { width: 100%; height: 100%; object-fit: cover; }
+.v-council-teaser p { font-size: .92rem; line-height: 1.65; color: rgba(248, 246, 240, .72); margin: 0; max-width: 60ch; }
+@media (max-width: 600px) { .v-council-teaser { flex-direction: column; align-items: flex-start; } }
+
+/* ==========================================================================
+   4. SERVICES ("How It Works" accordion)
+   ========================================================================== */
+.v-services { max-width: 1100px; margin: 0 auto; padding: clamp(3.5rem, 7vw, 6rem) 20px; }
+.v-services-head { max-width: 640px; margin: 0 auto 3rem; text-align: center; }
+.v-services-head .eyebrow { justify-content: center; margin-bottom: 1rem; }
+.v-services-intro { font-size: 1.05rem; line-height: 1.65; color: var(--ink-soft); margin: 0; }
+
+.v-services-layout { display: grid; grid-template-columns: 1fr; gap: 2.5rem; align-items: start; }
+@media (min-width: 860px) { .v-services-layout { grid-template-columns: .8fr 1.2fr; } }
+.v-services-img img { width: 100%; height: 100%; max-height: 420px; object-fit: cover; border-radius: 4px; }
+
+.v-accordion { display: flex; flex-direction: column; }
+.v-acc-row { border-bottom: 1px solid var(--line); }
+.v-acc-trigger {
+  width: 100%; padding: 1.5rem 0; background: none; border: none; display: flex; align-items: center;
+  gap: 1rem; cursor: pointer; text-align: left; transition: color .2s ease;
+}
+.v-acc-no { font-family: 'Playfair Display', serif; font-style: italic; color: var(--gold); font-size: .95rem; }
+.v-acc-title { font-family: 'Playfair Display', serif; font-size: 1.2rem; color: var(--ink); flex: 1; }
+.v-acc-trigger:hover .v-acc-title { color: var(--gold); }
+.v-acc-cross { position: relative; width: 13px; height: 13px; flex-shrink: 0; }
+.v-acc-cross::before, .v-acc-cross::after { content: ''; position: absolute; background: var(--ink); transition: transform .3s ease; }
+.v-acc-cross::before { top: 6px; left: 0; width: 13px; height: 1.5px; }
+.v-acc-cross::after { left: 6px; top: 0; width: 1.5px; height: 13px; }
+.v-acc-trigger[aria-expanded="true"] .v-acc-cross::after { transform: rotate(90deg) scaleY(0); }
+.v-acc-panel { max-height: 0; overflow: hidden; transition: max-height .35s cubic-bezier(.4,0,.2,1); }
+.v-acc-panel p { margin: 0 0 1.5rem; padding-right: 2rem; font-size: .95rem; line-height: 1.65; color: var(--ink-soft); }
+
+/* ==========================================================================
+   5. CTA
+   ========================================================================== */
+.about.cta { margin: clamp(3rem, 7vw, 5rem) 20px; }
+.v-cta { position: relative; overflow: hidden; border-radius: 4px; background: var(--ink); }
+.v-cta-bg { position: absolute; inset: 0; }
+.v-cta-bg img { width: 100%; height: 100%; object-fit: cover; opacity: .55; }
+.v-cta-scrim { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(23,20,15,.55), rgba(23,20,15,.85)); }
+.v-cta-watermark { position: absolute; right: -70px; top: 50%; transform: translateY(-50%); opacity: .4; }
+
+.v-cta-inner { position: relative; z-index: 1; max-width: 640px; margin: 0 auto; text-align: center; padding: clamp(3.5rem, 8vw, 5.5rem) 24px; }
+.v-cta-inner .eyebrow { justify-content: center; }
+.v-cta-inner h2 { font-weight: 500; font-size: clamp(1.9rem, 4.2vw, 2.8rem); color: #fff; margin: 1rem 0 1rem; line-height: 1.18; }
+.v-cta-inner p { color: rgba(248, 246, 240, .72); margin: 0 0 2.2rem; font-size: 1.02rem; }
+
+.v-cta-actions { display: flex; flex-direction: column; align-items: center; gap: 1.1rem; }
+.v-cta-btn {
+  font-size: .78rem; font-weight: 700; text-transform: uppercase; letter-spacing: .14em; color: #fff;
+  text-decoration: none; border: 1px solid var(--gold-bright); padding: 1.05rem 2.6rem; display: inline-block;
+  transition: all .3s ease;
+}
+.v-cta-btn:hover { background: var(--clay); border-color: var(--clay); }
+.v-cta-email a { font-size: .85rem; color: var(--gold-bright); text-decoration: underline; text-underline-offset: 3px; }
