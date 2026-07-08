@@ -108,7 +108,22 @@ function decorateButtons(main) {
     }
   });
 }
+function redirectCardsBlocks(main) {
+  if (!main) return;
+  const targetCardsBlocks = ['mybids', 'my-bid-details', 'mylistings', 'my-listing-details'];
+  
+  main.querySelectorAll('div[data-block-name], div.mybids, div.my-bid-details, div.mylistings, div.my-listing-details').forEach((block) => {
+    const blockName = block.getAttribute('data-block-name');
+    const matchedClass = targetCardsBlocks.find(cls => block.classList.contains(cls));
+    const finalMatchName = blockName || matchedClass;
 
+    if (targetCardsBlocks.includes(finalMatchName)) {
+      block.setAttribute('data-block-name', 'cards');
+      block.className = 'cards block';
+      block.classList.add(finalMatchName);
+    }
+  });
+}
 function redirectCategoryBlocks(main) {
   if (!main) return;
   const targetCategoryBlocks = ['category-immersive', 'carousal-fashion', 'gridelectronics', 'carousal-wine', 'gridgallery'];
