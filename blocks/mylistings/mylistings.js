@@ -1,7 +1,7 @@
 /*
  * mylistings.js
  * Decorates the user's personal seller inventory dashboard.
- * Separates listings into dsd4 distinct visual sections based on real-time status parameters.
+ * Separates listings into 4 distinct visual sections based on real-time status parameters.
  */
 
 import { getProducts, getBids, getSession, saveProducts } from '../../scripts/storage.js';
