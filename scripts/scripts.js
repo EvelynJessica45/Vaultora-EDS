@@ -108,17 +108,22 @@ function decorateButtons(main) {
     }
   });
 }
+/**
+ * Monolithic Profile Cards Interceptor Routing Engine
+ * Re-maps 5 user workspace block profiles onto the core cards asset pair bundle.
+ */
 function redirectCardsBlocks(main) {
   if (!main) return;
-  const targetCardsBlocks = ['mybids', 'my-bid-details', 'mylistings', 'my-listing-details'];
+  const targetCardsBlocks = ['mybids', 'my-bid-details', 'mylistings', 'my-listing-details', 'orders'];
   
-  main.querySelectorAll('div[data-block-name], div.mybids, div.my-bid-details, div.mylistings, div.my-listing-details').forEach((block) => {
+  main.querySelectorAll('div[data-block-name], div.mybids, div.my-bid-details, div.mylistings, div.my-listing-details, div.orders').forEach((block) => {
     const blockName = block.getAttribute('data-block-name');
     const matchedClass = targetCardsBlocks.find(cls => block.classList.contains(cls));
     const finalMatchName = blockName || matchedClass;
 
     if (targetCardsBlocks.includes(finalMatchName)) {
       block.setAttribute('data-block-name', 'cards');
+      
       block.className = 'cards block';
       block.classList.add(finalMatchName);
     }

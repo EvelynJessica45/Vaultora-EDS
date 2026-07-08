@@ -90,14 +90,12 @@
 .cards.block.mybids .mybids-item-card { background: #ffffff !important; border: 1px solid #edece9 !important; border-radius: 14px !important; padding: 1.5rem !important; display: flex !important; gap: 1rem !important; align-items: flex-start !important; box-shadow: 0 4px 20px rgba(42, 41, 38, 0.06) !important; cursor: pointer !important; transition: transform .2s ease !important; }
 .cards.block.mybids .mybids-item-thumb img { width: 85px !important; height: 85px !important; object-fit: cover !important; border-radius: 10px !important; }
 
-/* Status Pillars Deep Accessible Color Coding */
 .cards.block.mybids .mybids-status-pill { display: inline-flex !important; padding: 5px 20px !important; border-radius: 999px !important; font-size: 0.75rem !important; font-weight: 700 !important; color: #ffffff !important; text-transform: uppercase !important; }
 .cards.block.mybids .status-leading { background: #114224 !important; }
 .cards.block.mybids .status-lost { background: #1a202c !important; }
 .cards.block.mybids .status-won-pending { background: #5a3507 !important; }
 .cards.block.mybids .status-won-purchased { background: #114224 !important; }
 
-/* Accessible Amber/Orange Outbid Status Pill Configuration Overrides */
 .cards.block .mybids-status-pill.status-outbid, 
 .cards.block .mylistings-status-pill.status-outbid {
   display: inline-flex !important; align-items: center !important; gap: 6px !important; padding: 4px 12px !important; border-radius: 100px !important; font-size: 0.72rem !important; font-weight: 700 !important; width: fit-content !important; text-transform: uppercase !important; color: #b35900 !important; background-color: #fff0e0 !important;
@@ -118,7 +116,6 @@
 .cards.block.mylistings .mylistings-title { font-family: 'Playfair Display', serif !important; font-size: clamp(1.8rem, 4vw, 2.5rem) !important; color: #1a3020 !important; font-weight: 500 !important; letter-spacing: -0.01em !important; }
 .cards.block.mylistings .mylistings-title em { font-style: italic !important; color: #8c6227 !important; }
 
-/* Overriding the global h2 sizing inheritance for cleaner headers layout */
 .cards.block .mylistings-section-title {
   font-family: 'Playfair Display', Georgia, serif !important; font-size: clamp(1.2rem, 2vw, 1.45rem) !important; font-weight: 600 !important; color: #1a3020 !important; margin-top: 1.5rem !important; margin-bottom: 1rem !important; display: flex !important; align-items: center !important; gap: 0.65rem !important; padding-bottom: 0.5rem !important; border-bottom: 1px solid rgba(43, 33, 24, 0.04) !important;
 }
@@ -141,30 +138,98 @@
 .cards.block.mylistings .mylistings-item-thumb { flex-shrink: 0 !important; width: 84px !important; height: 84px !important; border-radius: 12px !important; overflow: hidden !important; border: 1px solid rgba(43, 33, 24, 0.04) !important; }
 .cards.block.mylistings .mylistings-item-thumb img { width: 100% !important; height: 100% !important; object-fit: cover !important; }
 
-/* Compressed small card layout titles */
 .cards.block .mylistings-item-name { font-family: 'DM Sans', sans-serif !important; font-size: 0.95rem !important; font-weight: 600 !important; color: #121212 !important; line-height: 1.3 !important; margin: 0 0 0.15rem 0 !important; white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important; max-width: 180px !important; }
 
 .cards.block .mylistings-status-pill { display: inline-flex !important; align-items: center !important; gap: 6px !important; padding: 4px 12px !important; border-radius: 100px !important; font-size: 0.72rem !important; font-weight: 600 !important; width: fit-content !important; }
 .cards.block .mylistings-status-pill.status-leading { background: #e8f5e9 !important; color: #2e7d32 !important; }
 .cards.block .mylistings-status-pill.status-lost { background: #eceff1 !important; color: #455a64 !important; }
 
-/* Premium Solid Red Action Button Tuning (.btn-end-auction-early) */
 .cards.block .btn-end-auction-early {
-  margin-top: 0.5rem !important; display: inline-flex !important; align-items: center !important; justify-content: center !important; gap: 6px !important;
-  font-family: 'DM Sans', sans-serif !important; font-size: 0.72rem !important; font-weight: 700 !important; text-transform: uppercase !important; letter-spacing: 0.5px !important;
-  color: #ffffff !important; background-color: #c92c1e !important; border: none !important; border-radius: 6px !important; padding: 0.5rem 1rem !important; cursor: pointer !important;
-  min-width: 105px !important; min-height: 34px !important; box-shadow: 0 2px 8px rgba(201, 44, 30, 0.15) !important;
+  margin-top: 0.5rem !important; display: inline-flex !important; align-items: center !important; justify-content: center !important; gap: 6px !important; font-family: 'DM Sans', sans-serif !important; font-size: 0.72rem !important; font-weight: 700 !important; text-transform: uppercase !important; letter-spacing: 0.5px !important; color: #ffffff !important; background-color: #c92c1e !important; border: none !important; border-radius: 6px !important; padding: 0.5rem 1rem !important; cursor: pointer !important; min-width: 105px !important; min-height: 34px !important; box-shadow: 0 2px 8px rgba(201, 44, 30, 0.15) !important;
 }
 .cards.block .btn-end-auction-early:hover { background-color: #a82216 !important; box-shadow: 0 4px 12px rgba(201, 44, 30, 0.25) !important; }
 
 /* ==========================================================================
-   MODULE 4: INLINE MODEL OVERLAY POP-UPS PANEL
+   MODULE 3: PURCHASES HISTORICAL SETTLEMENT RECORDS (.orders)
    ========================================================================== */
-.cards.block .modal-overlay { position: fixed !important; inset: 0 !important; background: rgba(18, 20, 15, 0.4) !important; backdrop-filter: blur(10px) !important; display: flex !important; align-items: center !important; justify-content: center !important; z-index: 99999 !important; opacity: 0; pointer-events: none; transition: opacity 0.3s ease !important; }
-.cards.block .modal-overlay.open { opacity: 1 !important; pointer-events: auto !important; }
-.cards.block .modal-card { background: #ffffff !important; border-radius: 20px !important; padding: 2.25rem 2rem !important; max-width: 460px !important; width: 92% !important; box-shadow: 0 25px 60px rgba(0, 0, 0, 0.12) !important; box-sizing: border-box !important; }
-.cards.block .modal-card h3 { font-family: 'Playfair Display', serif !important; font-size: 1.5rem !important; color: #1a3020 !important; margin: 0 0 0.75rem 0 !important; }
-.cards.block .modal-card p { font-family: 'DM Sans', sans-serif !important; font-size: 0.9rem !important; line-height: 1.55 !important; color: #4a4a4a !important; }
-.cards.block .modal-actions { display: flex !important; justify-content: flex-end !important; gap: 12px !important; margin-top: 2rem !important; }
-.cards.block .modal-actions button { font-family: 'DM Sans', sans-serif !important; font-size: 0.75rem !important; font-weight: 700 !important; text-transform: uppercase !important; padding: 0.75rem 1.5rem !important; border-radius: 8px !important; cursor: pointer !important; min-height: 44px !important; }
-.cards.block .btn-modal-cancel { background: #fafaf9 !important; color: #1a3020 !important; border: 1px solid rgba(43, 33, 24, 0.1) !important; }
+.cards.block.orders h1, .cards.block.orders h3, .cards.block.orders p, .cards.block.orders button, .cards.block.orders div {
+  margin: 0 !important; padding: 0 !important; box-sizing: border-box !important; font-family: 'DM Sans', -apple-system, sans-serif !important;
+}
+
+.cards.block.orders .main-content { max-width: 680px !important; margin: 2.5rem auto !important; padding: 0 1.25rem !important; }
+.cards.block.orders .orders-title-row { margin-bottom: 2rem !important; border-bottom: 1px solid rgba(74, 87, 69, 0.08) !important; padding-bottom: 1rem !important; }
+.cards.block.orders .page-title { font-family: 'Playfair Display', Georgia, serif !important; color: #2c3529 !important; font-size: 2rem !important; font-weight: 400 !important; }
+.cards.block.orders .page-title em { font-style: italic !important; color: #b9925a !important; }
+.cards.block.orders .page-sub { font-size: 0.68rem !important; letter-spacing: 0.12em !important; color: #a19f9a !important; text-transform: uppercase !important; font-weight: 700 !important; }
+.cards.block.orders .page-sub em { font-style: italic !important; color: #b9925a !important; font-family: 'Playfair Display', serif !important; font-size: 0.8rem !important; font-weight: 600 !important; letter-spacing: 0 !important; text-transform: none !important; }
+
+.cards.block.orders .orders-master-list { display: flex !important; flex-direction: column !important; gap: 0.85rem !important; }
+.cards.block.orders .minimal-order-row-card { display: flex !important; align-items: center !important; gap: 1.25rem !important; background-color: #ffffff !important; border: 1px solid #edece9 !important; border-radius: 6px !important; padding: 1.15rem !important; cursor: pointer !important; box-shadow: 0 3px 12px rgba(44, 53, 41, 0.01) !important; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important; }
+.cards.block.orders .minimal-order-row-card:hover { border-color: #b9925a !important; transform: translateY(-1px) !important; box-shadow: 0 6px 20px rgba(185, 146, 90, 0.06) !important; }
+
+.cards.block.orders .minimal-thumb-frame { width: 64px !important; height: 64px !important; border-radius: 4px !important; overflow: hidden !important; background-color: #fbfbfa !important; border: 1px solid #edece9 !important; flex-shrink: 0 !important; display: flex !important; align-items: center !important; justify-content: center !important; }
+.cards.block.orders .minimal-thumb-frame img { max-width: 100% !important; max-height: 100% !important; object-fit: contain !important; }
+.cards.block.orders .minimal-details-frame { flex: 1 !important; display: flex !important; flex-direction: column !important; gap: 0.2rem !important; min-width: 0 !important; }
+.cards.block.orders .minimal-title-line { display: flex !important; justify-content: space-between !important; align-items: center !important; gap: 1rem !important; }
+.cards.block.orders .minimal-item-title { font-family: 'Playfair Display', serif !important; font-size: 1.05rem !important; font-weight: 500 !important; color: #111111 !important; }
+.cards.block.orders .minimal-status-badge { font-size: 0.65rem !important; font-weight: 700 !important; text-transform: uppercase !important; letter-spacing: 0.05em !important; background-color: #ecfdf5 !important; color: #067a53 !important; padding: 0.2rem 0.5rem !important; border-radius: 2px !important; }
+
+.cards.block.orders .minimal-item-desc { margin: 0 !important; font-size: 0.8rem !important; color: #767676 !important; display: -webkit-box !important; -webkit-line-clamp: 1 !important; -webkit-box-orient: vertical !important; overflow: hidden !important; }
+.cards.block.orders .minimal-price-line { display: flex !important; justify-content: space-between !important; align-items: center !important; margin-top: 0.15rem !important; }
+.cards.block.orders .minimal-price-val { font-family: 'Playfair Display', serif !important; font-weight: 600 !important; color: #46513f !important; font-size: 1.05rem !important; }
+.cards.block.orders .btn-invoice-expand-trigger { width: 30px !important; height: 30px !important; border-radius: 50% !important; border: none !important; background-color: #f5f4f0 !important; color: #46513f !important; cursor: pointer !important; display: flex !important; align-items: center !important; justify-content: center !important; transition: all 0.25s ease !important; }
+.cards.block.orders .minimal-order-row-card:hover .btn-invoice-expand-trigger { background-color: #46513f !important; color: #ffffff !important; }
+
+/* ==========================================================================
+   MODULE 4: INLINE GLOBAL OVERLAYS (MODAL VIEW RECEIPTS)
+   ========================================================================== */
+.pdp-modal-overlay-shroud { position: fixed !important; top: 0 !important; left: 0 !important; width: 100% !important; height: 100% !important; background-color: rgba(26, 26, 26, 0.15) !important; backdrop-filter: blur(10px) !important; z-index: 99999 !important; display: flex !important; align-items: center !important; justify-content: center !important; opacity: 0; transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important; }
+.pdp-modal-overlay-shroud.active { opacity: 1 !important; }
+
+.pdp-modal-content-card { background-color: #ffffff !important; border: 1px solid #edece9 !important; border-radius: 6px !important; width: 90% !important; max-width: 480px !important; padding: 2rem !important; box-shadow: 0 20px 50px rgba(44,53,41,0.06) !important; position: relative !important; max-height: 85vh !important; overflow-y: auto !important; transform: translateY(15px) !important; transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important; box-sizing: border-box !important; }
+.pdp-modal-overlay-shroud.active .pdp-modal-content-card { transform: translateY(0) !important; }
+
+.btn-close-modal-canvas { position: absolute !important; top: 1.25rem !important; right: 1.25rem !important; background: none !important; border: none !important; color: #a19f9a !important; cursor: pointer !important; transition: color 0.2s !important; padding: 4px !important; display: flex !important; align-items: center !important; justify-content: center !important; }
+.btn-close-modal-canvas:hover { color: #ff4d6d !important; }
+
+.receipt-header-row { display: flex !important; justify-content: space-between !important; align-items: center !important; border-bottom: 1px solid #f1f0ec !important; padding-bottom: 0.85rem !important; margin-bottom: 1rem !important; }
+.receipt-meta-block { display: flex !important; flex-direction: column !important; gap: 2px !important; }
+.receipt-id-lbl { font-size: 0.65rem !important; font-weight: 700 !important; letter-spacing: 0.05em !important; color: #767676 !important; text-transform: uppercase !important; }
+.receipt-id-lbl .hash-id { font-family: 'Playfair Display', serif !important; font-style: italic !important; font-size: 0.8rem !important; color: #b9925a !important; font-weight: 600 !important; }
+.receipt-date-val { font-size: 0.78rem !important; color: #a19f9a !important; }
+.luxury-status-badge.success { background-color: #ecfdf5 !important; color: #067a53 !important; font-size: 0.65rem !important; font-weight: 700 !important; padding: 0.25rem 0.65rem !important; border-radius: 2px !important; text-transform: uppercase !important; }
+
+.receipt-manifest-body { display: flex !important; gap: 1rem !important; align-items: center !important; margin-bottom: 1.25rem !important; }
+.image-arch-frame { width: 56px !important; height: 56px !important; border-radius: 4px !important; border: 1px solid #edece9 !important; display: flex !important; align-items: center !important; justify-content: center !important; flex-shrink: 0 !important; background-color: #fbfbfa !important; }
+.image-arch-frame img { max-width: 100% !important; max-height: 100% !important; object-fit: contain !important; }
+.manifest-item-title { font-family: 'Playfair Display', serif !important; font-size: 1.25rem !important; font-weight: 400 !important; margin: 0 !important; color: #111111 !important; }
+.fulfillment-tier-label { font-size: 0.78rem !important; color: #767676 !important; }
+.fulfillment-tier-label strong { color: #46513f !important; text-transform: uppercase !important; font-size: 0.7rem !important; letter-spacing: 0.02em !important; }
+
+.receipt-summary-split { display: flex !important; flex-direction: column !important; gap: 1.25rem !important; border-top: 1px solid #f1f0ec !important; padding-top: 1.25rem !important; }
+.summary-block-heading { font-family: 'Playfair Display', serif !important; font-style: italic !important; color: #46513f !important; font-size: 0.95rem !important; font-weight: 600 !important; margin: 0 0 0.65rem 0 !important; letter-spacing: 0.02em !important; border-bottom: 1px solid #f1f0ec !important; padding-bottom: 2px !important; }
+.address-grid-matrix { display: grid !important; grid-template-columns: 85px 1fr !important; row-gap: 0.35rem !important; column-gap: 0.5rem !important; font-size: 0.8rem !important; line-height: 1.4 !important; color: #555555 !important; }
+.grid-label { font-weight: 700 !important; color: rgba(44, 53, 41, 0.4) !important; text-transform: uppercase !important; font-size: 0.62rem !important; letter-spacing: 0.04em !important; }
+.grid-value.core-name { font-weight: 600 !important; color: #111111 !important; }
+
+.financial-ledger-table { display: flex !important; flex-direction: column !important; gap: 0.4rem !important; }
+.ledger-line-row { display: flex !important; justify-content: space-between !important; font-size: 0.82rem !important; color: #555555 !important; }
+.font-numeric { font-variant-numeric: tabular-nums !important; font-weight: 500 !important; color: #111111 !important; }
+.ledger-line-row.total-bold { border-top: 1px dashed #edece9 !important; padding-top: 0.55rem !important; margin-top: 0.25rem !important; font-size: 1.15rem !important; font-weight: 600 !important; color: #46513f !important; font-family: 'Playfair Display', Georgia, serif !important; }
+
+/* ==========================================================================
+   RESPONSIVE DESIGN SYSTEM MEDIA CONSTRAINTS MATRIX
+   ========================================================================== */
+@media (max-width: 1024px) {
+  .cards.block.my-bid-details .my-bid-details { flex-direction: column !important; gap: 35px !important; }
+  .cards.block.my-bid-details .media-display-column, .cards.block.my-bid-details .auction-actions-column { width: 100% !important; }
+  .cards.block.my-listing-details .details-scaffold-layout { grid-template-columns: 1fr !important; }
+}
+@media (max-width: 600px) {
+  .cards.block.my-bid-details .financial-performance-ticker { grid-template-columns: repeat(2, 1fr) !important; gap: 12px !important; }
+  .cards.block.mybids .mybids-grid { grid-template-columns: 1fr !important; }
+  .cards.block.my-listing-details .metrics-ticker-tape { grid-template-columns: repeat(2, 1fr) !important; }
+  .cards.block.mylistings .mylistings-stats-bar { grid-template-columns: 1fr !important; }
+  .pdp-modal-content-card { padding: 1.5rem !important; max-width: 95% !important; }
+  .receipt-header-row { flex-direction: column !important; align-items: flex-start !important; gap: 8px !important; }
+}

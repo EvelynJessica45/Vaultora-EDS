@@ -48,12 +48,11 @@ const SVGS = {
 };
 
 export default function decorate(block) {
-  if (countdownInterval) { clearInterval(countdownInterval); countdownInterval = null; }
-
   const isMyBids = block.classList.contains('mybids');
   const isMyBidDetails = block.classList.contains('my-bid-details');
   const isMyListings = block.classList.contains('mylistings');
   const isMyListingDetails = block.classList.contains('my-listing-details');
+  const isOrders = block.classList.contains('orders');
 
   const unblockAEMSEO = () => {
     document.querySelectorAll('meta[name="robots"]').forEach(meta => meta.remove());
@@ -74,7 +73,7 @@ export default function decorate(block) {
   if (!session) { window.location.href = "register.html"; return; }
 
   // ==========================================================================
-  // CONFIG 1: USER ACTIVE BIDS CORE MATRIX OVERVIEW LIST
+  // CONFIG 1: USER ACTIVE BIDS OVERVIEW MATRIX
   // ==========================================================================
   if (isMyBids) {
     const userEmail = session.email.toLowerCase();
@@ -183,7 +182,7 @@ export default function decorate(block) {
   }
 
   // ==========================================================================
-  // CONFIG 2: USER ACTIVE BID DETAILS CARD INSPECTION
+  // CONFIG 2: USER ACTIVE BID DETAILS INSPECTION
   // ==========================================================================
   else if (isMyBidDetails) {
     const rows = [...block.children];
@@ -379,7 +378,7 @@ export default function decorate(block) {
   }
 
   // ==========================================================================
-  // CONFIG 4: SELLER DETAILED PRODUCT ANALYTICS MODULE
+  // CONFIG 4: SELLER LISTING DETAILS PERFORMANCE
   // ==========================================================================
   else if (isMyListingDetails) {
     const pId = new URLSearchParams(window.location.search).get('id');
@@ -438,5 +437,104 @@ export default function decorate(block) {
       block.querySelector('#shippingLogisticsBox').style.display = 'block'; const addr = matchedOrder.shippingAddress;
       block.querySelector('#shippingDetailsPayload').innerHTML = `<div class="order-fulfillment-card"><div style="margin-bottom:0.5rem;"><span class="invoice-reference-badge">Invoice Reference Ledger #${matchedOrder.id}</span></div><div class="item-prop-row"><span class="item-prop-lbl">Recipient Name</span><span class="item-prop-val">${escapeHtml(addr.name)}</span></div><div class="item-prop-row"><span class="item-prop-lbl">Shipping Destination</span><span class="item-prop-val">${escapeHtml(addr.address)}</span></div><div class="item-prop-row"><span class="item-prop-lbl">City & PIN</span><span class="item-prop-val">${escapeHtml(addr.city)} — ${escapeHtml(addr.pin)}</span></div></div>`;
     }
+  }
+
+  // ==========================================================================
+  // CONFIG 5: PURCHASES ORDER HISTORICAL MANIFEST (ORDERS)
+  // ==========================================================================
+  else if (isOrders) {
+    const rows = [...block.children];
+    const cfg = {
+      emptyImg: rows[0]?.children[1]?.textContent?.trim() || 'https://placehold.co/280x200/e8dcc8/5a4a2e?text=No+Orders',
+      emptyText: rows[1]?.children[1]?.textContent?.trim() || 'You have not completed any collection checkout invoices yet.',
+      statusLabel: rows[2]?.children[1]?.textContent?.trim() || 'Paid Checkout',
+      routeLabel: rows[3]?.children[1]?.textContent?.trim() || 'Standard Route',
+      destTitle: rows[4]?.children[1]?.textContent?.trim() || 'Consignee Destination',
+      finTitle: rows[5]?.children[1]?.textContent?.trim() || 'Financial Statement'
+    };
+
+    block.textContent = '';
+    const mainContent = document.createElement('div');
+    mainContent.className = 'main-content';
+    mainContent.innerHTML = `
+      <div class="orders-title-row">
+        <h1 class="page-title">Historical <em>Manifest Ledger</em></h1>
+        <span class="page-sub" id="pageSubtitle">Syncing server database fields...</span>
+      </div>
+      <div class="orders-isolation-boundary"><div class="orders-master-list" id="ordersContainer"></div></div>
+    `;
+    block.append(mainContent);
+
+    const systemOrders = JSON.parse(localStorage.getItem('Vaultora_orders') || '[]');
+    const userPurchases = systemOrders.filter(o => o.buyerEmail && o.buyerEmail.toLowerCase() === session.email.toLowerCase());
+    document.getElementById('pageSubtitle').innerHTML = `Showing <em>${userPurchases.length} settled purchase${userPurchases.length === 1 ? '' : 's'}</em>`;
+
+    const masterListContainer = document.getElementById('ordersContainer');
+    if (userPurchases.length === 0) {
+      masterListContainer.innerHTML = `<div class="bids-empty-wrapper" style="text-align: center; padding: 4rem 1rem;"><img src="${cfg.emptyImg}" alt="Empty" width="280" height="200"/><p style="margin-top:1rem; color:#5a5852; font-weight:500;">${cfg.emptyText}</p></div>`;
+      return;
+    }
+
+    const globalInventory = typeof getProducts === 'function' ? getProducts() : [];
+    const sortedReceipts = [...userPurchases].sort((a, b) => new Date(b.paidAt || b.timestamp) - new Date(a.paidAt || a.timestamp));
+
+    masterListContainer.innerHTML = sortedReceipts.map((order, idx) => {
+      const match = globalInventory.find(p => String(p.id) === String(order.productId));
+      return `
+        <div class="minimal-order-row-card" data-order-id="${order.id}" style="animation-delay: ${idx * 0.05}s;">
+          <div class="minimal-thumb-frame"><img src="${match?.images?.[0] || match?.image || ''}" alt="Thumb"/></div>
+          <div class="minimal-details-frame">
+            <div class="minimal-title-line"><h3 class="minimal-item-title">${order.productTitle || match?.title || 'Luxury Asset'}</h3><span class="minimal-status-badge">${cfg.statusLabel}</span></div>
+            <p class="minimal-item-desc">${match?.description || 'Curated acquisition block.'}</p>
+            <div class="minimal-price-line"><span class="minimal-price-val">₹${Number(order.total).toLocaleString('en-IN', {minimumFractionDigits:2})}</span><button type="button" class="btn-invoice-expand-trigger">📄</button></div>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    masterListContainer.onclick = (e) => {
+      const card = e.target.closest('.minimal-order-row-card');
+      if (!card) return;
+      const order = sortedReceipts.find(o => String(o.id) === String(card.dataset.orderId));
+      if (!order) return;
+
+      const match = globalInventory.find(p => String(p.id) === String(order.productId));
+      const overlay = document.createElement('div');
+      overlay.className = 'pdp-modal-overlay-shroud';
+      overlay.innerHTML = `
+        <div class="pdp-modal-content-card">
+          <button type="button" class="btn-close-modal-canvas" id="pdpCloseModalBtn">✕</button>
+          <div class="receipt-header-row">
+            <div class="receipt-meta-block"><span class="receipt-id-lbl">ORDER REFERENCE: <span class="hash-id">#${order.id}</span></span><span class="receipt-date-val">Ordered on ${new Date(order.paidAt || order.timestamp).toLocaleString('en-IN')}</span></div>
+            <div><span class="luxury-status-badge success">${cfg.statusLabel}</span></div>
+          </div>
+          <div class="receipt-manifest-body">
+            <div class="image-arch-frame"><img src="${match?.images?.[0] || match?.image || ''}" alt="Item"/></div>
+            <div class="manifest-text-details"><h3 class="manifest-item-title">${order.productTitle || match?.title || 'Luxury Piece'}</h3><span class="fulfillment-tier-label">Fulfillment Tier: <strong>${order.shippingOption || cfg.routeLabel}</strong></span></div>
+          </div>
+          <div class="receipt-summary-split">
+            <div class="shipping-address-summary">
+              <h4 class="summary-block-heading">I. ${cfg.destTitle}</h4>
+              <div class="address-grid-matrix">
+                <span class="grid-label">Recipient</span><span class="grid-value core-name">${order.shippingAddress?.name || order.buyerName || ''}</span>
+                <span class="grid-label">Street</span><span class="grid-value">${order.shippingAddress?.address || 'Collection Location Drop'}</span>
+                <span class="grid-label">City / PIN</span><span class="grid-value">${order.shippingAddress?.city || ''} — ${order.shippingAddress?.pin || ''}</span>
+              </div>
+            </div>
+            <div class="financial-ledger-table">
+              <h4 class="summary-block-heading">II. ${cfg.finTitle}</h4>
+              <div class="ledger-line-row"><span>Hammer Price Valuation</span><span class="font-numeric">₹${Number(order.winningBid || order.total).toLocaleString('en-IN')}</span></div>
+              <div class="ledger-line-row total-bold"><span>Total Settled Value</span><span class="font-numeric">₹${Number(order.total).toLocaleString('en-IN')}</span></div>
+            </div>
+          </div>
+        </div>
+      `;
+      document.body.append(overlay);
+      setTimeout(() => overlay.classList.add('active'), 10);
+
+      const close = () => { overlay.classList.remove('active'); setTimeout(() => overlay.remove(), 250); };
+      overlay.querySelector('#pdpCloseModalBtn').onclick = close;
+      overlay.onclick = (evt) => { if (evt.target === overlay) close(); };
+    };
   }
 }
