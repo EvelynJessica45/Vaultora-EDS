@@ -60,7 +60,7 @@ export default function decorate(block) {
         <option value="active">Active Auctions Only</option>
         <option value="pending">Payment Pending Only</option>
         <option value="completed">Payment Completed Only</option>
-        <option value="no_bids">Ended (No Bids) Only</option>
+        <option value="no_bids">Ended (No Bids) OnlyYYY</option>
       </select>
     </div>
   `;
