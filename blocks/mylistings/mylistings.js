@@ -1,7 +1,7 @@
 /*
  * mylistings.js
  * Decorates the user's personal seller inventory dashboard.
- * Separates listings into 4 distinct visual sections based on real-time status parameters.
+ * Separates listings into dsd4 distinct visual sections based on real-time status parameters.
  */
 
 import { getProducts, getBids, getSession, saveProducts } from '../../scripts/storage.js';
@@ -12,7 +12,8 @@ const SVGS = {
   completed: `<svg width="15" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>`,
   ended: `<svg width="15" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`,
   badgeDot: `<svg width="6" height="6" viewBox="0 0 8 8" fill="currentColor" aria-hidden="true"><circle cx="4" cy="4" r="3"/></svg>`,
-  powerOff: `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path><line x1="12" y1="2" x2="12" y2="12"></line></svg>`
+  powerOff: `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path><line x1="12" y1="2" x2="12" y2="12"></line></svg>`,
+  plus: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>`
 };
 
 export default function decorate(block) {
@@ -54,14 +55,19 @@ export default function decorate(block) {
       <input type="search" id="listingSearchInput" placeholder="Search listed products..." autocomplete="off" aria-label="Search listed products" />
       <button type="button" class="btn-clear-search" id="clearSearchBtn" aria-label="Clear search">✕</button>
     </div>
-    <div class="mylistings-select-wrap">
-      <select id="statusFilterSelector" aria-label="Filter listings by status">
-        <option value="all">Show All Sections</option>
-        <option value="active">Active Auctions Only</option>
-        <option value="pending">Payment Pending Only</option>
-        <option value="completed">Payment Completed Only</option>
-        <option value="no_bids">Ended (No Bids) Only</option>
-      </select>
+    <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+      <div class="mylistings-select-wrap">
+        <select id="statusFilterSelector" aria-label="Filter listings by status">
+          <option value="all">Show All Sections</option>
+          <option value="active">Active Auctions Only</option>
+          <option value="pending">Payment Pending Only</option>
+          <option value="completed">Payment Completed Only</option>
+          <option value="no_bids">Ended (No Bids) Only</option>
+        </select>
+      </div>
+      <button type="button" class="btn-end-auction-early" id="addListingRedirectBtn" title="Create a new auction entry lot inside the seller studio environment" style="background: #1a3020; margin-top: 0; min-height: 48px; border-radius: 100px; padding: 0 1.5rem;">
+        ${SVGS.plus} <span>Add Listing</span>
+      </button>
     </div>
   `;
   dashboard.append(filterRow);
@@ -80,6 +86,11 @@ export default function decorate(block) {
     </div>`).join('')}</div>`;
   dashboard.append(container);
   block.append(dashboard);
+
+  // Hook redirection binding hook straight to the seller-dashboard module path
+  dashboard.querySelector('#addListingRedirectBtn')?.addEventListener('click', () => {
+    window.location.href = '/seller-dashboard';
+  });
 
   statsBar.addEventListener('click', (e) => {
     const card = e.target.closest('.mylistings-stat-card');
@@ -321,23 +332,23 @@ export default function decorate(block) {
         const product = allProducts.find(p => p && String(p.id) === String(productId));
 
         if (product) {
-         const allBids = getBids() || [];
-const productBids = allBids
-  .filter(b => b && String(b.productId) === String(productId))
-  .sort((a, b) => Number(b.amount) - Number(a.amount));
+          const allBids = getBids() || [];
+          const productBids = allBids
+            .filter(b => b && String(b.productId) === String(productId))
+            .sort((a, b) => Number(b.amount) - Number(a.amount));
 
-product.endTime = new Date().toISOString();
+          product.endTime = new Date().toISOString();
 
-if (productBids.length > 0) {
-  product.auctionStatus = 'inactive'; 
-  product.winnerEmail = (productBids[0].user || "").toLowerCase();
-  product.currentBid = Number(productBids[0].amount);
-  product.paymentStatus = 'pending';
-} else {
-  product.auctionStatus = 'ended'; 
-  product.winnerEmail = null;
-  product.paymentStatus = 'none';
-}
+          if (productBids.length > 0) {
+            product.auctionStatus = 'inactive'; 
+            product.winnerEmail = (productBids[0].user || "").toLowerCase();
+            product.currentBid = Number(productBids[0].amount);
+            product.paymentStatus = 'pending';
+          } else {
+            product.auctionStatus = 'ended'; 
+            product.winnerEmail = null;
+            product.paymentStatus = 'none';
+          }
 
           await saveProducts(allProducts);
         }
