@@ -13,7 +13,7 @@ import {
   loadCSS,
   buildBlock,
 } from './aem.js';
-
+// dsds
 async function loadFonts() {
   try {
     const fontPreload = document.createElement('link');
@@ -108,10 +108,9 @@ function decorateButtons(main) {
     }
   });
 }
-
 /**
  * Monolithic Profile Cards Interceptor Routing Engine
- * Re-maps 5 workspace block profiles onto the core cards asset pair bundle.
+ * Re-maps 5 user workspace block profiles onto the core cards asset pair bundle.
  */
 function redirectCardsBlocks(main) {
   if (!main) return;
@@ -122,14 +121,14 @@ function redirectCardsBlocks(main) {
     const matchedClass = targetCardsBlocks.find(cls => block.classList.contains(cls));
     const finalMatchName = blockName || matchedClass;
 
-    if (finalMatchName && targetCardsBlocks.includes(finalMatchName)) {
+    if (targetCardsBlocks.includes(finalMatchName)) {
       block.setAttribute('data-block-name', 'cards');
+      
       block.className = 'cards block';
       block.classList.add(finalMatchName);
     }
   });
 }
-
 function redirectCategoryBlocks(main) {
   if (!main) return;
   const targetCategoryBlocks = ['category-immersive', 'carousal-fashion', 'gridelectronics', 'carousal-wine', 'gridgallery'];
@@ -146,9 +145,35 @@ function redirectCategoryBlocks(main) {
   });
 }
 
+/**
+ * Monolithic Dashboard Interceptor Routing Engine
+ * Re-maps 5 profile block assets to the core dashboard bundle automatically
+ */
+function redirectDashboardBlocks(main) {
+  if (!main) return;
+  const targetDashboardBlocks = ['mybids', 'my-bid-details', 'mylistings', 'my-listing-details', 'orders'];
+  const blocks = main.querySelectorAll('div[data-block-name]');
+  if (!blocks.length) return;
+
+  blocks.forEach((block) => {
+    const blockName = block.getAttribute('data-block-name');
+    if (targetDashboardBlocks.includes(blockName)) {
+      // 1. Pivot asset routing pipelines cleanly to point to blocks/dashboard/
+      block.setAttribute('data-block-name', 'dashboard');
+      
+      // 2. Format class structures safely to avoid style accumulation loops
+      block.className = 'dashboard block';
+      
+      // 3. Keep original layout signature identity hook active
+      block.classList.add(blockName);
+    }
+  });
+}
+
 export function decorateMain(main) {
+  // Execute universal mapping overrides before document decoration fires
   redirectCategoryBlocks(main);
-  redirectCardsBlocks(main);
+  redirectDashboardBlocks(main);
   decorateIcons(main);
   buildAutoBlocks(main);
   decorateSections(main);
@@ -158,45 +183,118 @@ export function decorateMain(main) {
 
 async function loadEager(doc) {
   document.documentElement.lang = 'en';
+  
+  const clearRobotsBlocks = () => {
+    const metas = Array.from(doc.querySelectorAll('meta[name="robots"]'));
+    metas.forEach(el => el.remove());
+    
+    const targetMeta = doc.createElement('meta');
+    targetMeta.name = 'robots';
+    targetMeta.content = 'index, follow, max-image-preview:large';
+    doc.head.appendChild(targetMeta);
+
+    if (!doc.querySelector('meta[name="description"]')) {
+      const metaDesc = doc.createElement('meta');
+      metaDesc.name = 'description';
+      metaDesc.content = 'Review and manage your real-time active, won, or historical bids on our consolidated premium luxury auction ecosystem dashboard.';
+      doc.head.appendChild(metaDesc);
+    }
+  };
+  clearRobotsBlocks();
+
+  const preconnectHint = doc.createElement('link');
+  preconnectHint.rel = 'preconnect';
+  preconnectHint.href = 'https://vaultora.s3.ap-south-1.amazonaws.com';
+  preconnectHint.crossOrigin = 'anonymous';
+  doc.head.append(preconnectHint);
+
+  const dnsPrefetchHint = doc.createElement('link');
+  dnsPrefetchHint.rel = 'dns-prefetch';
+  dnsPrefetchHint.href = 'https://vaultora.s3.ap-south-1.amazonaws.com';
+  doc.head.append(dnsPrefetchHint);
+
   decorateTemplateAndTheme();
   const main = doc.querySelector('main');
   if (main) {
+    // Intercept early gate variants before LCP section rendering loop cycles
     redirectCategoryBlocks(main);
-    redirectCardsBlocks(main);
+    redirectDashboardBlocks(main);
+    
     decorateMain(main);
+    const criticalHeroBg = main.querySelector('.hero-bg-canvas picture source, .hero-bg-canvas picture img');
+    if (criticalHeroBg) {
+      const preloadLink = doc.createElement('link');
+      preloadLink.rel = 'preload';
+      preloadLink.as = 'image';
+      preloadLink.href = criticalHeroBg.getAttribute('srcset') || criticalHeroBg.getAttribute('src');
+      preloadLink.fetchPriority = 'high';
+      doc.head.append(preloadLink);
+    }
     doc.body.classList.add('appear');
     await loadSection(main.querySelector('.section'), waitForFirstImage);
   }
-  if (window.requestIdleCallback) window.requestIdleCallback(() => loadFonts());
-  else setTimeout(loadFonts, 10);
+  
+  if (window.requestIdleCallback) {
+    window.requestIdleCallback(() => loadFonts());
+  } else {
+    setTimeout(loadFonts, 10);
+  }
 }
 
 async function loadLazy(doc) {
   const headerAnchor = doc.querySelector('header');
   if (headerAnchor) loadHeader(headerAnchor);
+
   const main = doc.querySelector('main');
   if (main) {
+    // Pipeline asset tracking recovery pass
     redirectCategoryBlocks(main);
-    redirectCardsBlocks(main);
+    redirectDashboardBlocks(main);
     await loadSections(main);
   }
+
   const { hash } = window.location;
   const element = hash ? doc.getElementById(hash.substring(1)) : false;
   if (hash && element) element.scrollIntoView();
+
   const footerAnchor = doc.querySelector('footer');
   if (footerAnchor) {
     footerAnchor.innerHTML = '';
     const footerBlock = buildBlock('footer', '');
     footerAnchor.append(footerBlock);
     decorateBlock(footerBlock);
+    footerAnchor.classList.add('footer-container');
+    footerBlock.parentElement.classList.add('footer-wrapper');
     await loadBlock(footerBlock);
   }
+
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
+}
+
+function loadDelayed() {
+  const executionDelay = window.requestIdleCallback || ((cb) => window.setTimeout(cb, 60));
+  executionDelay(() => {
+    import('./storage.js')
+      .then((storageModule) => storageModule.initializeStore())
+      .catch(err => console.warn('Delayed background layer sync deferred:', err));
+
+    import('./delayed.js').catch((err) => console.error(err));
+  }, { timeout: 3000 });
 }
 
 async function loadPage() {
   await loadEager(document);
+
+  const deferServiceInitialization = window.requestIdleCallback || ((cb) => window.setTimeout(cb, 250));
+  deferServiceInitialization(() => {
+    import('./notification-service.js')
+      .then(m => m.initializeEmailJS())
+      .catch(err => console.warn('Deferred notification initialization skipped:', err));
+  });
+
   await loadLazy(document);
+  loadDelayed();
+
   window.addEventListener('pagehide', () => {
     if (window.LiveReload?.connector?.socket) {
       try { window.LiveReload.connector.socket.close(); } catch (e) {}

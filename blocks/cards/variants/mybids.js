@@ -5,7 +5,7 @@
  * and splits rendering across Leading, Outbid, Won, and Lost metrics.
  */
 
-import { getProducts, getBids, getSession } from '/scripts/storage.js';
+import { getProducts, getBids, getSession } from '../../scripts/storage.js';
 
 // Centralised layout calculations matching dashboard status models
 function getBidHistoryForProduct(productId) {

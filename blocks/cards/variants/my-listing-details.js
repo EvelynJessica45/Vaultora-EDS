@@ -1,4 +1,4 @@
-import { getProducts, getBids, getSession } from '/scripts/storage.js';
+import { getProducts, getBids, getSession } from '../../scripts/storage.js';
 let showingAllBidders = false;
 
 const ICONS = {

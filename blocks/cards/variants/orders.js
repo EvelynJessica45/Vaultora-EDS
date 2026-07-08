@@ -4,7 +4,7 @@
  * Edge Delivery Services (EDS) block configuration template.
  */
 
-import { getProducts, getSession } from '/scripts/storage.js';
+import { getProducts, getSession } from '../../scripts/storage.js';
 
 function fmt(n) {
   return '₹' + Number(n || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });

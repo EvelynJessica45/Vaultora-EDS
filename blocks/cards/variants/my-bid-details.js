@@ -2,7 +2,7 @@
    MY BID DETAILS — HIGH-PERFORMANCE RENDERING ENGINE
    ========================================================================= */
 
-import { getProducts, getBids, getSession, saveProducts, saveBids } from '/scripts/storage.js';
+import { getProducts, getBids, getSession, saveProducts, saveBids } from '../../scripts/storage.js';
 
 let product = null;
 let bids = [];
