@@ -28,12 +28,8 @@ export default function decorate(block) {
   block.textContent = '';
 
   const session = getSession();
-  if (!session) {
-    block.innerHTML = `
-      <div class="mybids-empty-state">
-        <p>Please log in to view your dynamic bidding matrix dashboard.</p>
-        <button class="btn-modal-submit" onclick="window.location.href='register'">Go to Login</button>
-      </div>`;
+ if (!session) {
+    window.location.replace('/register');
     return;
   }
 

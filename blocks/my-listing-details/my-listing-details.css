@@ -672,3 +672,32 @@
     grid-template-columns: repeat(1, 1fr);
   }
 } 
+
+/* Ensure the button has a solid background and luxury styling */
+.btn-add-listing {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #1a3020 !important; /* Forces the dark green background */
+  color: #ffffff !important;           /* Forces white text */
+  padding: 0.75rem 1.5rem;
+  border-radius: 100px;
+  text-decoration: none;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border: none;                        /* Ensures no transparent border effect */
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(26, 48, 32, 0.15);
+}
+
+.btn-add-listing:hover {
+  background-color: #8c6227 !important; /* Gold/Bronze accent on hover */
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(140, 98, 39, 0.3);
+}
+
+.btn-add-listing:active {
+  transform: translateY(0);
+}

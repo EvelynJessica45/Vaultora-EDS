@@ -166,40 +166,45 @@ if (!session) {
 
     /* ---------- PROFILE ---------- */
 
+  /* ---------- PROFILE ---------- */
+
     const profileWrapper = document.createElement('div');
-    profileWrapper.className =
-      'header-profile-container';
+    profileWrapper.className = 'header-profile-container';
 
     if (session) {
-      const profile = createLink(
-        session.name || 'Profile',
-        '/profile',
-      );
+      const userName = session.name || 'Profile';
+      
+      // Create the main wrapper link
+      const profile = document.createElement('a');
+      profile.href = '/profile';
+      profile.className = 'user-chip-premium';
 
-      profile.classList.add(
-        'user-chip-premium',
-      );
+      // Create the avatar circle
+      const avatar = document.createElement('div');
+      avatar.className = 'user-avatar-premium';
+      // Extract the first letter of the name for the avatar
+      avatar.textContent = userName.charAt(0).toUpperCase();
 
+      // Create the name text element
+      const nameText = document.createElement('span');
+      nameText.className = 'user-name-text';
+      nameText.textContent = userName;
+
+      // Append avatar and name to the profile link
+      profile.append(avatar);
       profileWrapper.append(profile);
 
-      const logoutBtn =
-        document.createElement('button');
-
+      // Logout Button (Keep existing logic)
+      const logoutBtn = document.createElement('button');
       logoutBtn.textContent = 'Logout';
-      logoutBtn.className =
-        'btn-logout-premium';
-
+      logoutBtn.className = 'btn-logout-premium';
       logoutBtn.addEventListener('click', () => {
-        localStorage.removeItem(
-          'Vaultora_session',
-        );
-
-        window.location.reload();
+        localStorage.removeItem('Vaultora_session');
+        window.location.replace('/register');
       });
 
       profileWrapper.append(logoutBtn);
     }
-
     wrapper.append(
       logoContainer,
       navWrapper,

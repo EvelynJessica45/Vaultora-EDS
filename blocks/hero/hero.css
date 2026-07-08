@@ -5,6 +5,8 @@
   width: 100%;
   display: flex;
   flex-direction: column;
+}.promo-banner-cta-btn {
+    display: none !important;
 }
 
 /* Content Visibility Layer Management Optimization for High Performance Audits */

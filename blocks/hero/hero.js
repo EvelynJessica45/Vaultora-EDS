@@ -101,10 +101,12 @@ export default async function decorate(block) {
   startBiddingBtn.textContent = 'Start Bidding';
   startBiddingBtn.setAttribute('href', '/dashboard');
   
-  const sellItemBtn = document.createElement('a');
-  sellItemBtn.className = 'hero-btn secondary sell-item-trigger';
-  sellItemBtn.textContent = 'Sell an Item';
-  sellItemBtn.setAttribute('href', '#');
+ // Locate this block in the decorate(block) function
+const sellItemBtn = document.createElement('a');
+sellItemBtn.className = 'hero-btn secondary ';
+sellItemBtn.textContent = 'About Vaultora';
+// Change the href from '#' to '/dashboard'
+sellItemBtn.setAttribute('href', '/about');
 
   actionsWrapper.append(startBiddingBtn, sellItemBtn);
   textZone.append(actionsWrapper);
@@ -164,7 +166,7 @@ function setupPageInteractions() {
   const promoCtaBtn = document.querySelector('.promo-banner-cta-btn');
   if (promoCtaBtn) {
     promoCtaBtn.innerHTML = 'Link to Ending Auctions &rarr;';
-    promoCtaBtn.setAttribute('href', 'https://yourdomain.com/ending-soon');
+    promoCtaBtn.setAttribute('href', '/dashboard?filter=ending-within-24h');
   }
 
   // 2. Configure the "Browse All" button link routing
@@ -185,26 +187,27 @@ function setupPageInteractions() {
   }
 
   // 4. Secure Auth Routing for the "Sell an Item" action link triggers
-  const textZoneContainer = document.querySelector('.hero-text-zone');
-  if (textZoneContainer) {
-    textZoneContainer.addEventListener('click', (e) => {
-      const btn = e.target.closest('.sell-item-trigger');
-      if (!btn) return;
-      
-      e.preventDefault();
-      
-      const role = getUserRole();
-      if (role === 'seller' || role === 'both' || role === 'seller-buyer' || role === 'admin') {
-        window.location.href = '/seller-dashboard';
-      } else if (localStorage.getItem('user_token') || localStorage.getItem('user_role')) {
-        showSystemPopup('Access Denied', 'Your active profile is configured as a Buyer. Please update your profile parameters to gain access to vendor dashboards.');
-      } else {
-        showSystemPopup('Authentication Required', 'Authentication profiling context missing. Please log in to proceed.', () => {
-          window.location.href = '/register';
-        });
-      }
-    });
-  }
+ // Remove this entire block from setupPageInteractions()
+const textZoneContainer = document.querySelector('.hero-text-zone');
+if (textZoneContainer) {
+  textZoneContainer.addEventListener('click', (e) => {
+    const btn = e.target.closest('.sell-item-trigger');
+    if (!btn) return;
+    
+    e.preventDefault();
+    
+    const role = getUserRole();
+    if (role === 'seller' || role === 'both' || role === 'seller-buyer' || role === 'admin') {
+      window.location.href = '/seller-dashboard';
+    } else if (localStorage.getItem('user_token') || localStorage.getItem('user_role')) {
+      showSystemPopup('Access Denied', 'Your active profile is configured as a Buyer. Please update your profile parameters to gain access to vendor dashboards.');
+    } else {
+      showSystemPopup('Authentication Required', 'Authentication profiling context missing. Please log in to proceed.', () => {
+        window.location.href = '/register';
+      });
+    }
+  });
+}
 
   // 5. Shared Click Event Handler for Favorites Buttons
   document.body.addEventListener('click', (e) => {

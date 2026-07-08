@@ -185,41 +185,42 @@ export default async function decorate(block) {
   }
 
   // ── 2. HARDCODED STRUCTURE CONFIG DATA ──
+  // ── 2. UPDATED HARDCODED STRUCTURE CONFIG DATA ──
   const footerData = {
     brand: {
-      logoSrc: '/media_122fd104a0d60ef7f35a206cc31029a4c277acceb.png', // Fallback context path
+      logoSrc: '/media_122fd104a0d60ef7f35a206cc31029a4c277acceb.png',
       tagline: 'Luxury sustainable auctions for the conscious collector.',
       socials: [
-        { network: 'instagram', url: '#instagram' },
-        { network: 'linkedin', url: '#linkedin' },
-        { network: 'x', url: '#x' }
+        { network: 'instagram', url: 'https://instagram.com/vaultora' },
+        { network: 'linkedin', url: 'https://linkedin.com/company/vaultora' },
+        { network: 'x', url: 'https://x.com/vaultora' }
       ]
     },
     navigation: [
       {
         title: 'MARKETPLACE',
         links: [
-          { text: 'Browse Auctions', url: '#browse-auctions' },
-          { text: 'List an Item', url: '#list-an-item' },
-          { text: 'My Bids', url: '#my-bids' },
-          { text: 'Favorites', url: '#favorites' },
-          { text: 'My Listing', url: '#my-listing' }
+          { text: 'Browse Auctions', url: '/dashboard' },
+          { text: 'List an Item', url: '/seller-dashboard' },
+          { text: 'My Bids', url: '/mybids' },
+          { text: 'Favorites', url: '/wishlist' },
+          { text: 'My Listings', url: '/mylistings' }
         ]
       },
       {
         title: 'ACCOUNT',
         links: [
-          { text: 'Profile', url: '#profile' },
-          { text: 'Login/Sign Up', url: '#login/sign-up' }
+          { text: 'Profile', url: '/profile' },
+          { text: 'Login/Sign Up', url: '/register' }
         ]
       },
       {
         title: 'ABOUT',
         links: [
-          { text: 'About Vaultora', url: '#about-vaultora' },
-          { text: 'How It Works', url: '#how-it-works' },
-          { text: 'FAQ', url: '#faq' },
-          { text: 'Contact Us', url: '#contact-us' }
+          { text: 'About Vaultora', url: '/about' },
+          { text: 'How It Works', url: '/how-it-works' },
+          { text: 'FAQ', url: '/faq' },
+          { text: 'Contact Us', url: '/contact' }
         ]
       }
     ],

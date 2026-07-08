@@ -13,7 +13,7 @@ import {
   loadCSS,
   buildBlock,
 } from './aem.js';
-// dsds
+
 async function loadFonts() {
   try {
     const fontPreload = document.createElement('link');
@@ -125,35 +125,8 @@ function redirectCategoryBlocks(main) {
   });
 }
 
-/**
- * Monolithic Dashboard Interceptor Routing Engine
- * Re-maps 5 profile block assets to the core dashboard bundle automatically
- */
-function redirectDashboardBlocks(main) {
-  if (!main) return;
-  const targetDashboardBlocks = ['mybids', 'my-bid-details', 'mylistings', 'my-listing-details', 'orders'];
-  const blocks = main.querySelectorAll('div[data-block-name]');
-  if (!blocks.length) return;
-
-  blocks.forEach((block) => {
-    const blockName = block.getAttribute('data-block-name');
-    if (targetDashboardBlocks.includes(blockName)) {
-      // 1. Pivot asset routing pipelines cleanly to point to blocks/dashboard/
-      block.setAttribute('data-block-name', 'dashboard');
-      
-      // 2. Format class structures safely to avoid style accumulation loops
-      block.className = 'dashboard block';
-      
-      // 3. Keep original layout signature identity hook active
-      block.classList.add(blockName);
-    }
-  });
-}
-
 export function decorateMain(main) {
-  // Execute universal mapping overrides before document decoration fires
   redirectCategoryBlocks(main);
-  redirectDashboardBlocks(main);
   decorateIcons(main);
   buildAutoBlocks(main);
   decorateSections(main);
@@ -188,6 +161,9 @@ async function loadEager(doc) {
   preconnectHint.crossOrigin = 'anonymous';
   doc.head.append(preconnectHint);
 
+  // Fallback DNS resolution hint for browsers/situations where a full
+  // preconnect handshake doesn't happen (e.g. connection reused/dropped);
+  // cheap insurance alongside the preconnect above for the same host.
   const dnsPrefetchHint = doc.createElement('link');
   dnsPrefetchHint.rel = 'dns-prefetch';
   dnsPrefetchHint.href = 'https://vaultora.s3.ap-south-1.amazonaws.com';
@@ -196,10 +172,6 @@ async function loadEager(doc) {
   decorateTemplateAndTheme();
   const main = doc.querySelector('main');
   if (main) {
-    // Intercept early gate variants before LCP section rendering loop cycles
-    redirectCategoryBlocks(main);
-    redirectDashboardBlocks(main);
-    
     decorateMain(main);
     const criticalHeroBg = main.querySelector('.hero-bg-canvas picture source, .hero-bg-canvas picture img');
     if (criticalHeroBg) {
@@ -226,12 +198,7 @@ async function loadLazy(doc) {
   if (headerAnchor) loadHeader(headerAnchor);
 
   const main = doc.querySelector('main');
-  if (main) {
-    // Pipeline asset tracking recovery pass
-    redirectCategoryBlocks(main);
-    redirectDashboardBlocks(main);
-    await loadSections(main);
-  }
+  if (main) await loadSections(main);
 
   const { hash } = window.location;
   const element = hash ? doc.getElementById(hash.substring(1)) : false;
@@ -254,6 +221,13 @@ async function loadLazy(doc) {
 function loadDelayed() {
   const executionDelay = window.requestIdleCallback || ((cb) => window.setTimeout(cb, 60));
   executionDelay(() => {
+    // Note: this used to also eagerly import('./aws-service.js') and call
+    // initializeAWS() here, which downloaded and executed the full AWS SDK
+    // (~380 KiB) on every single page load just so storage.js could read a
+    // JSON file. storage.js's initializeStore() now hydrates via a plain
+    // fetch internally (see aws-service.js), so the SDK is no longer needed
+    // on this always-run path at all — it's loaded lazily, later, only if
+    // the visitor actually performs a write (bid, payment, image upload).
     import('./storage.js')
       .then((storageModule) => storageModule.initializeStore())
       .catch(err => console.warn('Delayed background layer sync deferred:', err));

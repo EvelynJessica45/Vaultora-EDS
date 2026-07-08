@@ -31,23 +31,35 @@
   flex-shrink: 0;
 }
 
-.header-logo-wrapper {
+/* .header-logo-wrapper {
   display: flex;
   align-items: center;
   justify-content: flex-start;
   flex-shrink: 0;
-  width: 140px;
+  width: 150px;
   text-decoration: none;
-}
+} */
 
 .header-logo-wrapper picture,
 .header-logo-wrapper img {
-  width: 120px;
+  /* Increase width from 120px to your desired size, e.g., 160px */
+  width: 160px; 
   height: auto;
-  max-height: 42px;
+  /* Increase max-height to ensure it scales correctly */
+  max-height: 52px; 
   display: block;
   object-fit: contain;
   object-position: left center;
+}
+
+.header-logo-wrapper {
+  /* Update container width to match the new logo size */
+  width: 180px; 
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-shrink: 0;
+  text-decoration: none;
 }
 .header-links-container {
   flex: 1;
@@ -181,6 +193,43 @@
 .header-icon-btn:hover {
   transform: translateY(-2px);
   background: #e8e2d6;
+}
+/* Update the main chip container */
+.user-chip-premium {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px; /* Adds space between the circle and the text */
+  padding: 6px 18px 6px 6px; /* Less padding on the left to hug the circle */
+  border-radius: 999px;
+  background: #f3f3f1;
+  color: var(--nav-text-dark);
+  text-decoration: none;
+  transition: transform .2s ease;
+  min-height: 44px; /* Ensure consistent height */
+  box-sizing: border-box;
+}
+
+/* Ensure the avatar stays perfectly round */
+.user-avatar-premium {
+  width: 32px; /* Slightly smaller than the container height */
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #3c4537; /* The dark forest green color */
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 16px;
+  flex-shrink: 0; /* Prevents the circle from squishing */
+}
+
+/* Style the text */
+.user-name-text {
+  font-weight: 700;
+  font-size: 0.95rem;
+  font-family: 'DM Sans', sans-serif;
+  color: #000000;
 }
 /* ── RE-ENGINEERED GET STARTED / SELL AN ITEM CTA (ORANGE FILL SLIDE) ── */
 .btn-signup-premium {

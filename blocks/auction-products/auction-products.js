@@ -19,7 +19,20 @@ let activeBidProduct = null;
 function formatRupees(n) {
   return `₹${Math.round(n).toLocaleString('en-IN')}`;
 }
-
+function applyFilter(filterType) {
+  if (filterType === 'ending-within-24h') {
+    const now = new Date();
+    const oneDayInMs = 24 * 60 * 60 * 1000;
+    
+    // Logic to filter products
+    const filtered = allProducts.filter(p => {
+      const endTime = new Date(p.endTime);
+      return (endTime - now) <= oneDayInMs && (endTime - now) > 0;
+    });
+    
+    renderListings(filtered); // Refresh the UI with filtered results
+  }
+}
 function formatRupeesFull(n) {
   return `₹${Number(n).toLocaleString('en-IN', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
 }
@@ -363,18 +376,26 @@ async function handleBidSubmission() {
 }
 
 function applyFiltersAndSort(grid, state) {
-  const cards = [...grid.children]; let visibleCount = 0;
+  const cards = [...grid.children]; 
+  const now = Date.now();
+  const oneDayInMs = 24 * 60 * 60 * 1000;
+  
   cards.forEach((card) => {
     let visible = true;
+    
+    // Existing search/category/price logic...
     if (state.search && !card.dataset.searchText.includes(state.search)) visible = false;
     if (state.categories?.length && !state.categories.includes(card.dataset.category)) visible = false;
-    const bid = parseFloat(card.dataset.currentBid);
-    if (state.bidMin != null && bid < state.bidMin) visible = false;
-    if (state.bidMax != null && bid > state.bidMax) visible = false;
-    card.style.display = visible ? '' : 'none'; if (visible) visibleCount++;
-  });
+    
+    // NEW: 24-hour filter logic
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('filter') === 'ending-within-24h') {
+      const endsIn = parseInt(card.dataset.endsInMinutes, 10) * 60000;
+      if (endsIn > oneDayInMs || endsIn < 0) visible = false;
+    }
 
-  const visibleCards = cards.filter(c => c.style.display !== 'none');
+    card.style.display = visible ? '' : 'none';
+  });
   if (state.sort) {
     visibleCards.sort((a, b) => {
       if (state.sort === 'price_asc') return parseFloat(a.dataset.currentBid) - parseFloat(b.dataset.currentBid);
@@ -458,6 +479,9 @@ export default function decorate(block) {
     else if (detail.group === 'bid') { state.bidMin = detail.min; state.bidMax = detail.max; }
     applyFiltersAndSort(grid, state);
   });
-
+const urlParams = new URLSearchParams(window.location.search);
+if (urlParams.get('filter') === 'ending-within-24h') {
+  state.sort = 'ending_soon'; // Sets the dropdown/sort state
+}
   reloadGrid();
 }
