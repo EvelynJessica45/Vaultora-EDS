@@ -129,6 +129,25 @@ function redirectCardsBlocks(main) {
     }
   });
 }
+function redirectCustomCardsBlocks(main) {
+  if (!main) return;
+  // Define your variants here
+  const targetCustomCardVariants = ['auction-products', 'wishlist'];
+  
+  main.querySelectorAll('div[data-block-name]').forEach((block) => {
+    const blockName = block.getAttribute('data-block-name');
+    
+    // Check if the current block is one of our variant types
+    if (targetCustomCardVariants.includes(blockName)) {
+      // 1. Pivot routingd to the core customcards block
+      block.setAttribute('data-block-name', 'customcards');
+      
+      // 2. Format class structures to preserve the variant identity for the JS controller
+      block.className = 'customcards block';
+      block.classList.add(blockName);
+    }
+  });
+}
 function redirectCategoryBlocks(main) {
   if (!main) return;
   const targetCategoryBlocks = ['category-immersive', 'carousal-fashion', 'gridelectronics', 'carousal-wine', 'gridgallery'];
