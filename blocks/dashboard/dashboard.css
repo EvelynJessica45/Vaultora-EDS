@@ -1,0 +1,186 @@
+/* ==========================================================================
+   AEM MASTER RE-ROUTING HOOKS & RESET CANVAS
+   ========================================================================== */
+.section:has(.dashboard-wrapper) {
+  background-color: #fbf9f4 !important; /* Premium Warm Luxury Cream Canvas Backdrop */
+  padding: 4rem 24px !important;
+  overflow: visible !important;
+}
+
+.dashboard.block {
+  width: 100% !important;
+  max-width: 1240px !important;
+  margin: 0 auto !important;
+  font-family: 'DM Sans', -apple-system, sans-serif !important;
+  box-sizing: border-box !important;
+}
+
+/* ==========================================================================
+   SHARED DASHBOARD PRIMITIVES (LISTINGS & BIDS MATRIX CARD ENGINE)
+   ========================================================================== */
+.dashboard.block .mybids-dashboard,
+.dashboard.block .mylistings-dashboard,
+.dashboard.block .orders-master-layout-canvas {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 2rem !important;
+  width: 100% !important;
+}
+
+.dashboard.block .mybids-header,
+.dashboard.block .mylistings-header,
+.dashboard.block .orders-title-row {
+  border-bottom: 1px solid #eae7df !important;
+  padding-bottom: 1.5rem !important;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.dashboard.block .mybids-title,
+.dashboard.block .mylistings-title,
+.dashboard.block .page-title {
+  font-family: 'Playfair Display', serif !important;
+  font-size: clamp(1.8rem, 3.5vw, 2.5rem) !important;
+  font-weight: 400 !important;
+  line-height: 1.1 !important;
+  color: #0f2e22 !important; /* Emerald branding tone focus */
+  margin: 0 !important;
+}
+.dashboard.block .mybids-title em,
+.dashboard.block .mylistings-title em,
+.dashboard.block .page-title span { font-style: italic !important; color: #b9925a !important; }
+
+/* The Unified Card Primitives Mesh Track */
+.dashboard.block .mybids-grid,
+.dashboard.block .mylistings-track-space,
+.dashboard.block .orders-master-list-mesh {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 1rem !important;
+  width: 100% !important;
+}
+
+.dashboard.block .mybids-item-card,
+.dashboard.block .mylistings-item-card,
+.dashboard.block .minimal-order-row-card {
+  background: #ffffff !important;
+  border: 1px solid rgba(43, 33, 24, 0.06) !important;
+  border-radius: 14px !important;
+  padding: 1.25rem !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 1.5rem !important;
+  cursor: pointer !important;
+  box-shadow: 0 4px 15px rgba(42, 41, 38, 0.02) !important;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease !important;
+}
+
+.dashboard.block .mybids-item-card:hover,
+.dashboard.block .mylistings-item-card:hover,
+.dashboard.block .minimal-order-row-card:hover {
+  transform: translateY(-3px) !important;
+  box-shadow: 0 12px 30px rgba(26, 48, 32, 0.05) !important;
+}
+
+.dashboard.block .mybids-item-thumb,
+.dashboard.block .mylistings-item-thumb {
+  width: 84px !important; height: 84px !important; border-radius: 12px !important; overflow: hidden !important; flex-shrink: 0 !important; background-color: #f6f5f0 !important;
+}
+.dashboard.block .mybids-item-thumb img,
+.dashboard.block .mylistings-item-thumb img { width: 100%; height: 100%; object-fit: cover; }
+
+.dashboard.block .mybids-item-details,
+.dashboard.block .mylistings-item-details,
+.dashboard.block .order-meta-info {
+  flex-grow: 1 !important; display: flex !important; flex-direction: column !important; gap: 0.35rem !important;
+}
+
+.dashboard.block .mybids-item-details h3,
+.dashboard.block .mylistings-item-details h3,
+.dashboard.block .order-meta-info h3 { font-family: 'DM Sans', sans-serif !important; font-size: 1.05rem !important; font-weight: 600 !important; color: #121212 !important; margin: 0 !important; }
+
+/* Status Badges Colors Matrix */
+.dashboard.block .status-badge,
+.dashboard.block .status-badge-pill {
+  padding: 4px 10px !important; border-radius: 4px !important; font-size: 0.72rem !important; font-weight: 700 !important; text-transform: uppercase !important; letter-spacing: 0.05em !important; width: fit-content !important;
+}
+.dashboard.block .status-leading, .dashboard.block .green { background: #eef5f1 !important; color: #114224 !important; }
+.dashboard.block .status-outbid { background: #fff5ee !important; color: #c0532e !important; }
+.dashboard.block .status-won-purchased { background: #114224 !important; color: #ffffff !important; }
+
+.dashboard.block .mybids-item-financials,
+.dashboard.block .mylistings-item-financials,
+.dashboard.block .order-item-description-line {
+  display: flex !important; flex-direction: column !important; align-items: flex-end !important; text-align: right !important;
+}
+.dashboard.block .financial-value, .dashboard.block .font-numeric { font-size: 1.25rem !important; font-weight: 600 !important; color: #0f2e22 !important; }
+
+/* ==========================================================================
+   MODULE 2: GRANULAR PRODUCT DETAILED BID CONFIGURATIONS (.my-bid-details)
+   ========================================================================== */
+.dashboard.block.my-bid-details {
+  display: flex !important; flex-direction: row !important; gap: 50px !important; align-items: flex-start !important; background: #ffffff !important; padding: 2.5rem !important; border-radius: 16px !important; border: 1px solid #eae7df !important;
+}
+@media (max-width: 900px) { .dashboard.block.my-bid-details { flex-direction: column !important; gap: 30px !important; } .dashboard.block.my-bid-details .media-display-column, .dashboard.block.my-bid-details .auction-actions-column { width: 100% !important; } }
+
+.dashboard.block.my-bid-details .media-display-column { width: 45%; }
+.dashboard.block.my-bid-details .main-image-viewport { width: 100%; aspect-ratio: 1 / 1; border-radius: 12px; overflow: hidden; background: #f6f5f0; border: 1px solid rgba(0,0,0,0.03); }
+.dashboard.block.my-bid-details .main-image-viewport img { width: 100%; height: 100%; object-fit: cover; }
+
+.dashboard.block.my-bid-details .auction-actions-column { width: 55%; display: flex; flex-direction: column; gap: 1.25rem; }
+.dashboard.block.my-bid-details .provenance-micro-tag { font-size: 10px; font-weight: 600; letter-spacing: 2px; color: #b9925a; text-transform: uppercase; }
+.dashboard.block.my-bid-details .pdp-main-title { font-family: 'Playfair Display', serif; font-size: 2.2rem; color: #2e362a; margin: 0; }
+.dashboard.block.my-bid-details .pdp-editorial-manifest { font-size: 0.95rem; line-height: 1.6; color: #666666; margin: 0; }
+
+.dashboard.block.my-bid-details .status-banner { padding: 1rem; border-radius: 8px; font-size: 0.9rem; font-weight: 600; border: 1px solid rgba(0,0,0,0.04); }
+.dashboard.block.my-bid-details .status-banner.success { background: #edf5f0; color: #2e362a; }
+.dashboard.block.my-bid-details .status-banner.trophy { background: #fdfcf3; color: #8c6b23; border-color: rgba(185,146,90,0.2); }
+
+.dashboard.block.my-bid-details .financial-performance-ticker { background: #fbf9f4; padding: 1.25rem; border-radius: 8px; border: 1px solid #eae7df; width: fit-content; min-width: 200px; }
+.dashboard.block.my-bid-details .ticker-box { display: flex; flex-direction: column; gap: 0.35rem; }
+.dashboard.block.my-bid-details .ticker-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #b9925a; font-weight: 500; }
+.dashboard.block.my-bid-details .ticker-value { font-size: 1.6rem; font-weight: 700; color: #2e362a; font-family: 'Playfair Display', serif; }
+
+.dashboard.block.my-bid-details .bidding-input-dock { display: flex; gap: 10px; width: 100%; max-width: 400px; }
+.dashboard.block.my-bid-details .bidding-input-dock input { flex-grow: 1; padding: 0.85rem 1.25rem; border-radius: 30px; border: 1px solid #eae7df; background: #f6f5f0; font-size: 0.95rem; color: #2e362a; font-weight: 600; }
+.dashboard.block.my-bid-details .bidding-input-dock input:focus { outline: none; border-color: #b9925a; background: #ffffff; }
+
+.dashboard.block.my-bid-details .btn-primary-action { background: #2e362a; color: #ffffff; border: none; padding: 0.9rem 2rem; border-radius: 30px; font-weight: 600; cursor: pointer; transition: background 0.3s ease; }
+.dashboard.block.my-bid-details .btn-primary-action:hover { background: #b9925a; }
+
+/* ==========================================================================
+   MODULE 3: SELLER METRICS COMPONENT PANEL (.my-listing-details)
+   ========================================================================== */
+.dashboard.block.my-listing-details {
+  display: flex !important; flex-direction: row !important; gap: 40px !important; background: #ffffff !important; border: 1px solid #eae7df !important; border-radius: 16px !important; padding: 2.5rem !important; box-sizing: border-box !important;
+}
+@media (max-width: 800px) { .dashboard.block.my-listing-details { flex-direction: column !important; } .dashboard.block.my-listing-details .listing-identity-panel { width: 100% !important; } }
+
+.dashboard.block.my-listing-details .listing-identity-panel { width: 30%; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 1rem; border-right: 1px solid #eae7df; padding-right: 20px; }
+.dashboard.block.my-listing-details .identity-thumb-wrapper { width: 120px; height: 120px; border-radius: 50%; overflow: hidden; background: #f6f5f0; border: 1px solid rgba(0,0,0,0.05); }
+.dashboard.block.my-listing-details .identity-thumb-wrapper img { width: 100%; height: 100%; object-fit: cover; }
+.dashboard.block.my-listing-details .listing-identity-panel h2 { font-family: 'Playfair Display', serif; font-size: 1.4rem; color: #2e362a; margin: 0; }
+
+.dashboard.block.my-listing-details .dashboard-section-card { flex-grow: 1; display: flex; flex-direction: column; gap: 1.5rem; }
+.dashboard.block.my-listing-details .dashboard-section-card h3 { font-family: 'DM Sans', sans-serif; font-size: 1.1rem; font-weight: 600; color: #2e362a; margin: 0; }
+.dashboard.block.my-listing-details .metrics-ticker-tape { display: flex; gap: 20px; flex-wrap: wrap; }
+
+/* ==========================================================================
+   MODULE 4: MODAL INVOICE RECEIPTS (.orders OVERLAYS)
+   ========================================================================== */
+.receipt-overlay-modal-mesh {
+  position: fixed !important; inset: 0 !important; background: rgba(11, 12, 16, 0.6) !important; z-index: 99999 !important; display: flex !important; align-items: center !important; justify-content: center !important; padding: 24px !important; box-sizing: border-box !important;
+}
+.receipt-overlay-modal-mesh .receipt-box-card {
+  background: #ffffff !important; border-radius: 16px !important; width: 100% !important; max-width: 460px !important; padding: 2rem !important; box-sizing: border-box !important; box-shadow: 0 30px 60px rgba(0,0,0,0.3) !important; position: relative !important; animation: popupFrame 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+}
+.receipt-overlay-modal-mesh .receipt-header-branding { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eae7df; padding-bottom: 1rem; margin-bottom: 1.5rem; }
+.receipt-overlay-modal-mesh .receipt-header-branding h2 { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: #2e362a; margin: 0; }
+.receipt-overlay-modal-mesh .receipt-header-branding h2 span { font-style: italic; color: #b9925a; }
+.receipt-overlay-modal-mesh .close-btn { background: none; border: none; font-size: 1.6rem; color: #a5a29a; cursor: pointer; }
+.receipt-overlay-modal-mesh .close-btn:hover { color: #c0532e; }
+.receipt-overlay-modal-mesh .receipt-body-content { font-family: 'DM Sans', sans-serif; font-size: 0.95rem; line-height: 1.6; color: #55534e; }
+
+@keyframes popupFrame { from { opacity: 0; transform: scale(0.95) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
