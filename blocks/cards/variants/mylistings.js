@@ -21,17 +21,13 @@ export default function decorate(block) {
   const dashboard = document.createElement('div');
   dashboard.className = 'mylistings-dashboard';
 
-// Locate this block in your decorate(block) function in mylistings.js
-const header = document.createElement('div');
-header.className = 'mylistings-header';
-header.innerHTML = `
-  <div style="display: flex; justify-content: space-between; align-items: center;">
+  const header = document.createElement('div');
+  header.className = 'mylistings-header';
+  header.innerHTML = `
     <h1 class="mylistings-title">My <em>Listings</em></h1>
-    <a href="/seller-dashboard" class="btn-add-listing">+ Add Listing</a>
-  </div>
-  <p class="mylistings-subtitle" id="listingsSubtitle">Loading listed items inventory...</p>
-`;
-dashboard.append(header);
+    <p class="mylistings-subtitle" id="listingsSubtitle">Loading listed items inventory...</p>
+  `;
+  dashboard.append(header);
 
   const statsBar = document.createElement('div');
   statsBar.className = 'mylistings-stats-bar';
@@ -64,7 +60,7 @@ dashboard.append(header);
         <option value="active">Active Auctions Only</option>
         <option value="pending">Payment Pending Only</option>
         <option value="completed">Payment Completed Only</option>
-        <option value="no_bids">Ended (No Bids) OnlyYYY</option>
+        <option value="no_bids">Ended (No Bids) Only</option>
       </select>
     </div>
   `;

@@ -1,92 +1,58 @@
-import { createOptimizedPicture } from '../../scripts/aem.js';
+// // Change this in blocks/cards/cards.js
+// export default async function decorate(block) {
+//   const variants = ['mybids', 'my-bid-details', 'mylistings', 'my-listing-details', 'orders'];
+//   const activeVariant = variants.find(v => block.classList.contains(v));
 
-export default function decorate(block) {
-  const container = document.createElement('div');
+//   if (!activeVariant) return;
 
-  // --- VARIATION 1: SHOP BY CATEGORY ---
-  if (block.classList.contains('categories')) {
-    container.className = 'cards-categories-grid';
+//   // Use the full relative path from the cards.js file
+//   const cssPath = `${window.hlx.codeBasePath}/blocks/cards/variants/${activeVariant}.css`;
+//   const link = document.createElement('link');
+//   link.rel = 'stylesheet';
+//   link.href = cssPath;
+//   document.head.appendChild(link);
 
-    [...block.children].forEach((row) => {
-      const cell = row.querySelector(':scope > div');
-      if (!cell) return;
+//   try {
+//     // Crucial: Use a path relative to the current file (./variants/...)
+//     // If that fails, AEM often requires the path to be absolute from the root
+//     const module = await import(`./variants/${activeVariant}.js`);
+//     if (module.default) {
+//       module.default(block);
+//     }
+//   } catch (err) {
+//     console.error(`Failed to load variant: ${activeVariant}`, err);
+//     // Fallback: try an absolute path if relative import fails
+//     try {
+//         const altModule = await import(`${window.hlx.codeBasePath}/blocks/cards/variants/${activeVariant}.js`);
+//         if (altModule.default) altModule.default(block);
+//     } catch (err2) {
+//         console.error("Secondary import path also failed", err2);
+//     }
+//   }
+// }
 
-      const card = document.createElement('div');
-      card.className = 'category-circle-node';
+// C:\Users\ejessica\Desktop\Vaultora-EDS\blocks\cards\cards.js
 
-      const imgBox = document.createElement('div');
-      imgBox.className = 'category-img-frame';
-      
-      const img = cell.querySelector('img');
-      if (img) {
-        const pic = createOptimizedPicture(img.src, img.alt || 'Category', false, [{ width: '180' }]);
-        imgBox.appendChild(pic);
+export default async function decorate(block) {
+  const variants = {
+    'mybids': './variants/mybids.js',
+    'my-bid-details': './variants/my-bid-details.js',
+    'mylistings': './variants/mylistings.js',
+    'my-listing-details': './variants/my-listing-details.js',
+    'orders': './variants/orders.js',
+    'profile': './variants/profile.js' // Added profile variant
+  };
+
+  const variantKey = Object.keys(variants).find((key) => block.classList.contains(key));
+
+  if (variantKey) {
+    try {
+      const module = await import(variants[variantKey]);
+      if (typeof module.default === 'function') {
+        await module.default(block);
       }
-      card.appendChild(imgBox);
-
-      const titleText = cell.querySelector('strong')?.textContent || '';
-      if (titleText) {
-        const title = document.createElement('h3');
-        title.className = 'category-label';
-        title.textContent = titleText;
-        card.appendChild(title);
-      }
-
-      const countText = cell.textContent.replace(titleText, '').trim();
-      if (countText) {
-        const count = document.createElement('span');
-        count.className = 'category-count';
-        count.textContent = countText;
-        card.appendChild(count);
-      }
-
-      container.appendChild(card);
-    });
-
-  // --- VARIATION 2: NEW ARRIVALS GRID ---
-  } else {
-    container.className = 'lots-grid-canvas';
-
-    [...block.children].forEach((row) => {
-      const cell = row.querySelector(':scope > div');
-      if (!cell) return;
-
-      const productCard = document.createElement('div');
-      productCard.className = 'lot-item-card';
-
-      const imgWindow = document.createElement('div');
-      imgWindow.className = 'lot-card-window';
-      const img = cell.querySelector('img');
-      if (img) {
-        const pic = createOptimizedPicture(img.src, img.alt || 'Product', false, [{ width: '300' }]);
-        imgWindow.appendChild(pic);
-      }
-      productCard.appendChild(imgWindow);
-
-      const details = document.createElement('div');
-      details.className = 'lot-card-meta-details';
-
-      const titleText = cell.querySelector('strong')?.textContent || '';
-      if (titleText) {
-        const title = document.createElement('h3');
-        title.className = 'title';
-        title.textContent = titleText;
-        details.appendChild(title);
-      }
-
-      const priceText = cell.textContent.replace(titleText, '').trim();
-      if (priceText) {
-        const price = document.createElement('p');
-        price.className = 'price-row';
-        price.innerHTML = `<strong>${priceText}</strong>`;
-        details.appendChild(price);
-      }
-
-      productCard.appendChild(details);
-      container.appendChild(productCard);
-    });
+    } catch (err) {
+      console.error(`Failed to load cards variant: ${variantKey}`, err);
+    }
   }
-
-  block.innerHTML = '';
-  block.appendChild(container);
 }

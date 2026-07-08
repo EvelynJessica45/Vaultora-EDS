@@ -1,0 +1,411 @@
+/* ==========================================================================
+   PROFILE CANVAS CORE SCANCE
+   ========================================================================== */
+.profile-wrapper {
+  width: 100% !important;
+  max-width: 1440px;
+  margin: 2.5rem auto;
+  padding: 0 1.5rem;
+  box-sizing: border-box;
+  contain: layout style;
+}
+
+.profile,
+[data-block-name="profile"] {
+  width: 100%;
+  display: flex !important;
+  flex-direction: row;
+  gap: 32px;
+  align-items: flex-start;
+  background-color: #fdfcfb; /* Premium minimal museum canvas background */
+  font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+  color: #1a1a1a;
+  box-sizing: border-box;
+  contain: content;
+}
+
+/* ==========================================================================
+   LEFT SIDEBAR COLUMN FRAME: IDENTITY CARD
+   ========================================================================== */
+.profile .profile-identity-panel {
+  width: 30%;
+  flex-shrink: 0;
+  background: #ffffff;
+  border: 1px solid rgba(43, 33, 24, 0.06);
+  border-radius: 12px;
+  padding: 2rem 1.5rem;
+  box-sizing: border-box;
+  box-shadow: 0 4px 25px rgba(43, 33, 24, 0.02);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: sticky;
+  top: 30px;
+  will-change: transform;
+  contain: layout style;
+}
+
+/* Dynamic Avatar Framing Construction with Hard Compressed Dimensional Bounding */
+.profile .avatar-circle-wrapper {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background-color: #f5f3ef;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.2rem;
+  border: 2px solid rgba(185, 146, 90, 0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+  overflow: hidden;
+  contain: strict;
+  aspect-ratio: 1 / 1;
+}
+
+.profile #largeAvatar {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  display: none;
+}
+
+.profile #avatarInitial {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 3rem;
+  font-weight: 500;
+  color: #5d4e40; /* Darkened from #8c7662 to fix Accessibility contrast failure */
+  line-height: 120px;
+}
+
+/* Photo Management Micro Interfaces */
+.profile .avatar-control-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 1.5rem;
+}
+
+.profile .btn-avatar-action {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px 8px;
+  transition: color 0.2s ease;
+}
+.profile #btnEditAvatar { color: #8e6831; } /* Darkened Gold for premium contrast stability */
+.profile #btnRemoveAvatar { color: #a34c37; } /* Premium Rust Crimson */
+
+.profile h2#displayHeaderName {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 600;
+  font-size: 1.6rem;
+  color: #121212;
+  margin: 0 0 0.3rem 0;
+}
+
+.profile .user-email-label {
+  font-size: 13px;
+  color: #4a4a4a; /* Darkened from #777777 to clear manual contrast checking rules */
+  margin-bottom: 1.2rem;
+  display: block;
+}
+
+.profile .verification-badge {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  background: #faf8f5;
+  border: 1px solid rgba(185, 146, 90, 0.25);
+  color: #8e6831; /* Increased threshold matching badge outline */
+  border-radius: 30px;
+  display: inline-block;
+}
+
+/* ==========================================================================
+   RIGHT SIDEBAR COLUMN FRAME: LEDGER TRACK PERFORMANCE WIDGETS
+   ========================================================================= */
+.profile .profile-ledger-panel {
+  flex-grow: 1;
+  width: 70%;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  contain: layout style;
+}
+
+/* Summary Snapshot Grid Metrics */
+.profile .stats-ticker-tape {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  contain-intrinsic-size: auto 90px;
+}
+
+.profile .stat-ticker-card {
+  background: #ffffff;
+  border: 1px solid rgba(43, 33, 24, 0.06);
+  border-radius: 8px;
+  padding: 1.2rem;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.01);
+  text-align: center;
+}
+
+.profile .stat-ticker-card h3 {
+  font-size: 1.8rem;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 600;
+  color: #1a3020; /* Deep Estate Green value metrics */
+  margin: 0 0 0.2rem 0;
+}
+
+.profile .stat-ticker-card p {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  color: #4a4a4a; /* Corrected contrast visibility rule */
+  text-transform: uppercase;
+  margin: 0;
+}
+
+/* Section Containers Custom Configurations */
+.profile .dashboard-section-card {
+  background: #ffffff;
+  border: 1px solid rgba(43, 33, 24, 0.06);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 20px rgba(43, 33, 24, 0.02);
+  content-visibility: auto;
+  contain-intrinsic-size: auto 300px;
+}
+
+.profile .card-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px dashed rgba(43, 33, 24, 0.08);
+  padding-bottom: 0.8rem;
+}
+
+.profile .card-header-row h2 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 600;
+  font-size: 1.4rem;
+  margin: 0;
+}
+
+/* ==========================================================================
+   INTERACTIVE UPLOAD SLIDEOUT INLINE DIALOG FRAME
+   ========================================================================== */
+.profile #uploadFlowContainer {
+  display: none;
+  flex-direction: column;
+  gap: 16px;
+  background: #fbfbfa;
+  border: 1px solid rgba(185, 146, 90, 0.2);
+  border-radius: 8px;
+  padding: 1.2rem;
+  margin-bottom: 1rem;
+  text-align: left;
+}
+
+.profile #uploadFlowContainer.active {
+  display: flex;
+}
+
+.profile .avatar-dropzone {
+  border: 1px dashed rgba(185, 146, 90, 0.4);
+  background: #ffffff;
+  padding: 1.5rem;
+  border-radius: 6px;
+  text-align: center;
+  cursor: pointer;
+  font-size: 12px;
+  color: #4a4a4a;
+  transition: background 0.2s ease;
+}
+.profile .avatar-dropzone:hover { background: #faf9f6; }
+
+.profile .url-input-field {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid rgba(43, 33, 24, 0.12);
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 13px;
+  box-sizing: border-box;
+}
+
+.profile .flow-action-row {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.profile .btn-flow-control {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  border: none;
+}
+.profile #btnCancelAvatarFlow { background: #eeeeee; color: #121212; }
+.profile #btnSaveAvatar { background: #1a3020; color: #ffffff; }
+.profile #btnSaveAvatar:disabled { background: #cccccc; color: #555555; cursor: not-allowed; }
+
+/* ==========================================================================
+   HISTORICAL BID TRACK ARCHITECTURE WIDGETS
+   ========================================================================== */
+.profile .auction-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.profile .auction-card {
+  display: flex;
+  gap: 16px;
+  background: #ffffff;
+  border: 1px solid rgba(43, 33, 24, 0.05);
+  border-radius: 8px;
+  padding: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.01);
+  align-items: center;
+}
+
+.profile .auction-card-img {
+  width: 70px;
+  height: 70px;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 4px;
+  background-color: #faf9f6;
+}
+
+.profile .auction-card-body {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.profile .auction-card-title {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #121212;
+  margin-bottom: 2px;
+}
+
+.profile .auction-card-seller {
+  font-size: 11px;
+  color: #4a4a4a; /* Stabilized contrast text metrics */
+  margin-bottom: 6px;
+}
+
+.profile .auction-card-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.profile .auction-card-price {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 600;
+  font-size: 1.15rem;
+  color: #1a3020;
+}
+
+.profile .auction-card-time {
+  font-size: 11px;
+  color: #4a4a4a;
+}
+
+/* Pagination Control Buttons */
+.profile .pagination-wrap {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 1.5rem;
+}
+
+.profile .btn-pagination {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #8e6831;
+  background: transparent;
+  border: 1px solid rgba(185, 146, 90, 0.5);
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.profile .btn-pagination:hover {
+  background: #8e6831;
+  color: #ffffff;
+}
+
+/* Dynamic Toast Notification */
+.profile-toast {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translate3d(-50%, 20px, 0);
+  padding: 12px 24px;
+  border-radius: 4px;
+  color: #ffffff;
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  z-index: 9999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1), transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.profile-toast.show {
+  opacity: 1;
+  transform: translate3d(-50%, 0, 0);
+}
+
+/* ==========================================================================
+   MOBILE & VIEWPORT RESPONSIVE BREAKPOINTS
+   ========================================================================== */
+@media (max-width: 1024px) {
+  .profile,
+  [data-block-name="profile"] {
+    flex-direction: column;
+  }
+  .profile .profile-identity-panel {
+    width: 100%;
+    position: static;
+  }
+  .profile .profile-ledger-panel {
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .profile .stats-ticker-tape {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .profile .auction-grid {
+    grid-template-columns: 1fr;
+  }
+}
