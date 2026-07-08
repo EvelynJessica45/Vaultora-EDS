@@ -1,0 +1,228 @@
+/* ==========================================================================
+   PARENT SECTIONS & PERFORMANCE TRACK ALIGNMENT CORES (SHARED GLOBAL)
+   ========================================================================== */
+.section.expand-carousel-section {
+  height: auto !important;
+  min-height: 100vh !important;
+  display: block !important;
+  overflow: visible !important;
+}
+
+.carousalwine-wrapper,
+.carousalfashion-wrapper {
+  position: relative !important;
+  width: 100% !important;
+  height: auto !important;
+  min-height: 90vh;
+  z-index: 99 !important;
+  pointer-events: auto !important;
+}
+.carousalwine-wrapper { margin-top: 5rem; }
+.carousalfashion-wrapper { margin-top: 4rem; }
+
+/* Structural Track Layer Canvas base definitions */
+.carousalwine,
+.carousalfashion {
+  width: 100%;
+  height: 580px;
+  display: flex !important;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 0 2rem;
+  box-sizing: border-box;
+  opacity: 0;
+  transform: translate3d(0, 40px, 0);
+  position: relative;
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.carousalwine::before,
+.carousalfashion::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.carousalwine.stage-active-flow,
+.carousalfashion.stage-active-flow {
+  opacity: 1 !important;
+  transform: translate3d(0, 0, 0) !important;
+}
+
+/* Structural Header Containers alignment rules */
+.carousalwine .carousel-luxury-header,
+.carousalfashion .carousel-editorial-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 2.5rem;
+  z-index: 15;
+}
+
+.carousalwine .carousel-pre-title,
+.carousalfashion .carousel-pre-title {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  margin-bottom: 0.4rem;
+}
+
+.carousalwine .carousel-main-title,
+.carousalfashion .carousel-main-title {
+  font-family: 'Playfair Display', serif;
+  font-weight: 400;
+  font-size: 3.5rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin: 0;
+  line-height: 1;
+}
+
+.carousalwine .carousel-sub-title,
+.carousalfashion .carousel-sub-title {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 1.6rem;
+  color: #594433;
+}
+.carousalwine .carousel-sub-title { margin-top: 0.3rem; }
+.carousalfashion .carousel-sub-title { margin-top: 0.2rem; }
+
+/* Structural Slide Matrix viewport containers */
+.carousalwine .perspective-slider-container,
+.carousalfashion .perspective-slider-container {
+  width: 100%;
+  max-width: 1500px;
+  height: 350px;
+  display: flex;
+  align-items: center;
+  position: relative;
+  perspective: 2000px;
+  z-index: 2;
+  margin: 0 auto;
+}
+
+.carousalwine .slider-track,
+.carousalfashion .slider-track {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transform-style: preserve-3d;
+}
+
+.carousalwine .perspective-card,
+.carousalfashion .perspective-card {
+  position: absolute;
+  width: 200px;
+  height: 290px;
+  border-radius: 100px 100px 4px 4px;
+  overflow: hidden;
+  cursor: pointer;
+  transform-style: preserve-3d;
+  pointer-events: auto;
+  transition: transform 0.75s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.4s ease;
+}
+
+.carousalwine .card-bg-image-layer,
+.carousalfashion .card-bg-image-layer {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center top;
+  opacity: 0.95;
+  z-index: 1;
+  transition: transform 0.7s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.carousalwine .perspective-card.center-focus:hover .card-bg-image-layer,
+.carousalfashion .perspective-card.center-focus:hover .card-bg-image-layer {
+  transform: scale(1.05);
+}
+
+.carousalwine .card-content-wrapper,
+.carousalfashion .card-content-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
+  z-index: 2;
+}
+
+/* Multi-breakpoint calculation logic mapping layers */
+.carousalwine .perspective-card.center-focus, .carousalfashion .perspective-card.center-focus { transform: translate3d(0, -10px, 160px) scale(1.08); z-index: 25; opacity: 1; }
+.carousalwine .perspective-card.left-inner, .carousalfashion .perspective-card.left-inner { transform: translate3d(-150px, 0, 95px) rotateY(16deg); z-index: 15; opacity: 0.85; }
+.carousalwine .perspective-card.right-inner, .carousalfashion .perspective-card.right-inner { transform: translate3d(150px, 0, 95px) rotateY(-16deg); z-index: 15; opacity: 0.85; }
+.carousalwine .perspective-card.left-mid, .carousalfashion .perspective-card.left-mid { transform: translate3d(-290px, 5px, 15px) rotateY(26deg) scale(0.92); z-index: 9; opacity: 0.65; }
+.carousalwine .perspective-card.right-mid, .carousalfashion .perspective-card.right-mid { transform: translate3d(290px, 5px, 15px) rotateY(-26deg) scale(0.92); z-index: 9; opacity: 0.65; }
+.carousalwine .perspective-card.left-outer, .carousalfashion .perspective-card.left-outer { transform: translate3d(-415px, 10px, -55px) rotateY(36deg) scale(0.84); z-index: 4; opacity: 0.35; }
+.carousalwine .perspective-card.right-outer, .carousalfashion .perspective-card.right-outer { transform: translate3d(415px, 10px, -55px) rotateY(-36deg) scale(0.84); z-index: 4; opacity: 0.35; }
+
+@media (max-width: 1200px) {
+  .carousalwine .perspective-slider-container, .carousalfashion .perspective-slider-container { height: 310px; }
+  .carousalwine .perspective-card.left-outer, .carousalwine .perspective-card.right-outer,
+  .carousalfashion .perspective-card.left-outer, .carousalfashion .perspective-card.right-outer { display: none; }
+  .carousalwine .perspective-card.left-mid, .carousalfashion .perspective-card.left-mid { transform: translate3d(-210px, 0, 20px) scale(0.9); }
+  .carousalwine .perspective-card.right-mid, .carousalfashion .perspective-card.right-mid { transform: translate3d(210px, 0, 20px) scale(0.9); }
+}
+
+@media (max-width: 768px) {
+  .carousalwine, .carousalfashion { height: 500px; }
+  .carousalwine .carousel-main-title, .carousalfashion .carousel-main-title { font-size: 2.4rem; }
+  .carousalwine .perspective-card, .carousalfashion .perspective-card { width: 160px; height: 230px; border-radius: 80px 80px 4px 4px; }
+  .carousalwine .perspective-card.left-inner, .carousalfashion .perspective-card.left-inner { transform: translate3d(-100px, 0, 30px) scale(0.85); }
+  .carousalwine .perspective-card.right-inner, .carousalfashion .perspective-card.right-inner { transform: translate3d(100px, 0, 30px) scale(0.85); }
+  .carousalwine .perspective-card.left-mid, .carousalwine .perspective-card.right-mid,
+  .carousalfashion .perspective-card.left-mid, .carousalfashion .perspective-card.right-mid { display: none; }
+}
+
+/* Update the global target rule around lines 27-41 to contain both class name blocks */
+.carousalwine,
+.carousalfashion {
+  width: 100%;
+  height: 580px;
+  display: flex !important;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 0 2rem;
+  box-sizing: border-box;
+  opacity: 0;
+  transform: translate3d(0, 40px, 0);
+  position: relative;
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+/* Update structural cards targeting around line 84 to keep them absolute */
+.carousalwine .perspective-card,
+.carousalfashion .perspective-card {
+  position: absolute !important;
+  width: 200px;
+  height: 290px;
+  border-radius: 100px 100px 4px 4px;
+  overflow: hidden;
+  cursor: pointer;
+  transform-style: preserve-3d;
+  pointer-events: auto;
+}
