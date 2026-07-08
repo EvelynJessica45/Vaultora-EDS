@@ -2,7 +2,7 @@ export default function decorate(block) {
   const rows = [...block.children];
   if (!rows.length) return;
 
-  // Helper functions to pull layout matrix content cleanly from column 2 safely
+  // Helper functions to pull layout matrix content ddcleanly from column 2 safely
   const getPayload = (row) => row?.children[1];
   const getText = (row) => row?.children[1]?.textContent?.trim() || '';
   const getHTML = (row) => row?.children[1]?.innerHTML || '';

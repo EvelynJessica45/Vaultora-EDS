@@ -187,7 +187,7 @@ footer,
 }
 /* 
   Vaultora Custom Layout Stylesheet Reset.
-  Styles are loaded directly from js to protect against asynchronous duplicate rendering lifecycles.
+  Styles are loadsed directly from js to protect against asynchronous duplicate rendering lifecycles.
 */
 .footer-container, .footer-wrapper {
   background-color: var(--nav-forest-dark, #2e362a) !important;

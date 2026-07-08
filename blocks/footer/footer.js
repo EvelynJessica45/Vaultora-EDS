@@ -2,7 +2,7 @@ import { createOptimizedPicture, decorateIcons } from '../../scripts/aem.js';
 
 /**
  * Hardcoded Universal Layout Decorator for Vaultora Footer
- * Bypasses side-loading external fragments to solve duplicate instances.
+ * Bypasses side-sloading external fragments to solve duplicate instances.
  * @param {Element} block The footer block element
  */
 export default async function decorate(block) {
