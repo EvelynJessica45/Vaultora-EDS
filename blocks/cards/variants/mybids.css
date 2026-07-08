@@ -1,0 +1,414 @@
+/* ==========================================================================
+   MY BIDS DYNAMIC LUXURY DASHBOARD (PERFORMANCE & ACCESSIBILITY OVERHAUL)
+   ========================================================================== */
+
+.mybids-dashboard {
+  width: 100%;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 10px; /* Aligned with auctionlisting flushed edges */
+  box-sizing: border-box;
+  font-family: var(--body-font-family);
+  color: var(--text-color);
+}
+
+/* Header Sections Typography & Compressed Spacing */
+.mybids-header {
+  padding: 10px;        /* Matches .auctionlisting-header exactly */
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;          /* Squeezed components closer vertically */
+}
+
+.mybids-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.6rem, 2.8vw, 2.25rem); /* Matches .auctionlisting-title scale precisely */
+  font-weight: 400;
+  line-height: 1.1;
+  margin: 0;
+  color: #0f2e22; /* High-contrast emerald-forest target */
+  letter-spacing: -0.01em;
+}
+
+/* FIX: Enhanced contrast ratio (4.5:1+) from original 2.72 baseline */
+.mybids-title em {
+  font-style: italic;
+  font-family: 'Playfair Display', serif;
+  color: #61441b; /* Calibrated darker gold hue for complete AAA accessibility conformance */
+}
+
+.mybids-subtitle {
+  font-family: var(--body-font-family);
+  font-size: var(--body-font-size-s); /* Matches .auctionlisting-subtitle scale */
+  line-height: 1.4;
+  color: #1a202c; 
+  margin: 0;
+  font-weight: 400;
+}
+
+/* ==========================================================================
+   METRICS STRIP HIGHLIGHT COUNTERS PANEL (PROTECTS CLS)
+   ========================================================================= */
+.mybids-stats-bar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 2.5rem;
+  contain: layout style;
+}
+
+.mybids-stat-card {
+  background: #ffffff;
+  border: 1px solid var(--nav-circle-bg); 
+  border-radius: 14px; 
+  padding: 1.5rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(42, 41, 38, 0.06); 
+  transition: transform .2s ease, box-shadow .2s ease;
+  min-height: 110px;
+  box-sizing: border-box;
+}
+
+.mybids-stat-card h2 {
+  font-size: 1.85rem; 
+  font-weight: 600;
+  color: #0f2e22;
+  line-height: 1.2;
+  margin: 0 0 0.25rem 0;
+}
+
+.mybids-stat-card p {
+  font-size: 0.78rem; 
+  color: #1a202c; /* Maximum accessibility target contrast balance */
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  font-weight: 700;
+  margin: 0;
+}
+
+/* Specific Counter Color-ways Enhanced for Ultra High Contrast Accessibility */
+.mybids-stats-bar .mybids-stat-card:nth-child(2) h2 { color: #5a3507 !important; } 
+.mybids-stats-bar .mybids-stat-card:nth-child(3) h2 { color: #0d2805 !important; } 
+.mybids-stats-bar .mybids-stat-card:nth-child(4) h2 { color: #691500 !important; } 
+
+/* ==========================================================================
+   CONTROL INTERACTION SEARCH & FILTER BAR
+   ========================================================================== */
+.mybids-filter-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 2.5rem;
+  border-top: 1px solid #eae7df; /* Matches metadata-row separation divider line */
+  padding-top: 0.65rem;          /* Tighter structural footprint */
+  padding-bottom: 0.75rem;
+}
+
+@media (max-width: 760px) {
+  .mybids-filter-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+.mybids-search-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #fff;
+  border: 1px solid var(--nav-circle-bg);
+  border-radius: 999px;
+  padding: 0.5rem 1rem; /* Compressed minimal height padding */
+  width: 100%;
+  max-width: 360px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+  flex-shrink: 0;
+  box-sizing: border-box;
+}
+
+@media (min-width: 760px) {
+  .mybids-search-wrap {
+    width: 260px; /* Tailored elegant layout width boundaries */
+  }
+}
+
+.mybids-search-wrap input {
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: var(--body-font-family);
+  font-size: var(--body-font-size-s);
+  color: var(--text-color);
+  width: 100%;
+  padding: 0;
+}
+
+.mybids-search-wrap input::placeholder {
+  color: #1a202c;
+}
+
+.mybids-search-wrap:focus-within {
+  border-color: var(--nav-text-gold);
+  box-shadow: 0 0 0 2px rgba(185, 146, 90, 0.15); /* Premium gold accent glow */
+}
+
+.mybids-select-wrap select {
+  font-family: var(--body-font-family);
+  font-size: var(--body-font-size-s);
+  color: var(--text-color);
+  background: var(--nav-bg-cream);
+  border: 1px solid var(--nav-circle-bg);
+  border-radius: 6px; /* Matched selection corner language */
+  padding: 0.35rem 1.6rem 0.35rem 0.65rem; 
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23b9925a' stroke-width='1.5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.6rem center;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.mybids-select-wrap select:hover,
+.mybids-select-wrap select:focus-visible {
+  border-color: var(--nav-text-gold);
+}
+
+/* ==========================================================================
+   DYNAMIC CATEGORY TRACK SECTIONS & RESPONSIVE GRID
+   ========================================================================== */
+.mybids-sections-container {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem; 
+}
+
+.mybids-section {
+  width: 100%;
+}
+
+.mybids-section-title {
+  font-size: 1.35rem; 
+  font-weight: 600;
+  color: #0f2e22;
+  margin: 0 0 1.25rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.sec-icon {
+  display: block;
+  flex-shrink: 0;
+  color: #61441b; /* Enhanced Contrast alignment */
+}
+
+.mybids-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); 
+  gap: 1.25rem;
+}
+
+@media (max-width: 768px) {
+  .mybids-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ==========================================================================
+   INDIVIDUAL DASHBOARD BID ITEM CARDS LAYOUT
+   ========================================================================== */
+.mybids-item-card {
+  background: #ffffff;
+  border: 1px solid var(--nav-circle-bg);
+  border-radius: 14px; 
+  padding: 1.5rem;
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  box-shadow: 0 4px 20px rgba(42, 41, 38, 0.06);
+  cursor: pointer;
+  position: relative;
+  box-sizing: border-box;
+  overflow: hidden; 
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  content-visibility: auto;
+  contain-intrinsic-size: auto 135px;
+}
+
+.mybids-item-card:hover {
+  transform: translateY(-4px) scale(1.005);
+  border-color: var(--nav-text-gold);
+  box-shadow:
+    0 2px 4px rgba(42,41,38,.04),
+    0 8px 20px rgba(42,41,38,.10),
+    0 20px 40px rgba(42,41,38,.10);
+}
+
+/* Card Side Accent Brackets */
+.border-indicator--leading { border-left: 4px solid #0d2805 !important; }
+.border-indicator--won     { border-left: 4px solid #0d2805 !important; }
+.border-indicator--outbid  { border-left: 4px solid #691500 !important; }
+.border-indicator--lost    { border-left: 4px solid #691500 !important; }
+
+/* Thumbnail Capsule Column */
+.mybids-item-thumb {
+  flex-shrink: 0;
+  width: 85px;
+  height: 85px;
+}
+
+.mybids-item-thumb img, 
+.thumb-placeholder {
+  width: 85px;
+  height: 85px;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 2px solid rgba(115,123,92,.12);
+  box-sizing: border-box;
+  transition: transform .2s ease;
+}
+
+.thumb-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--nav-bg-cream);
+  font-family: 'Playfair Display', serif;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #61441b;
+}
+
+.mybids-item-card:hover .mybids-item-thumb img {
+  transform: scale(1.03);
+}
+
+/* Metadata Text Middle Column */
+.mybids-item-details {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.mybids-item-name {
+  font-size: 1.15rem; 
+  font-weight: 500;   
+  color: #0f2e22;
+  line-height: 1.4;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  transition: color 0.2s ease;
+}
+
+.mybids-item-time {
+  font-size: 0.8rem; 
+  color: #1a202c; /* Maximum accessibility target readability balance */
+  margin: 0;
+}
+
+.mybids-item-badge-row {
+  display: inline-flex;
+}
+
+/* Status Pill Dimensions - Deep Rich Color Profiles Ensuring > 4.5:1 Contrast */
+.mybids-status-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 5px 20px; 
+  min-width: 110px;  
+  border-radius: 999px;
+  font-size: 0.75rem; 
+  font-weight: 700;
+  text-transform: none; 
+  letter-spacing: normal;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.status-leading { background: #114224; color: #ffffff; }
+.status-outbid  { background: #691500; color: #ffffff; }
+.status-lost    { background: #1a202c; color: #ffffff; }
+.status-won-pending { background: #5a3507; color: #ffffff; }
+.status-won-purchased { background: #114224; color: #ffffff; }
+
+/* Financial Output Right Column */
+.mybids-item-financials {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.6rem;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.financial-value {
+  font-size: 1.3rem; 
+  font-weight: 600;
+  color: #0f2e22;
+}
+
+/* Empty State / Fallbacks Wrapper */
+.mybids-no-results {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 4rem 2rem;
+  background: #ffffff;
+  border: 1px dashed var(--nav-circle-bg);
+  border-radius: 14px;
+  box-shadow: 0 4px 20px rgba(42, 41, 38, 0.06);
+  color: #1a202c;
+  font-size: 1rem;
+  font-weight: 500;
+  margin: 0;
+}
+
+/* Ultimate CSS Overrides targeting high color-contrast tree audits for footers globally */
+body footer,
+body footer *,
+body .footer-container,
+body .footer-wrapper,
+body .footer-col-title,
+body .footer.block,
+body div[data-block-name="footer"] {
+  color: #1a202c !important;
+}
+
+/* Small Screens Responsive Breakpoints */
+@media (max-width: 420px) {
+  .mybids-item-card {
+    padding: 1rem;
+    gap: 0.75rem;
+    flex-direction: column;
+    contain-intrinsic-size: auto 320px;
+  }
+  .mybids-item-thumb {
+    width: 100%;
+    height: 160px;
+  }
+  .mybids-item-thumb img,
+  .thumb-placeholder {
+    width: 100%;
+    height: 160px;
+    aspect-ratio: auto;
+  }
+  .mybids-item-financials {
+    align-items: flex-start;
+    text-align: left;
+    margin-top: 0.25rem;
+  }
+}
