@@ -1,0 +1,229 @@
+/* ── SECTION WRAPPER ── */
+.section:has(.how-it-works-wrapper) {
+  background-color: #fbf9f4 !important;
+  padding: 3.5rem 24px !important;
+  position: relative;
+}
+
+.section:has(.how-it-works-wrapper)::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 5%;
+  width: 90%;
+  height: 1px;
+  background: linear-gradient(to right, transparent, rgba(46, 54, 42, 0.12) 20%, rgba(46, 54, 42, 0.12) 80%, transparent);
+}
+
+.how-it-works.block {
+  max-width: 1100px;
+  margin: 0 auto;
+  font-family: 'DM Sans', system-ui, sans-serif;
+  box-sizing: border-box;
+}
+
+/* ── TWO-COLUMN LAYOUT ── */
+.how-layout {
+  display: grid;
+  grid-template-columns: 0.85fr 1.15fr;
+  gap: 3rem;
+  align-items: start;
+}
+
+/* ── LEFT: INTRO PANEL ── */
+.how-intro {
+  position: sticky;
+  top: 2rem;
+}
+
+.how-intro h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.7rem, 2.6vw, 2.1rem);
+  font-weight: 400;
+  color: #2e362a !important;
+  margin: 0 0 0.7rem 0;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+
+.how-intro h2 span {
+  font-style: italic;
+  font-family: 'Playfair Display', serif;
+  color: #b9925a;
+}
+
+.how-intro p {
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: #76746e;
+  margin: 0 0 1.75rem 0;
+  max-width: 320px;
+}
+
+/* ── TOGGLE SWITCH (now under the intro copy) ── */
+.how-toggle-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  flex-wrap: wrap;
+}
+
+.how-toggle-label {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #8c8980;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  transition: color 0.3s ease;
+  user-select: none;
+}
+
+.how-toggle-label.active { color: #2e362a; }
+
+.how-custom-switch {
+  background-color: #2e362a;
+  border: none;
+  width: 46px;
+  height: 25px;
+  border-radius: 25px;
+  padding: 2.5px;
+  cursor: pointer;
+  position: relative;
+  display: flex;
+  align-items: center;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15);
+  transition: background-color 0.4s ease;
+  flex-shrink: 0;
+}
+
+.how-switch-thumb {
+  background-color: #ffffff;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #d46a43;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.16);
+  transform: translateX(0);
+  transition: transform 0.35s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.how-custom-switch.switched-active { background-color: #b9925a; }
+.how-custom-switch.switched-active .how-switch-thumb { transform: translateX(21px); }
+
+.how-switch-thumb svg { width: 11px; height: 11px; }
+
+/* ── RIGHT: COMPACT SINGLE-LINE ROADMAP ── */
+.how-timeline-panel { position: relative; }
+
+.how-central-timeline-track {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  padding-left: 50px;
+}
+
+.how-central-timeline-track::before {
+  content: '';
+  position: absolute;
+  top: 6px;
+  bottom: 6px;
+  left: 19px;
+  width: 1.5px;
+  background-color: #eae7df;
+}
+
+.how-timeline-node-row {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  opacity: 1;
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+.how-timeline-node-row.is-hidden {
+  display: none !important;
+}
+
+/* ── SMALL AXIS BADGE, INLINE ON THE LEFT ── */
+.how-central-axis-badge {
+  position: absolute;
+  left: -50px;
+  top: 0;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background-color: #ffffff;
+  border: 1.5px solid #eae7df;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  box-shadow: 0 4px 10px rgba(42, 41, 38, 0.03);
+  flex-shrink: 0;
+}
+
+.how-center-number {
+  font-family: 'Playfair Display', serif;
+  font-size: 0.95rem;
+  font-style: italic;
+  font-weight: 600;
+  color: #d46a43 !important;
+}
+
+/* ── COMPACT CARD ── */
+.how-timeline-content-card {
+  width: 100%;
+  background: #ffffff;
+  border: 1px solid #eae7df;
+  border-radius: 10px;
+  padding: 0.85rem 1.1rem;
+  box-sizing: border-box;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.how-role-micro-badge {
+  display: inline-block;
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: #b9925a;
+  margin-bottom: 0.25rem;
+}
+
+.how-timeline-content-card h4 {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: #2e362a !important;
+  margin: 0 0 0.2rem 0;
+  letter-spacing: -0.01em;
+}
+
+.how-timeline-content-card p {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.78rem;
+  line-height: 1.45;
+  color: #55534e;
+  margin: 0;
+}
+
+/* ── INTERACTIONS ── */
+.how-timeline-node-row:hover .how-central-axis-badge { border-color: #d46a43; }
+.how-timeline-node-row:hover .how-timeline-content-card {
+  box-shadow: 0 8px 18px rgba(46, 54, 42, 0.05);
+  border-color: rgba(185, 146, 90, 0.25);
+  transform: translateX(3px);
+}
+
+/* ── MOBILE RESPONSIVE ── */
+@media (max-width: 768px) {
+  .how-layout { grid-template-columns: 1fr; gap: 2rem; }
+  .how-intro { position: static; }
+  .how-intro p { max-width: none; }
+}

@@ -1,6 +1,7 @@
 /* ═══════════════════════════════════════════════════════════════
-   Vaultora — Production Premium Cream Header Theme (Optimized)
+   Vaultora — Production Premium Cream Header Theme (image_749880)
    ═══════════════════════════════════════════════════════════════ */
+
 
 .header {
   position: fixed;
@@ -8,17 +9,18 @@
   left: 0;
   width: 100%;
   height: 64px;
-  background: var(--nav-bg-cream, #f6f5f0);
+  background: var(--nav-bg-cream);
   z-index: 1000;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
-  contain: layout size style;
+  border-bottom: 1px solid rgba(0,0,0,.06);
 }
+
 
 .header-row-layout {
   max-width: 1320px;
   height: 100%;
   margin: 0 auto;
   padding: 0 32px;
+
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -27,8 +29,6 @@
 
 .header-logo-container {
   flex-shrink: 0;
-  display: flex;
-  align-items: center;
 }
 
 .header-logo-wrapper {
@@ -36,20 +36,19 @@
   align-items: center;
   justify-content: flex-start;
   flex-shrink: 0;
-  width: 120px;
-  height: 42px;
+  width: 140px;
   text-decoration: none;
 }
 
 .header-logo-wrapper picture,
 .header-logo-wrapper img {
   width: 120px;
-  height: 42px;
+  height: auto;
+  max-height: 42px;
   display: block;
   object-fit: contain;
   object-position: left center;
 }
-
 .header-links-container {
   flex: 1;
   display: flex;
@@ -60,13 +59,15 @@
 
 .header-links-container a {
   text-decoration: none;
-  color: var(--nav-text-dark, #2a2926);
+  color: var(--nav-text-dark);
   font-weight: 500;
   font-size: 0.95rem;
   white-space: nowrap;
   position: relative;
+  overflow: hidden;
+  z-index: 1;
   padding: 6px 4px;
-  transition: opacity var(--transition-smooth, 0.25s ease);
+  transition: opacity 0.2s ease;
 }
 
 .header-links-container a::before,
@@ -101,84 +102,76 @@
   opacity: 0.85;
 }
 
-/* ── RE-ENGINEERED GET STARTED / SELL AN ITEM CTA (ORANGE FILL SLIDE) ── */
 .btn-signup-premium {
+  background: var(--nav-forest-dark);
+  color: #fff;
+  text-decoration: none;
+  padding: 12px 24px;
+  border-radius: 999px;
+  font-weight: 600;
+}
+
+.btn-secondary-premium {
+  background: transparent;
+  color: var(--nav-text-dark);
+  text-decoration: none;
+  padding: 12px 20px;
+  border: 1px solid #ddd;
+  border-radius: 999px;
+}
+
+.header-profile-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.user-chip-premium {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid var(--nav-forest-dark, #2e362a);
-  padding: 10px 22px;
-  border-radius: 40px;
-  cursor: pointer;
-  font-weight: 700;
-  font-family: var(--body-font-family, sans-serif);
-  background: var(--nav-forest-dark, #2e362a);
-  color: #ffffff !important;
-  font-size: 0.95rem;
-  white-space: nowrap;
-  position: relative;
-  overflow: hidden;
-  z-index: 1;
-  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
-  min-height: 40px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--nav-circle-bg);
+  text-decoration: none;
+  transition: transform 0.2s ease;
 }
 
-.btn-signup-premium::before {
-  content: "";
-  position: absolute;
-  background: var(--theme-rust, #c0532e);
-  width: 0;
-  height: 100%;
-  left: 0;
-  top: 0;
-  z-index: -1;
-  transition: width 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+.user-chip-premium:hover {
+  transform: scale(1.04);
 }
 
-.btn-signup-premium:hover {
-  color: #ffffff !important;
-  border-color: var(--theme-rust, #c0532e);
-  box-shadow: 0 6px 20px rgba(192, 83, 46, 0.25);
-  transform: translateY(-1px);
-}
-
-.btn-signup-premium:hover::before {
+.user-avatar-premium {
   width: 100%;
-}
-
-.btn-logout-premium {
-  background: transparent;
-  border: none;
-  color: #c0532e;
-  font-weight: 600;
-  font-size: 0.9rem;
-  cursor: pointer;
-  padding: 0 0 0 12px;
-  min-height: 40px;
-}
-
-/* ── ACTIONS AND PROFILE SURFACES ── */
-.header-actions-container {
+  height: 100%;
+  border-radius: 50%;
   display: flex;
   align-items: center;
-  gap: 16px;
-  flex-shrink: 0;
-  min-width: fit-content;
+  justify-content: center;
+  background: #3c4537;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 14px;
 }
-
+.header-icon-btn img {
+  width: 24px;
+  height: 24px;
+  display: block;
+  object-fit: contain;
+}
 .header-icon-btn {
   width: 40px;
   height: 40px;
   border-radius: 50%;
   background: #f1eee7;
-  display: inline-flex;
+  display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1);
+  transition: all .25s ease;
   text-decoration: none;
 }
 
-.header-icon-btn svg,
 .header-icon-btn img {
   width: 18px;
   height: 18px;
@@ -189,7 +182,100 @@
   transform: translateY(-2px);
   background: #e8e2d6;
 }
+/* ── RE-ENGINEERED GET STARTED / SELL AN ITEM CTA (ORANGE FILL SLIDE) ── */
+.btn-signup-premium {
+  border: 1px solid var(--nav-forest-dark);
+padding: 10px 22px;
+  font-size: 0.9rem;  border-radius: 40px;
+  cursor: pointer;
+  font-weight: 700;
+  font-family: 'DM Sans', sans-serif;
+  background: var(--nav-forest-dark);
+  color: #ffffff !important;
+  font-size: 0.95rem;
+  white-space: nowrap;
+  order: 4;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  transition: all 0.3s ease-in-out;
+}
 
+/* Background canvas filling block */
+.btn-signup-premium::before {
+  content: "";
+  position: absolute;
+  background: var(--theme-rust); /* Sweeps orange fill to match your hero palette */
+  width: 0;
+  height: 100%;
+  left: 0;
+  top: 0;
+  z-index: -1;                   /* Pushed safely underneath typography content layers */
+  transition: width 0.3s ease-in-out;
+}
+
+/* Hover State adjustments */
+.btn-signup-premium:hover {
+  color: #ffffff !important;     /* Keeps text bright white against orange backdrop */
+  border-color: var(--theme-rust);
+  box-shadow: 0 6px 20px rgba(192, 83, 46, 0.25);
+  transform: translateY(-1px);
+}
+
+.btn-signup-premium:hover::before {
+  width: 100%;                   /* Pulls fill block from left edge straight to 100% full width width scope */
+}
+
+.btn-logout-premium {
+  background: transparent;
+  border: none;
+  color: #c0532e;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  padding: 0 0 0 12px;
+}
+
+/* ── BURGER ENGINE MOBILE RESPONSIVENESS ── */
+.header-burger-trigger {
+  display: none;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 22px;
+  height: 16px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  z-index: 1010;
+}
+
+.header-burger-trigger span {
+  width: 100%;
+  height: 2px;
+  background-color: var(--nav-text-dark);
+}
+
+@media (max-width: 920px) {
+  .header { padding: 0 24px; }
+  .header-burger-trigger { display: flex; }
+  .header .header-links-container {
+    position: fixed;
+    top: 80px;
+    left: 0;
+    width: 100%;
+    height: calc(100vh - 80px);
+    background: var(--nav-bg-cream);
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: 40px 24px;
+    gap: 28px;
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+    z-index: 1005;
+  }
+  .header.menu-expanded .header-links-container { transform: translateX(0); }
+}
 .header-profile-container {
   display: flex;
   align-items: center;
@@ -204,78 +290,19 @@
   padding: 0 18px;
   border-radius: 999px;
   background: #f3f3f1;
-  color: var(--nav-text-dark, #2a2926);
+  color: var(--nav-text-dark);
   font-weight: 600;
   text-decoration: none;
-  transition: transform 0.2s ease;
+  transition: transform .2s ease;
 }
 
 .user-chip-premium:hover {
   transform: scale(1.03);
 }
-
-/* ── BURGER ENGINE MOBILE RESPONSIVENESS ── */
-.header-burger-trigger {
-  display: none;
-  flex-direction: column;
-  justify-content: space-between;
-  width: 24px;
-  height: 18px;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  z-index: 1010;
-}
-
-.header-burger-trigger .icon {
-  width: 24px;
-  height: 18px;
-  color: var(--nav-text-dark, #2a2926);
-}
-
-@media (max-width: 920px) {
-  .header-row-layout {
-    padding: 0 24px;
-  }
-  
-  .header-burger-trigger {
-    display: inline-flex;
-  }
-  
-  .header-links-container {
-    position: fixed;
-    top: 64px;
-    left: 0;
-    width: 100%;
-    height: calc(100vh - 64px);
-    background: var(--nav-bg-cream, #f6f5f0);
-    flex-direction: column;
-    justify-content: flex-start;
-    padding: 40px 24px;
-    gap: 28px;
-    transform: translateX(100%);
-    transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
-    z-index: 1005;
-    will-change: transform;
-  }
-  
-  .header.menu-expanded .header-links-container {
-    transform: translateX(0);
-  }
-}
-
-.header-icon-btn .icon {
-  display: inline-flex;
+.header-actions-container {
+  display: flex;
   align-items: center;
-  justify-content: center;
-  width: 18px;
-  height: 18px;
-  color: var(--nav-text-dark, #2a2926);
-}
-
-.header-icon-btn .icon svg {
-  width: 18px;
-  height: 18px;
-  display: block;
+  gap: 16px;
+  flex-shrink: 0;
+  min-width: fit-content;
 }

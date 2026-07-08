@@ -1,0 +1,305 @@
+/* ── AUTOMATIC COHESION INTEGRATION WITH PREMIUM DESIGN SYSTEM ── */
+
+.featured-auctions-container {
+  background-color: #fbf9f4 !important; /* Premium warm luxury cream background */
+  padding: 1rem  !important;
+  width: 100%;
+}
+
+.featured-auctions {
+  max-width: 1240px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+/* ── HIGH-END EDITORIAL HEADER FLEX CONTAINER ── */
+.featured-auctions .featured-auctions-header-editorial {
+  display: flex;
+  flex-direction: column; 
+  align-items: center;    
+  justify-content: center;
+  text-align: center;     
+  margin-bottom: 3.5rem;
+  width: 100%;
+  border-bottom: 1px solid #eae7df; 
+  padding-bottom: 2rem; 
+}
+
+.featured-auctions .featured-auctions-header-editorial h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.8rem, 3vw, 2.4rem);
+  font-weight: 400; 
+  color: #2e362a !important; /* Premium Forest Green Title */
+  margin: 0 0 0.5rem 0;
+  letter-spacing: -0.01em;
+}
+
+/* Luxury accent italicization style */
+.featured-auctions .featured-auctions-header-editorial h2 span {
+  font-style: italic;
+  font-family: 'Playfair Display', serif;
+  color: #b9925a; /* Premium Luxury Gold */
+}
+
+.featured-auctions .featured-auctions-desc {
+  font-family: 'DM Sans', sans-serif;
+  color: #666666;
+  font-size: 0.9rem;
+  margin: 0 0 2rem 0;
+}
+
+/* ── SIDE-BY-SIDE INTEGRATED ACTION CONTROLS ENGINE ── */
+.featured-auctions .featured-auctions-controls-bar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* Luxury Minimalist Search Element */
+.featured-auctions .featured-auctions-search {
+  display: flex;
+  flex: 1;
+  max-width: 380px;
+  background: #f6f5f0;
+  border: 1px solid rgba(42, 41, 38, 0.08);
+  border-radius: 50px;
+  padding: 0.2rem;
+  box-shadow: 0 4px 15px rgba(46, 54, 42, 0.01);
+}
+
+.featured-auctions .featured-auctions-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: 0 1rem;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.85rem;
+  color: #2e362a;
+}
+
+.featured-auctions .featured-auctions-input:focus {
+  outline: none;
+}
+
+.featured-auctions .featured-auctions-search-btn {
+  background-color: #2e362a;
+  color: #fbf9f4;
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.featured-auctions .featured-auctions-search-btn:hover {
+  background-color: #b9925a;
+}
+
+/* Horizontal Quick Chips Track inline setup rules */
+.featured-auctions .featured-auctions-quick-chips {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.featured-auctions .filter-chip {
+  background-color: transparent;
+  color: #2e362a;
+  border: 1px solid rgba(46, 54, 42, 0.12);
+  padding: 0.45rem 1.15rem;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 500;
+  border-radius: 50px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.featured-auctions .filter-chip:hover {
+  border-color: #b9925a;
+  color: #b9925a;
+}
+
+.featured-auctions .filter-chip.is-active {
+  background-color: #2e362a;
+  border-color: #2e362a;
+  color: #fbf9f4;
+  box-shadow: 0 4px 10px rgba(46, 54, 42, 0.08);
+}
+
+/* Mobile responsive collapsing fallback rule matrices */
+@media (max-width: 767px) {
+  .featured-auctions .featured-auctions-controls-bar {
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+  }
+  .featured-auctions .featured-auctions-search {
+    max-width: 100%;
+    width: 100%;
+  }
+}
+
+/* ── HIGH DENSITY 5-COLUMN EDITORIAL GRID ENGINE ── */
+.featured-auctions .featured-auctions-grid-five {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1.25rem; 
+  width: 100%;
+}
+
+@media (max-width: 1100px) {
+  .featured-auctions .featured-auctions-grid-five {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 850px) {
+  .featured-auctions .featured-auctions-grid-five {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .featured-auctions .featured-auctions-grid-five {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ── MODULAR COMPACT CARD ARCHITECTURES ── */
+.featured-auctions .featured-auctions-editorial-card {
+  background-color: #ffffff;
+  border-radius: 100px 100px 16px 16px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  padding: 0.6rem;
+  box-shadow: 0 4px 15px rgba(46, 54, 42, 0.01);
+  border: 1px solid rgba(42, 41, 38, 0.04);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
+}
+
+.featured-auctions .card-image-arch-frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 100px 100px 16px 16px;
+  overflow: hidden;
+  background-color: #f6f5f0;
+  border: 1px solid rgba(42, 41, 38, 0.03);
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.featured-auctions .card-image-arch-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.featured-auctions .card-editorial-details {
+  padding: 1rem 0.4rem 0.4rem 0.4rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.featured-auctions .card-editorial-title {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #2e362a !important;
+  margin: 0 0 0.25rem 0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  transition: color 0.3s ease;
+}
+
+.featured-auctions .card-editorial-author {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.72rem;
+  color: #666666;
+  margin: 0 0 1rem 0;
+}
+
+.featured-auctions .card-editorial-action-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+}
+
+.featured-auctions .card-editorial-price {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #2e362a;
+}
+
+.featured-auctions .card-editorial-buttons {
+  display: flex;
+  gap: 0.35rem;
+  align-items: center;
+}
+
+.featured-auctions .card-editorial-btn-bid {
+  background-color: #2e362a;
+  color: #ffffff;
+  border: none;
+  padding: 0.4rem 1.1rem;
+  border-radius: 50px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.featured-auctions .card-editorial-btn-bid:hover {
+  background-color: #b9925a;
+}
+
+.featured-auctions .card-editorial-btn-fav {
+  background-color: #f6f5f0;
+  color: #b9925a;
+  border: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s, transform 0.2s;
+}
+
+.featured-auctions .card-editorial-btn-fav:hover {
+  background-color: #eae7df;
+  transform: scale(1.08);
+}
+
+/* ── LUXURY HOVER REFINEMENTS ── */
+.featured-auctions .featured-auctions-editorial-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 25px rgba(46, 54, 42, 0.06);
+}
+
+.featured-auctions .featured-auctions-editorial-card:hover .card-image-arch-frame {
+  transform: scale(1.02);
+}
+
+.featured-auctions .featured-auctions-editorial-card:hover .card-editorial-title {
+  color: #b9925a !important;
+}
