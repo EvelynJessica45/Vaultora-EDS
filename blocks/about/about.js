@@ -4,7 +4,7 @@ const PORTFOLIO = [
   { icon: 'star', title: 'High-Fidelity Audio', body: 'Audiophile headphones, boutique tube amplifiers, and meticulously maintained analog setups.' },
   { icon: 'frame', title: 'Heritage Objects', body: 'Exceptional design collectibles, luxury travel goods, and architectural items looking for a second lifecycle.' },
 ];
-
+// dfsd
 const STATS = [
   { value: '100%', label: 'Verified Authenticity' },
   { value: '$0', label: 'Risk Escrow Protection' },

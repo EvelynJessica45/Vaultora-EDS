@@ -116,6 +116,7 @@
   justify-content: space-between; gap: 1rem; cursor: pointer; text-align: left;
   font-family: 'Playfair Display', serif; font-size: 1rem; color: var(--ink); transition: color .2s ease;
 }
+/* fdsf */
 .v-acc-trigger:hover { color: var(--gold); }
 .v-acc-plus { width: 15px; height: 15px; flex-shrink: 0; transition: transform .3s ease; }
 .v-acc-trigger[aria-expanded="true"] .v-acc-plus { transform: rotate(45deg); }
