@@ -596,26 +596,39 @@ export default async function decorate(block) {
   if (nextBtn) nextBtn.addEventListener('click', () => syncCarouselFrame(activeImageIndex + 1));
 
   // --- RELATED PRODUCTS DISCOVERY LOOP ---
-  function renderSimilarAssets() {
+function renderSimilarAssets() {
     const grid = pdpContainer.querySelector('#pdpRelatedGrid');
     if (!grid) return;
+    
+    // Filter active items and remove the current product
     const items = products.filter(x => String(x.id) !== String(currentProduct.id) && x.auctionStatus === 'active').slice(0, 4);
 
     if (!items.length) {
       grid.innerHTML = `<p class="pdp-table-empty">No similar dynamic item acquisitions tracked today.</p>`;
       return;
     }
+
     grid.innerHTML = items.map(p => `
-      <div class="pdp-related-card" onclick="window.location.href='/detail?id=${p.id}'">
-        <div class="rel-image-frame"><img src="${p.images?.[0] || p.image || cfg.fallbackImg}" alt="${p.title}" loading="lazy" /></div>
+      <div class="pdp-related-card" data-id="${p.id}" style="cursor: pointer;">
+        <div class="rel-image-frame">
+          <img src="${p.images?.[0] || p.image || cfg.fallbackImg}" alt="${p.title}" loading="lazy" />
+        </div>
         <div class="rel-details-frame">
           <h4>${p.title}</h4>
           <div class="rel-footer-row"><strong>${fmt(p.currentBid || p.price)}</strong><span>Acquire</span></div>
         </div>
       </div>
     `).join('');
-  }
 
+    // Attach click listeners to cards to handle navigation
+    grid.querySelectorAll('.pdp-related-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const id = card.getAttribute('data-id');
+        // This forces the page to navigate to the new asset
+        window.location.href = `/detail?id=${id}`;
+      });
+    });
+  }
   // --- TAB SWITCH LAYOUT PANELS ---
   const btnToggleTable = pdpContainer.querySelector('#btnToggleTable');
   const btnToggleChart = pdpContainer.querySelector('#btnToggleChart');
