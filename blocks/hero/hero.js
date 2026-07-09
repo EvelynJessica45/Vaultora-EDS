@@ -169,14 +169,14 @@ function setupPageInteractions() {
     promoCtaBtn.setAttribute('href', '/dashboard?filter=ending-within-24h');
   }
 
-  // 2. Configure the "Browse All" button link routing
-  const browseAllBtn = document.querySelector('.categories-browse-all');
-  if (browseAllBtn) {
-    browseAllBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      window.location.href = '/dashboard';
-    });
-  }
+  // // 2. Configure the "Browse All" button link routing
+  // const browseAllBtn = document.querySelector('.categories-browse-all');
+  // if (browseAllBtn) {
+  //   browseAllBtn.addEventListener('click', (e) => {
+  //     e.preventDefault();
+  //     window.location.href = '/dashboard';
+  //   });
+  // }
 
   // 3. Limit Featured Auctions using an optimized localized observer interface
   const gridContainer = document.querySelector('.featured-auctions-grid-five');
