@@ -380,14 +380,18 @@ function applyFiltersAndSort(grid, state) {
   const now = Date.now();
   const oneDayInMs = 24 * 60 * 60 * 1000;
   
+  // 1. First, handle visibility (filtering)
   cards.forEach((card) => {
     let visible = true;
     
-    // Existing search/category/price logic...
     if (state.search && !card.dataset.searchText.includes(state.search)) visible = false;
     if (state.categories?.length && !state.categories.includes(card.dataset.category)) visible = false;
     
-    // NEW: 24-hour filter logic
+    // Price range filter
+    const currentPrice = parseFloat(card.dataset.currentBid);
+    if (currentPrice < state.bidMin || currentPrice > state.bidMax) visible = false;
+
+    // 24-hour filter
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get('filter') === 'ending-within-24h') {
       const endsIn = parseInt(card.dataset.endsInMinutes, 10) * 60000;
@@ -396,19 +400,34 @@ function applyFiltersAndSort(grid, state) {
 
     card.style.display = visible ? '' : 'none';
   });
+
+  // 2. Identify visible cards for sorting
+  const visibleCards = cards.filter(card => card.style.display !== 'none');
+
+  // 3. Perform sorting on the visible subset
   if (state.sort) {
     visibleCards.sort((a, b) => {
-      if (state.sort === 'price_asc') return parseFloat(a.dataset.currentBid) - parseFloat(b.dataset.currentBid);
-      if (state.sort === 'price_desc') return parseFloat(b.dataset.currentBid) - parseFloat(a.dataset.currentBid);
-      if (state.sort === 'bids_desc') return parseInt(b.dataset.bidsCount, 10) - parseInt(a.dataset.bidsCount, 10);
-      if (state.sort === 'bids_asc') return parseInt(a.dataset.bidsCount, 10) - parseInt(b.dataset.bidsCount, 10);
-      if (state.sort === 'ending_soon') return parseInt(a.dataset.endsInMinutes, 10) - parseInt(b.dataset.endsInMinutes, 10);
+      const priceA = parseFloat(a.dataset.currentBid);
+      const priceB = parseFloat(b.dataset.currentBid);
+      const bidsA = parseInt(a.dataset.bidsCount, 10);
+      const bidsB = parseInt(b.dataset.bidsCount, 10);
+      const timeA = parseInt(a.dataset.endsInMinutes, 10);
+      const timeB = parseInt(b.dataset.endsInMinutes, 10);
+
+      if (state.sort === 'price_asc') return priceA - priceB;
+      if (state.sort === 'price_desc') return priceB - priceA;
+      if (state.sort === 'bids_desc') return bidsB - bidsA;
+      if (state.sort === 'bids_asc') return bidsA - bidsB;
+      if (state.sort === 'ending_soon') return timeA - timeB;
       return 0;
     });
+
+    // 4. Re-append sorted cards to the grid in the correct order
     visibleCards.forEach(card => grid.append(card));
   }
+
   const resultsEl = document.querySelector('.auctionlisting-results');
-  if (resultsEl) resultsEl.textContent = `Showing ${visibleCount} items active`;
+  if (resultsEl) resultsEl.textContent = `Showing ${visibleCards.length} items active`;
 }
 
 export default function decorate(block) {
